@@ -1422,7 +1422,7 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{\n  '{\\n' +\n  '  \"chatbotId\": ' + JSON.stringify($('When Called by Platform').item.json.chatbotId) + ',\\n' +\n  '  \"orderId\": ' + JSON.stringify($fromAI('order_id', 'the exact order ID the customer provided', 'string') ?? '') + ',\\n' +\n  '  \"customerPhone\": ' + JSON.stringify($fromAI('customer_phone', 'the phone number used at checkout, exactly as the customer provided it', 'string') ?? '') + '\\n' +\n  '}'\n}}",
+        "jsonBody": "={{\n  '{\\n' +\n  '  \"chatbotId\": ' + JSON.stringify($('When Called by Platform').item.json.chatbotId) + ',\\n' +\n  '  \"orderId\": ' + JSON.stringify($fromAI('order_id', 'the exact order ID the customer provided', 'string') ?? '') + ',\\n' +\n  '  \"customerPhone\": ' + JSON.stringify($fromAI('customer_phone', 'customer phone number exactly as the customer gave it', 'string') ?? '') + '\\n' +\n  '}'\n}}",
         "options": {
           "timeout": 15000
         }

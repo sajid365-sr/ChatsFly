@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { verifyMetaSignature } from "@/lib/core/meta-signature";
 import { bufferOrDispatchMessage } from "@/lib/ai/message-batcher";
 
+export const maxDuration = 30;
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const mode = searchParams.get("hub.mode");
@@ -20,7 +22,7 @@ export async function POST(req: Request) {
     const rawBody = await req.text();
     const signatureHeader = req.headers.get("x-hub-signature-256");
 
-    if (!verifyMetaSignature(rawBody, signatureHeader)) {
+    if (!verifyMetaSignature(rawBody, signatureHeader, process.env.INSTAGRAM_APP_SECRET)) {
       console.warn("[INSTAGRAM_WEBHOOK] Signature verification failed or missing signature header.");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }

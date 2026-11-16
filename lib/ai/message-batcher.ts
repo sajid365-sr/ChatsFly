@@ -228,9 +228,22 @@ export async function bufferOrDispatchMessage({
 }: BufferOptions): Promise<BufferResult> {
   const { senderId, messageId, text, sessionId } = extractSenderAndMessage(provider, payload);
 
-  // If there is no text or sender identified (e.g. delivery receipts, read receipts, reactions),
-  // forward immediately without buffering.
-  if (!senderId || !text || !messageId) {
+  // In serverless environments (e.g. Vercel, AWS Lambda), execution halts as soon as the
+  // HTTP response is sent, so an in-memory setTimeout is suspended and will not fire
+  // until another event happens, causing message delivery stalls or timeout errors.
+  // Unless batching is explicitly requested in serverless via ENABLE_MESSAGE_BATCHING=true,
+  // we forward immediately so customer messages are processed without delay.
+  const isServerless =
+    process.env.VERCEL === "1" || process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined;
+  const shouldForwardImmediately =
+    (isServerless && process.env.ENABLE_MESSAGE_BATCHING !== "true") ||
+    process.env.ENABLE_MESSAGE_BATCHING === "false" ||
+    windowMs <= 0 ||
+    !senderId ||
+    !text ||
+    !messageId;
+
+  if (shouldForwardImmediately) {
     const res = await dedupeAndForward({
       provider,
       payload,

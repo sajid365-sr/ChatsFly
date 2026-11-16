@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { verifyMetaSignature } from "@/lib/core/meta-signature";
 import { bufferOrDispatchMessage } from "@/lib/ai/message-batcher";
 
+export const maxDuration = 30;
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const mode = searchParams.get("hub.mode");

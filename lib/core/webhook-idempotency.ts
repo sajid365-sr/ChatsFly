@@ -21,7 +21,7 @@ export type WebhookProvider = "whatsapp" | "instagram" | "facebook";
 export const RETENTION_DAYS = 7;
 
 /** Ceiling for the forward call. Meta retries if we do not answer in time. */
-const FORWARD_TIMEOUT_MS = 10_000;
+const FORWARD_TIMEOUT_MS = 15_000;
 
 export type ClaimResult = {
   /** Ids this call actually claimed — i.e. that had not been seen before. */
