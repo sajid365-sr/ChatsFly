@@ -125,7 +125,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n  i.\"integrationId\",\n  c.\"chatbotId\",\n  i.\"connected\",\n  i.\"status\",\n  i.config->>'connectionSource' AS \"connectionSource\",\n  i.config->>'pageId' AS \"pageId\",\n  i.config->>'instagramAccountId' AS \"instagramAccountId\"\nFROM \"chatbot\".\"Integration\" i\nJOIN \"chatbot\".\"Chatbot\" c ON i.\"chatbotId\" = c.\"chatbotId\"\nWHERE i.platform = 'instagram'\n  AND i.\"connected\" = true\n  AND i.config->>'instagramAccountId' = '{{ $('Normalize Instagram Payload').item.json.instagramAccountId }}'\nLIMIT 1;",
+        "query": "SELECT\n  i.\"integrationId\",\n  c.\"chatbotId\",\n  i.\"connected\",\n  i.\"status\",\n  i.config->>'connectionSource' AS \"connectionSource\",\n  i.config->>'pageId' AS \"pageId\",\n  i.config->>'instagramAccountId' AS \"instagramAccountId\"\nFROM \"chatbot\".\"Integration\" i\nJOIN \"chatbot\".\"Chatbot\" c ON i.\"chatbotId\" = c.\"chatbotId\"\nWHERE i.platform = 'instagram'\n  AND i.\"connected\" = true\n  AND (\n    i.config->>'instagramAccountId' = '{{ $('Normalize Instagram Payload').item.json.instagramAccountId }}'\n    OR i.config->>'pageId' = '{{ $('Normalize Instagram Payload').item.json.instagramAccountId }}'\n  )\nLIMIT 1;",
         "options": {}
       },
       "id": "ig-fetch",

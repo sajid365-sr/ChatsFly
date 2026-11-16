@@ -125,7 +125,9 @@ describe("message-batcher", () => {
         ],
       };
 
-      const merged = mergePayloadWithBatchedText("facebook", payload, "First\nSecond", 2) as any;
+      const merged = mergePayloadWithBatchedText("facebook", payload, "First\nSecond", 2) as {
+        entry: Array<{ messaging: Array<{ message: { text: string; isBatched: boolean; batchedCount: number } }> }>;
+      };
       expect(merged.entry[0].messaging[0].message.text).toBe("First\nSecond");
       expect(merged.entry[0].messaging[0].message.isBatched).toBe(true);
       expect(merged.entry[0].messaging[0].message.batchedCount).toBe(2);
@@ -147,7 +149,15 @@ describe("message-batcher", () => {
         ],
       };
 
-      const merged = mergePayloadWithBatchedText("whatsapp", payload, "First\nSecond", 2) as any;
+      const merged = mergePayloadWithBatchedText("whatsapp", payload, "First\nSecond", 2) as {
+        entry: Array<{
+          changes: Array<{
+            value: {
+              messages: Array<{ text: { body: string; isBatched: boolean; batchedCount: number } }>;
+            };
+          }>;
+        }>;
+      };
       expect(merged.entry[0].changes[0].value.messages[0].text.body).toBe("First\nSecond");
       expect(merged.entry[0].changes[0].value.messages[0].text.isBatched).toBe(true);
       expect(merged.entry[0].changes[0].value.messages[0].text.batchedCount).toBe(2);
@@ -214,6 +224,41 @@ describe("message-batcher", () => {
       vi.advanceTimersByTime(3500);
 
       expect(getActiveBatchCount()).toBe(0);
+    });
+
+    it("forwards immediately when running in serverless (VERCEL=1)", async () => {
+      const originalVercel = process.env.VERCEL;
+      process.env.VERCEL = "1";
+
+      try {
+        const payload = {
+          object: "page",
+          entry: [
+            {
+              messaging: [
+                {
+                  sender: { id: "user_serverless" },
+                  message: { mid: "m_serverless", text: "Immediate message" },
+                },
+              ],
+            },
+          ],
+        };
+
+        const res = await bufferOrDispatchMessage({
+          provider: "facebook",
+          payload,
+          webhookUrl: "https://test.n8n/webhook",
+          logPrefix: "[TEST_SERVERLESS]",
+          windowMs: 3000,
+        });
+
+        expect(res.immediate).toBe(true);
+        expect(res.batched).toBe(false);
+        expect(getActiveBatchCount()).toBe(0);
+      } finally {
+        process.env.VERCEL = originalVercel;
+      }
     });
   });
 });
