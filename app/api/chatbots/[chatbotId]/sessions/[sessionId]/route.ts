@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/core/db";
 import { getInboxAccessibleChatbot } from "@/lib/domain/chatbot-access";
+import { syncSessionToCrmContact } from "@/lib/services/crm-sync";
 
 export async function PATCH(
   req: Request,
@@ -93,6 +94,21 @@ export async function DELETE(
     });
 
     if (existingSession) {
+      // 0. Smart CRM Preservation: Before wiping chat messages and session,
+      //    safely preserve customer identity, phone, address and order connections
+      //    in `crm.Contact` so valuable leads are never lost.
+      try {
+        await syncSessionToCrmContact({
+          chatbotId: existingSession.chatbotId,
+          sessionId: existingSession.sessionId,
+          guestName: existingSession.guestName,
+          profilePhoto: existingSession.profilePhoto,
+          platform: existingSession.platform,
+        });
+      } catch (err) {
+        console.error("[SESSION_DELETE] Failed to preserve CRM contact:", err);
+      }
+
       // Everything the user would expect "delete" to mean, in one transaction:
       //   1. the visible messages,
       //   2. the AI's memory of the conversation (n8n's Postgres Chat Memory),

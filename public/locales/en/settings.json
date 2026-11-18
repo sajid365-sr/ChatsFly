@@ -3,6 +3,7 @@
   "subtitle": "Manage your account preferences, security, and notification settings.",
   "tabs": {
     "profile": "My Profile",
+    "workspace": "Workspace",
     "security": "Security and Data",
     "referrals": "Referrals",
     "notifications": "Notification",
@@ -265,5 +266,38 @@
       "errorToast": "Failed to remove member"
     },
     "unlimitedBanner": "Unlimited Team Members included on your workspace plan."
+  },
+  "workspace": {
+    "title": "Workspace Settings",
+    "subtitle": "Manage your business branding, category, and workspace preferences.",
+    "cardTitle": "Business Information",
+    "cardSubtitle": "Update your business details and how your brand appears across Driplare AI.",
+    "logoLabel": "Brand Logo",
+    "logoHint": "Square PNG or JPG recommended. Automatically resized and optimized.",
+    "uploadLogo": "Change Logo",
+    "removeLogo": "Remove Logo",
+    "categoryLabel": "Business Category",
+    "businessZoneTitle": "Business Zone Title (optional)",
+    "businessZonePlaceholder": "e.g. Trendirect Store",
+    "businessZoneHint": "This custom label appears in your dashboard navigation zone.",
+    "nameLabel": "Business Name",
+    "namePlaceholder": "e.g. Trendirect",
+    "save": "Save Changes",
+    "saving": "Saving…",
+    "saved": "Saved successfully",
+    "updateError": "Failed to update business. Please try again.",
+    "dangerTitle": "Delete Business",
+    "dangerDesc": "Permanently delete this business and all associated AI agents, contacts, orders, and chat history. This action cannot be undone.",
+    "deleteBtn": "Delete Business",
+    "cannotDeleteOnly": "You cannot delete your only business.",
+    "deleteConfirmTitle": "Delete Business",
+    "deleteConfirmWarning": "This permanently deletes this business and ALL of its data — AI Agents, integrations, orders, conversations, and messages. This action cannot be undone.",
+    "deleteConfirmPrompt": "Type the business name to confirm:",
+    "deleting": "Deleting…",
+    "deleteSuccess": "Business deleted successfully",
+    "deleteError": "Failed to delete business. Please try again.",
+    "activeBadge": "Active Business",
+    "allBusinesses": "All Businesses",
+    "switchPrompt": "Switching business will update all data across your dashboard."
   }
 }

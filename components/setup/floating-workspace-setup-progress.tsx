@@ -73,8 +73,18 @@ export function FloatingWorkspaceSetupProgress() {
   );
   const nextTitle = t(`steps.${nextStep}.title`);
 
+  const isInboxPage = pathname === "/dashboard/inbox" || pathname?.startsWith("/dashboard/inbox");
+
+  const containerClasses = isInboxPage
+    ? `sticky top-0 z-40 w-full shrink-0 border-b border-border bg-background px-4 md:px-6 shadow-xs ${
+        isCollapsed ? "py-1" : "py-2"
+      }`
+    : `sticky top-0 z-40 -mx-4 -mt-4 mb-5 border-b border-border bg-background px-4 shadow-xs md:-mx-8 md:-mt-8 md:px-8 ${
+        isCollapsed ? "py-1" : "py-2"
+      }`;
+
   return (
-    <div className={`sticky top-0 z-20 -mx-4 -mt-4 mb-5 -translate-y-4 border-b border-border bg-background px-4 shadow-sm md:-mx-8 md:-mt-8 md:-translate-y-8 md:px-8 ${isCollapsed ? "py-1" : "py-2"}`}>
+    <div className={containerClasses}>
       {isCollapsed ? (
         <div className="mx-auto flex max-w-[1550px] justify-end">
           <Button

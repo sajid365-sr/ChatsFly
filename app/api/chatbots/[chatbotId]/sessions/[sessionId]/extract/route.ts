@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/core/db";
 import { getInboxAccessibleChatbot } from "@/lib/domain/chatbot-access";
+import { syncSessionToCrmContact } from "@/lib/services/crm-sync";
 
 // ── GET /api/chatbots/[chatbotId]/sessions/[sessionId]/extract
 // Returns the current AI extraction state for a session
@@ -160,12 +161,39 @@ export async function POST(
         },
       });
 
+      // Auto-sync extracted customer intelligence directly to crm.Contact
+      try {
+        await syncSessionToCrmContact({
+          chatbotId: bot.chatbotId,
+          sessionId,
+          phone,
+          address,
+          district,
+          guestName: session?.guestName,
+        });
+      } catch (err) {
+        console.error("[EXTRACT_CRM_SYNC_FAILED]", err);
+      }
+
       return NextResponse.json({
         success: true,
         extraction: { ...extractionData, orderId: order.orderId, courierTrackingId },
         order,
         autoDispatched: true,
       });
+    }
+
+    // Auto-sync extracted customer intelligence directly to crm.Contact
+    try {
+      await syncSessionToCrmContact({
+        chatbotId: bot.chatbotId,
+        sessionId,
+        phone,
+        address,
+        district,
+      });
+    } catch (err) {
+      console.error("[EXTRACT_CRM_SYNC_FAILED]", err);
     }
 
     return NextResponse.json({

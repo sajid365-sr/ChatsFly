@@ -1,7 +1,8 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/core/db";
 import { getAndSyncUser } from "@/lib/core/auth";
 import { getActiveWorkspace } from "@/lib/core/workspace-server";
+import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 
 const updateContactSchema = z.object({
@@ -111,8 +112,8 @@ export async function PATCH(
         ...(data.district !== undefined && { district: data.district }),
         ...(data.marketingConsent !== undefined && { marketingConsent: data.marketingConsent, consentUpdatedAt: new Date() }),
         ...(data.smsConsent !== undefined && { smsConsent: data.smsConsent, consentUpdatedAt: new Date() }),
-        ...(data.customFields !== undefined && { customFields: data.customFields as any }),
-        ...(data.aiSummary !== undefined && { aiSummary: data.aiSummary as any }),
+        ...(data.customFields !== undefined && { customFields: data.customFields as Prisma.InputJsonValue }),
+        ...(data.aiSummary !== undefined && { aiSummary: data.aiSummary }),
         ...(data.buyingIntentScore !== undefined && { buyingIntentScore: data.buyingIntentScore }),
       },
     });
@@ -174,9 +175,25 @@ export async function DELETE(
     const existing = await getContactOrFail(contactId, workspace.workspaceId);
     if (!existing) return NextResponse.json({ error: "Contact not found" }, { status: 404 });
 
-    // Cascade: ContactIdentity, ContactTagAssignment, CrmActivity, CrmTask,
-    // Deal, DealStageHistory all delete via onDelete: Cascade in schema.
-    await db.contact.delete({ where: { contactId } });
+    // Cascade delete related records before contact
+    await db.$transaction(async (tx) => {
+      await tx.dealStageHistory.deleteMany({
+        where: { deal: { contactId } },
+      });
+      await tx.deal.deleteMany({
+        where: { contactId },
+      });
+      await tx.contactIdentity.deleteMany({
+        where: { contactId },
+      });
+      await tx.contactTagAssignment.deleteMany({
+        where: { contactId },
+      });
+      await tx.crmActivity.deleteMany({
+        where: { contactId },
+      });
+      await tx.contact.delete({ where: { contactId } });
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

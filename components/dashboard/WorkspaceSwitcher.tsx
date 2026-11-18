@@ -3,17 +3,13 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  AlertTriangle,
   Check,
   ChevronsUpDown,
   ImagePlus,
-  Pencil,
   Plus,
-  Trash2,
   X,
 } from "lucide-react";
 import { useWorkspace } from "@/components/workspace-provider";
-import type { Workspace } from "@/lib/core/workspace";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,12 +31,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { WORKSPACE_BUSINESS_CATEGORIES } from "@/lib/domain/workspace-business-categories";
+import { readLogoFile } from "@/lib/core/workspace-logo";
 
 /**
  * Square avatar for a business: renders the uploaded logo when present,
  * otherwise a colored badge with the first letter of the business name.
  */
-function WorkspaceAvatar({
+export function WorkspaceAvatar({
   name,
   logoUrl,
   className = "h-6 w-6 text-[11px]",
@@ -80,8 +77,6 @@ export function WorkspaceSwitcher() {
     activeWorkspaceId,
     switchWorkspace,
     addWorkspace,
-    updateWorkspace,
-    deleteWorkspace,
     loading,
   } = useWorkspace();
 
@@ -95,59 +90,6 @@ export function WorkspaceSwitcher() {
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Edit Business modal state
-  const [editOpen, setEditOpen] = useState(false);
-  const [editName, setEditName] = useState("");
-  const [editCategory, setEditCategory] = useState("ecommerce");
-  const [editCustomBusinessTitle, setEditCustomBusinessTitle] = useState("");
-  const [editLogoUrl, setEditLogoUrl] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-  const [editError, setEditError] = useState<string | null>(null);
-  const editFileInputRef = useRef<HTMLInputElement>(null);
-
-  // Delete Business modal state
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [confirmText, setConfirmText] = useState("");
-  const [deleting, setDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-
-  // The business currently targeted by the edit/delete dialogs.
-  const [target, setTarget] = useState<Workspace | null>(null);
-
-  // Shared logo picker: reads the file, downscales to a small square on a canvas,
-  // then hands the Base64 JPEG to `onLogo`. A raw photo's data URL can be several
-  // MB — too big to store in a DB column or POST as JSON. 256px + JPEG keeps it tiny.
-  const readLogoFile = (
-    file: File,
-    onLogo: (dataUrl: string) => void,
-    onError: () => void
-  ) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const img = new Image();
-      img.onload = () => {
-        const SIZE = 256;
-        const canvas = document.createElement("canvas");
-        canvas.width = SIZE;
-        canvas.height = SIZE;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) {
-          onLogo(reader.result as string);
-          return;
-        }
-        // Cover-fit: crop to a centered square, then scale into the canvas.
-        const side = Math.min(img.width, img.height);
-        const sx = (img.width - side) / 2;
-        const sy = (img.height - side) / 2;
-        ctx.drawImage(img, sx, sy, side, side, 0, 0, SIZE, SIZE);
-        onLogo(canvas.toDataURL("image/jpeg", 0.82));
-      };
-      img.onerror = onError;
-      img.src = reader.result as string;
-    };
-    reader.readAsDataURL(file);
-  };
-
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -156,17 +98,6 @@ export function WorkspaceSwitcher() {
       file,
       (dataUrl) => setLogoUrl(dataUrl),
       () => setError(t("workspace.logoError", "Could not read that image. Try another file."))
-    );
-  };
-
-  const handleEditLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setEditError(null);
-    readLogoFile(
-      file,
-      (dataUrl) => setEditLogoUrl(dataUrl),
-      () => setEditError(t("workspace.logoError", "Could not read that image. Try another file."))
     );
   };
 
@@ -195,75 +126,11 @@ export function WorkspaceSwitcher() {
     }
   };
 
-  const openEdit = (workspace: Workspace) => {
-    setTarget(workspace);
-    setEditName(workspace.name);
-    setEditLogoUrl(workspace.logoUrl ?? null);
-    setEditCategory(workspace.category || "ecommerce");
-    setEditCustomBusinessTitle(workspace.customBusinessTitle || "");
-    setEditError(null);
-    setTimeout(() => setEditOpen(true), 10);
-  };
-
-  const handleUpdate = async () => {
-    const trimmed = editName.trim();
-    if (!trimmed || !target) return;
-    setEditError(null);
-    setSaving(true);
-    try {
-      const updated = await updateWorkspace(
-        target.workspaceId,
-        trimmed,
-        editLogoUrl || undefined,
-        editCategory,
-        editCustomBusinessTitle
-      );
-      if (updated) {
-        setEditOpen(false);
-        setTarget(null);
-      } else {
-        setEditError(t("workspace.updateError", "Failed to update business. Please try again."));
-      }
-    } catch (err) {
-      console.error("[WorkspaceSwitcher] update failed", err);
-      setEditError(t("workspace.updateError", "Failed to update business. Please try again."));
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const openDelete = (workspace: Workspace) => {
-    setTarget(workspace);
-    setConfirmText("");
-    setDeleteError(null);
-    setTimeout(() => setDeleteOpen(true), 10);
-  };
-
-  const handleDelete = async () => {
-    if (!target || confirmText.trim() !== target.name) return;
-    setDeleteError(null);
-    setDeleting(true);
-    try {
-      const ok = await deleteWorkspace(target.workspaceId);
-      if (ok) {
-        setDeleteOpen(false);
-        setTarget(null);
-      } else {
-        setDeleteError(t("workspace.deleteError", "Failed to delete business. Please try again."));
-      }
-    } catch (err) {
-      console.error("[WorkspaceSwitcher] delete failed", err);
-      setDeleteError(t("workspace.deleteError", "Failed to delete business. Please try again."));
-    } finally {
-      setDeleting(false);
-    }
-  };
-
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger
-          className="flex items-center gap-2 rounded-xl border border-border bg-background/60 px-2.5 py-1.5 text-sm font-medium hover:bg-muted/60 hover:border-border transition-colors outline-none data-open:bg-muted/60 focus-visible:ring-2 focus-visible:ring-primary/40"
+          className="flex items-center gap-2 rounded-xl border border-border bg-background/60 px-2.5 py-1.5 text-sm font-medium hover:bg-muted/60 hover:border-border transition-colors outline-none data-open:bg-muted/60 focus-visible:ring-2 focus-visible:ring-primary/40 cursor-pointer"
           data-testid="workspace-switcher"
         >
           {activeWorkspace ? (
@@ -285,7 +152,7 @@ export function WorkspaceSwitcher() {
         <DropdownMenuContent
           align="start"
           sideOffset={6}
-          className="w-60 shadow-2xl border border-slate-100"
+          className="w-60 shadow-2xl border border-border"
         >
           <DropdownMenuGroup>
             <DropdownMenuLabel>
@@ -302,7 +169,7 @@ export function WorkspaceSwitcher() {
                 <DropdownMenuItem
                   key={workspace.workspaceId}
                   onClick={() => switchWorkspace(workspace.workspaceId)}
-                  className="group/ws flex items-center gap-2 py-1.5"
+                  className="flex items-center gap-2 py-1.5 cursor-pointer"
                   data-active={isActive}
                 >
                   <WorkspaceAvatar
@@ -311,34 +178,6 @@ export function WorkspaceSwitcher() {
                   />
                   <span className="flex-1 truncate">{workspace.name}</span>
                   {isActive && <Check className="h-4 w-4 shrink-0 text-primary" />}
-                  {/* Edit / delete — revealed on hover; stopPropagation so they
-                      don't trigger the row's switch. */}
-                  <span className="ml-auto hidden shrink-0 items-center gap-0.5 group-hover/ws:flex">
-                    <button
-                      type="button"
-                      aria-label={t("workspace.editTitle", "Rename Business")}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openEdit(workspace);
-                      }}
-                      className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
-                    >
-                      <Pencil className="h-3.5 w-3.5" />
-                    </button>
-                    {workspaces.length > 1 && (
-                      <button
-                        type="button"
-                        aria-label={t("workspace.deleteTitle", "Delete Business")}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openDelete(workspace);
-                        }}
-                        className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
-                    )}
-                  </span>
                 </DropdownMenuItem>
               );
             })}
@@ -346,7 +185,7 @@ export function WorkspaceSwitcher() {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => setTimeout(() => setCreateOpen(true), 10)}
-            className="flex items-center gap-2 py-1.5 text-primary"
+            className="flex items-center gap-2 py-1.5 text-primary cursor-pointer"
           >
             <Plus className="h-4 w-4 shrink-0" />
             {t("workspace.addBusiness", "Add New Business")}
@@ -364,7 +203,7 @@ export function WorkspaceSwitcher() {
             <DialogDescription>
               {t(
                 "workspace.createSubtitle",
-                "Create a separate workspace for another business. Its AI agents, inbox, orders and integrations stay fully isolated."
+                "Create a separate space for another store, brand, or project. Each business has its own AI Agent and data."
               )}
             </DialogDescription>
           </DialogHeader>
@@ -398,7 +237,7 @@ export function WorkspaceSwitcher() {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex h-14 w-14 shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl border border-dashed border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                    className="flex h-14 w-14 shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl border border-dashed border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors cursor-pointer"
                   >
                     <ImagePlus className="h-5 w-5" />
                   </button>
@@ -419,7 +258,7 @@ export function WorkspaceSwitcher() {
               />
             </div>
 
-                        {/* Business Category Picker */}
+            {/* Business Category Picker */}
             <div className="space-y-2">
               <Label className="text-xs font-semibold">{t("workspace.categoryLabel", "Business Category")}</Label>
               <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-1 border border-border rounded-xl">
@@ -480,200 +319,11 @@ export function WorkspaceSwitcher() {
             <Button
               onClick={handleCreate}
               disabled={!name.trim() || creating}
-              className="bg-brand-gradient hover:opacity-90 text-white border-none"
+              className="bg-brand-gradient hover:opacity-90 text-white border-none cursor-pointer"
             >
               {creating
                 ? t("workspace.creating", "Creating…")
                 : t("workspace.create", "Create Business")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit (Rename) Business Modal */}
-      <Dialog open={editOpen} onOpenChange={setEditOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>{t("workspace.editTitle", "Rename Business")}</DialogTitle>
-            <DialogDescription>
-              {t("workspace.editSubtitle", "Update the name of this business.")}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4">
-            {/* Brand Logo — file picker + Base64 preview */}
-            <div className="space-y-2">
-              <Label>{t("workspace.logoLabel", "Brand logo")}</Label>
-              <div className="flex items-center gap-3">
-                {editLogoUrl ? (
-                  <div className="relative">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={editLogoUrl}
-                      alt={t("workspace.logoPreview", "Logo preview")}
-                      className="h-14 w-14 rounded-xl object-cover border border-border"
-                    />
-                    <button
-                      type="button"
-                      aria-label={t("workspace.logoRemove", "Remove logo")}
-                      onClick={() => {
-                        setEditLogoUrl(null);
-                        if (editFileInputRef.current) editFileInputRef.current.value = "";
-                      }}
-                      className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-white shadow-sm hover:bg-destructive/90"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => editFileInputRef.current?.click()}
-                    className="flex h-14 w-14 shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl border border-dashed border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-                  >
-                    <ImagePlus className="h-5 w-5" />
-                  </button>
-                )}
-                <div className="text-xs text-muted-foreground">
-                  {t(
-                    "workspace.logoHint",
-                    "Optional. PNG or JPG, square looks best."
-                  )}
-                </div>
-              </div>
-              <input
-                ref={editFileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleEditLogoChange}
-              />
-            </div>
-
-                        {/* Business Category Picker */}
-            <div className="space-y-2">
-              <Label className="text-xs font-semibold">{t("workspace.categoryLabel", "Business Category")}</Label>
-              <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-1 border border-border rounded-xl">
-                {WORKSPACE_BUSINESS_CATEGORIES.map((cat) => {
-                  const selected = editCategory === cat.id;
-                  return (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => setEditCategory(cat.id)}
-                      className={`p-2 text-left rounded-lg text-xs font-medium border transition-all cursor-pointer ${
-                        selected
-                          ? "border-primary bg-primary/10 text-primary font-semibold shadow-xs"
-                          : "border-border/60 hover:bg-muted text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      <div className="truncate">{t(cat.labelKey, cat.label)}</div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="workspace-edit-custom-title">{t("workspace.businessZoneTitle", "Business Zone title (optional)")}</Label>
-              <Input id="workspace-edit-custom-title" value={editCustomBusinessTitle} onChange={(event) => setEditCustomBusinessTitle(event.target.value)} maxLength={60} placeholder={t("workspace.businessZonePlaceholder", "e.g. Doctor Appointments")} />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="workspace-edit-name">
-                {t("workspace.nameLabel", "Business name")}
-              </Label>
-              <Input
-                id="workspace-edit-name"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                placeholder={t("workspace.namePlaceholder", "e.g. My Online Store")}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && editName.trim()) handleUpdate();
-                }}
-                autoFocus
-              />
-            </div>
-            {editError && <p className="text-sm text-destructive">{editError}</p>}
-          </div>
-
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setEditOpen(false);
-                setEditLogoUrl(null);
-              }}
-              disabled={saving}
-            >
-              {t("common.cancel", "Cancel")}
-            </Button>
-            <Button
-              onClick={handleUpdate}
-              disabled={!editName.trim() || saving}
-              className="bg-brand-gradient hover:opacity-90 text-white border-none"
-            >
-              {saving ? t("workspace.saving", "Saving…") : t("workspace.save", "Save")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      {/* Delete Business Modal — destructive, type-to-confirm */}
-      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-destructive">
-              <AlertTriangle className="h-5 w-5 shrink-0" />
-              {t("workspace.deleteTitle", "Delete Business")}
-            </DialogTitle>
-            <DialogDescription>
-              {t(
-                "workspace.deleteWarning",
-                "This permanently deletes this business and ALL of its data — AI Agents, integrations, orders, conversations and messages. This action cannot be undone."
-              )}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4">
-            <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm">
-              <span className="font-semibold text-foreground">{target?.name}</span>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="workspace-delete-confirm">
-                {t("workspace.deleteConfirmLabel", "Type the business name to confirm")}
-              </Label>
-              <Input
-                id="workspace-delete-confirm"
-                value={confirmText}
-                onChange={(e) => setConfirmText(e.target.value)}
-                placeholder={target?.name || ""}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && confirmText.trim() === target?.name) {
-                    handleDelete();
-                  }
-                }}
-                autoFocus
-              />
-            </div>
-            {deleteError && <p className="text-sm text-destructive">{deleteError}</p>}
-          </div>
-
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setDeleteOpen(false)}
-              disabled={deleting}
-            >
-              {t("common.cancel", "Cancel")}
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={confirmText.trim() !== target?.name || deleting}
-            >
-              {deleting
-                ? t("workspace.deleting", "Deleting…")
-                : t("workspace.deleteConfirm", "Delete Business")}
             </Button>
           </DialogFooter>
         </DialogContent>

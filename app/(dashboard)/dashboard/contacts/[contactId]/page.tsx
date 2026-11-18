@@ -9,12 +9,7 @@ import {
   Phone,
   Mail,
   MapPin,
-  Calendar,
   Briefcase,
-  CheckSquare,
-  MessageSquare,
-  FileText,
-  TrendingUp,
   Link as LinkIcon,
   ShoppingBag,
   ExternalLink,
@@ -23,8 +18,11 @@ import {
   X,
   Plus,
   Clock,
-  AlertCircle,
   Save,
+  Sparkles,
+  Trash2,
+  AlertTriangle,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -45,6 +43,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -173,6 +172,10 @@ export default function ContactProfilePage({
   const [newDealStage, setNewDealStage] = useState("new");
   const [creatingDeal, setCreatingDeal] = useState(false);
 
+  // Delete Contact State
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const fetchContact = useCallback(async () => {
     try {
       setLoading(true);
@@ -220,6 +223,7 @@ export default function ContactProfilePage({
   }, [contactId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchContact();
   }, [fetchContact]);
 
@@ -351,6 +355,23 @@ export default function ContactProfilePage({
     }
   };
 
+  const handleDeleteContact = async () => {
+    try {
+      setIsDeleting(true);
+      const res = await fetch(`/api/crm/contacts/${contactId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete contact");
+      toast.success("Contact deleted successfully");
+      router.push("/dashboard/contacts");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete contact");
+    } finally {
+      setIsDeleting(false);
+      setIsDeleteDialogOpen(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-6 max-w-6xl mx-auto p-4 md:p-6">
@@ -404,6 +425,15 @@ export default function ContactProfilePage({
               Open Live Chat
             </Button>
           )}
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-2 text-destructive hover:bg-destructive/10 hover:text-destructive border-border/80"
+            onClick={() => setIsDeleteDialogOpen(true)}
+          >
+            <Trash2 className="w-4 h-4" />
+            Delete
+          </Button>
           <Button
             size="sm"
             className="gap-2 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white border-none"
@@ -671,16 +701,29 @@ export default function ContactProfilePage({
               </div>
 
               {/* AI Summaries */}
-              {contact.aiSummary.length > 0 && (
-                <div className="border-t border-border/50 pt-5 space-y-2">
+              <div className="border-t border-border/50 pt-5 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-violet-500" />
                   <h4 className="text-sm font-semibold text-foreground">AI Intelligence Insights</h4>
-                  <ul className="list-disc list-inside text-xs text-muted-foreground space-y-1">
-                    {contact.aiSummary.map((item, idx) => (
-                      <li key={idx}>{item}</li>
-                    ))}
-                  </ul>
                 </div>
-              )}
+                {contact.aiSummary.length > 0 ? (
+                  <div className="space-y-2">
+                    {contact.aiSummary.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="rounded-md border border-primary/15 bg-primary/5 p-2.5 text-xs text-foreground/90 flex items-start gap-2"
+                      >
+                        <Sparkles className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground italic">
+                    No conversation summary captured yet. Summaries are automatically generated from chat interactions.
+                  </p>
+                )}
+              </div>
 
               <div className="flex justify-end pt-4">
                 <Button
@@ -989,6 +1032,51 @@ export default function ContactProfilePage({
               </Button>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog
+        open={isDeleteDialogOpen}
+        onOpenChange={(open) => !open && !isDeleting && setIsDeleteDialogOpen(false)}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-destructive">
+              <AlertTriangle className="h-5 w-5" />
+              Delete Contact: {contact.name || "Unknown"}?
+            </DialogTitle>
+            <DialogDescription className="pt-2 text-sm text-muted-foreground">
+              Are you sure you want to delete this contact? All associated notes, activities, deals, and linked channel identities will be permanently removed. This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+              disabled={isDeleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteContact}
+              disabled={isDeleting}
+              className="gap-2"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="h-4 w-4" />
+                  Delete Contact
+                </>
+              )}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </motion.div>

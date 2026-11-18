@@ -3,6 +3,7 @@
   "subtitle": "আপনার account preferences, security এবং notification সেটিংস পরিচালনা করুন।",
   "tabs": {
     "profile": "My Profile",
+    "workspace": "Workspace",
     "security": "Security and Data",
     "referrals": "Referrals",
     "notifications": "Notification",
@@ -265,5 +266,38 @@
       "errorToast": "সদস্য অপসারণ করতে ব্যর্থ হয়েছে"
     },
     "unlimitedBanner": "আপনার ওয়ার্কস্পেসে সীমাহীন (Unlimited) টিম মেম্বার সুবিধা যুক্ত রয়েছে।"
+  },
+  "workspace": {
+    "title": "Workspace Settings",
+    "subtitle": "আপনার Business branding, category এবং workspace সেটিংস পরিচালনা করুন।",
+    "cardTitle": "Business Information",
+    "cardSubtitle": "আপনার Business এর তথ্য এবং Driplare AI-তে আপনার ব্র্যান্ডের প্রদর্শন আপডেট করুন।",
+    "logoLabel": "Brand Logo",
+    "logoHint": "Square PNG বা JPG ছবি সবচেয়ে ভালো দেখায়। স্বয়ংক্রিয়ভাবে অপ্টিমাইজ করা হবে।",
+    "uploadLogo": "Change Logo",
+    "removeLogo": "Remove Logo",
+    "categoryLabel": "Business Category",
+    "businessZoneTitle": "Business Zone Title (ঐচ্ছিক)",
+    "businessZonePlaceholder": "যেমন: Trendirect Store",
+    "businessZoneHint": "এই কাস্টম নামটি ড্যাশবোর্ডের সাইডবার জোনে প্রদর্শিত হবে।",
+    "nameLabel": "Business Name",
+    "namePlaceholder": "যেমন: Trendirect",
+    "save": "পরিবর্তনগুলো সেভ করুন",
+    "saving": "সেভ হচ্ছে…",
+    "saved": "সফলভাবে সেভ হয়েছে",
+    "updateError": "Business আপডেট করতে ব্যর্থ হয়েছে। আবার চেষ্টা করুন।",
+    "dangerTitle": "Delete Business",
+    "dangerDesc": "এই Business এবং এর সাথে সংশ্লিষ্ট সমস্ত AI Agent, কন্টাক্ট, অর্ডার ও চ্যাট হিস্ট্রি স্থায়ীভাবে ডিলিট করুন। এটি আর ফিরিয়ে আনা যাবে না।",
+    "deleteBtn": "Delete Business",
+    "cannotDeleteOnly": "আপনার একমাত্র Business ডিলিট করা সম্ভব নয়।",
+    "deleteConfirmTitle": "Delete Business",
+    "deleteConfirmWarning": "এটি স্থায়ীভাবে এই Business এবং এর সমস্ত ডেটা মুছে ফেলবে — AI Agent, ইন্টিগ্রেশন, অর্ডার, কথোপকথন এবং মেসেজ। এই কাজটি আর ফেরানো যাবে না।",
+    "deleteConfirmPrompt": "নিশ্চিত করতে বিজনেস নামটি হুবহু লিখুন:",
+    "deleting": "ডিলিট হচ্ছে…",
+    "deleteSuccess": "Business সফলভাবে ডিলিট করা হয়েছে",
+    "deleteError": "Business ডিলিট করতে ব্যর্থ হয়েছে। আবার চেষ্টা করুন।",
+    "activeBadge": "সক্রিয় Business",
+    "allBusinesses": "সমস্ত Business",
+    "switchPrompt": "Business পরিবর্তন করলে আপনার সম্পূর্ণ ড্যাশবোর্ডের ডেটা রিফ্রেশ হবে।"
   }
 }
