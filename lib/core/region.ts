@@ -35,7 +35,7 @@ export interface RegionConfig {
   currency: "BDT" | "USD";
   currencySymbol: string;
   /** `null` হলে এই region-এ অনলাইন payment-এর কোনো সুবিধা নেই। */
-  paymentGateway: "uddoktapay" | null;
+  paymentGateway: "uddoktapay" | "eps" | null;
 }
 
 export const REGION_CONFIGS: Record<Region, RegionConfig> = {
@@ -44,7 +44,7 @@ export const REGION_CONFIGS: Record<Region, RegionConfig> = {
     allowLangSwitch: true,
     currency: "BDT",
     currencySymbol: "৳",
-    paymentGateway: "uddoktapay",
+    paymentGateway: "eps",
   },
   global: {
     defaultLang: "en",

@@ -20,6 +20,8 @@ import { PricingCards } from "./_components/PricingCards";
 import { TopUpCards } from "./_components/TopUpCards";
 import { CycleToggle } from "./_components/CycleToggle";
 import { CouponField } from "./_components/CouponField";
+import { ApplyImmediatelyModal } from "./_components/ApplyImmediatelyModal";
+import { PaymentTrustBanner } from "@/components/pricing/PaymentTrustBanner";
 import { PLAN_HIERARCHY, PLAN_ICONS } from "./_components/constants";
 
 interface UsageData {
@@ -30,7 +32,7 @@ interface UsageData {
 
 export default function Payment() {
   const { t } = useTranslation("payment");
-  const { region, config: regionConfig } = useRegion();
+  const { config: regionConfig } = useRegion();
   // ⚠️ `getPlansForRegion()` **নয়** — override বসানো তালিকা context থেকে,
   //    নইলে admin-এর বদলানো দাম এই পর্দায় পৌঁছাত না।
   const { plans } = usePricing();
@@ -48,6 +50,7 @@ export default function Payment() {
   const [usage, setUsage] = useState<UsageData | null>(null);
   const [isCancellingDowngrade, setIsCancellingDowngrade] = useState(false);
   const [isApplyingDowngrade, setIsApplyingDowngrade] = useState(false);
+  const [isApplyConfirmOpen, setIsApplyConfirmOpen] = useState(false);
   // কুপন কোড — checkout-এ লেখা হয়, যাচাই হয় server-এ, আর **কখনো** localStorage-এ
   // রাখা হয় না (কেন, তা `CouponField`-এর মন্তব্যে)।
   const [couponCode, setCouponCode] = useState("");
@@ -101,15 +104,14 @@ export default function Payment() {
     setLoadingPlan(plan.key);
     try {
       const origin_url = window.location.origin;
-      const r = await fetch("/api/payments/uddoktapay/charge", {
+      // ⚠️ Unified charge endpoint — gateway নির্বাচন server-এ হয় (region config)।
+      //    client থেকে amount পাঠানো হয় না।
+      const r = await fetch("/api/payments/charge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           package_id: `${plan.key}_bdt`,
           origin_url,
-          // ⚠️ cycle ও কুপন server-এ যায়, আর দাম **সেখানেই** আবার গণনা হয়।
-          //    client থেকে কোনো amount পাঠানো হয় না — পাঠালে যে কেউ হাতে
-          //    বানানো POST দিয়ে ৳১-এ Business কিনে ফেলত।
           cycle,
           coupon_code: couponCode.trim() || undefined,
         }),
@@ -134,14 +136,13 @@ export default function Payment() {
     setLoadingPlan(packageId);
     try {
       const origin_url = window.location.origin;
-      const r = await fetch("/api/payments/uddoktapay/charge", {
+      // ⚠️ Unified charge endpoint — top-up-এও একই gateway routing।
+      const r = await fetch("/api/payments/charge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           package_id: packageId,
           origin_url,
-          // ⚠️ top-up-এ cycle নেই — এটি এক-বারের কেনাকাটা, মাসিক নবায়ন নয়।
-          //    কুপন অবশ্য খাটে (scope: "topup")।
           coupon_code: couponCode.trim() || undefined,
         }),
       });
@@ -197,12 +198,6 @@ export default function Payment() {
 
   // ── Apply downgrade immediately ──
   const handleApplyImmediately = async () => {
-    const confirmMsg = t(
-      "scheduledDowngrade.applyConfirm",
-      "Are you sure you want to apply this downgrade immediately? Excess AI Agents and integrations will be paused right away."
-    );
-    if (!window.confirm(confirmMsg)) return;
-
     setIsApplyingDowngrade(true);
     try {
       const res = await fetch("/api/payments/manage", {
@@ -213,6 +208,7 @@ export default function Payment() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       toast.success(t("scheduledDowngrade.applySuccess"));
+      setIsApplyConfirmOpen(false);
       loadUsage();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : t("scheduledDowngrade.applyError");
@@ -247,7 +243,7 @@ export default function Payment() {
           plan={usage.scheduledDowngradePlan}
           scheduledAt={usage.scheduledDowngradeAt}
           onCancelDowngrade={handleCancelDowngrade}
-          onApplyImmediately={handleApplyImmediately}
+          onApplyImmediately={() => setIsApplyConfirmOpen(true)}
           isCancelling={isCancellingDowngrade}
           isApplying={isApplyingDowngrade}
         />
@@ -255,7 +251,11 @@ export default function Payment() {
 
       {/* Global region: gateway নেই — স্পষ্টভাবে জানিয়ে দেওয়া হয় */}
       {paymentAvailable ? (
-        <div className="text-xs text-muted-foreground">{t("poweredByUddoktapay")}</div>
+        <div className="text-xs text-muted-foreground">
+          {regionConfig.paymentGateway === "eps"
+            ? t("poweredByEps", "Secured by EPS — Bangladesh Bank Licensed Gateway")
+            : t("poweredByUddoktapay")}
+        </div>
       ) : (
         <div className="rounded-xl border border-border/60 bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
           {t("paymentUnavailable")}
@@ -308,6 +308,8 @@ export default function Payment() {
         <div className="text-xs text-muted-foreground">{t("testModeNote")}</div>
       )}
 
+      {paymentAvailable && <PaymentTrustBanner />}
+
       <DowngradeWarningModal
         isOpen={isDowngradeModalOpen}
         preview={downgradePreview}
@@ -316,6 +318,13 @@ export default function Payment() {
           setDowngradePreview(null);
         }}
         onSuccess={loadUsage}
+      />
+
+      <ApplyImmediatelyModal
+        isOpen={isApplyConfirmOpen}
+        onClose={() => setIsApplyConfirmOpen(false)}
+        onConfirm={handleApplyImmediately}
+        isApplying={isApplyingDowngrade}
       />
     </div>
   );

@@ -1,27 +1,28 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Sparkles, ArrowRight, Check, Zap, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { usePricing } from "@/components/region-provider";
+import { usePricing, useRegion } from "@/components/region-provider";
 import { resolveLocalStr } from "@/lib/domain/plan-config";
+import { formatPrice, type BillingCycle } from "@/lib/domain/pricing-catalogue";
 
 export default function PricingPreviewSection() {
-  const { t, i18n } = useTranslation(["home", "common"]);
+  const { t, i18n } = useTranslation(["home", "pricing", "common"]);
   const lang = i18n.language || "en";
+  const [cycle, setCycle] = useState<BillingCycle>("monthly");
 
-  // ⚠️ আগে এখানে `BD_PLANS` **হার্ডকোড** ছিল, অর্থাৎ Global region-এর একজন
-  //    দর্শকও ৳-এর দাম দেখতেন — অথচ তাঁর নিজের pricing পেজে $ দেখানো হয়।
-  //    এখন দাম ও region দুটোই context থেকে, ঠিক `/pricing`-এর মতো।
-  const { plans } = usePricing();
+  const { region } = useRegion();
+  const { plans, listPrice, publicPrice, annualDiscountPercent } = usePricing();
 
   return (
     <section id="pricing-preview" className="py-24 bg-muted/30 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-10">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -29,7 +30,7 @@ export default function PricingPreviewSection() {
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4 border border-primary/20"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            {t("pricing.badge")}
+            {t("home:pricing.badge")}
           </motion.div>
 
           <motion.h2
@@ -39,7 +40,7 @@ export default function PricingPreviewSection() {
             transition={{ delay: 0.1 }}
             className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight"
           >
-            {t("pricing.title")}
+            {t("home:pricing.title")}
           </motion.h2>
 
           <motion.p
@@ -49,14 +50,50 @@ export default function PricingPreviewSection() {
             transition={{ delay: 0.2 }}
             className="mt-4 text-base sm:text-lg text-muted-foreground"
           >
-            {t("pricing.subtitle")}
+            {t("home:pricing.subtitle")}
           </motion.p>
         </div>
 
-        {/* Pricing Cards — region-aware, admin-এর দাম-অনুযায়ী।
-            ⚠️ কলামের সংখ্যা plan-সংখ্যা অনুযায়ী, স্থির `3` নয় — admin একটি
-            plan লুকালে বাকিগুলো তিন কলামের ছাঁচে বাম দিকে চুপসে যেত, ডান পাশে
-            একটি খালি ফাঁক রেখে। */}
+        {/* Billing cycle toggle */}
+        <div className="flex flex-col items-center gap-2 mb-12">
+          <div
+            role="tablist"
+            aria-label={t("pricing:pricing.cycleLabel", "Billing cycle")}
+            className="inline-flex items-center rounded-full border border-border bg-card/80 backdrop-blur-md p-1 shadow-sm"
+          >
+            {(["monthly", "yearly"] as const).map((option) => (
+              <button
+                key={option}
+                role="tab"
+                aria-selected={cycle === option}
+                onClick={() => setCycle(option)}
+                data-testid={`preview-cycle-${option}`}
+                className={`rounded-full px-5 py-2 text-sm font-medium transition-all ${
+                  cycle === option
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {t(`pricing:pricing.${option}`)}
+              </button>
+            ))}
+          </div>
+
+          {cycle === "yearly" && annualDiscountPercent > 0 && (
+            <motion.p
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-xs font-semibold text-primary"
+            >
+              {t("pricing:pricing.yearlySaving", {
+                percent: annualDiscountPercent,
+                defaultValue: `Save ${annualDiscountPercent}% with annual billing`,
+              })}
+            </motion.p>
+          )}
+        </div>
+
+        {/* Pricing Cards */}
         <div
           className={`grid gap-8 mx-auto items-stretch mb-12 ${
             plans.length === 2
@@ -68,6 +105,11 @@ export default function PricingPreviewSection() {
         >
           {plans.map((plan, idx) => {
             const isFeatured = plan.featured;
+            const price = listPrice(plan, cycle, lang);
+            const charged = publicPrice(price.amount, "plan");
+            const hasDiscount = !plan.contact && charged.discountAmount > 0;
+            const finalLabel = formatPrice(charged.finalAmount, region, lang);
+
             return (
               <motion.div
                 key={plan.key}
@@ -92,13 +134,41 @@ export default function PricingPreviewSection() {
                     {resolveLocalStr(plan.name, lang)}
                   </div>
 
-                  <div className="my-6 flex items-baseline gap-1">
-                    <span className="text-4xl font-extrabold tracking-tight">
-                      {resolveLocalStr(plan.priceLabel, lang)}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      /{lang === "bn" ? "মাস" : "mo"}
-                    </span>
+                  <div className="my-6">
+                    <div className="flex items-baseline gap-1">
+                      {hasDiscount ? (
+                        <>
+                          <span className="text-xl font-normal text-muted-foreground line-through mr-1">
+                            {price.label}
+                          </span>
+                          <span className="text-4xl font-extrabold tracking-tight text-primary">
+                            {finalLabel}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-4xl font-extrabold tracking-tight">
+                          {price.label}
+                        </span>
+                      )}
+                      {!plan.contact && (
+                        <span className="text-sm text-muted-foreground">
+                          /{cycle === "yearly" ? (lang === "bn" ? "বছর" : "yr") : (lang === "bn" ? "মাস" : "mo")}
+                        </span>
+                      )}
+                    </div>
+
+                    {cycle === "yearly" && !plan.contact && (
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {t("pricing:pricing.perMonthEquivalent", {
+                          amount: formatPrice(
+                            Math.round((charged.finalAmount / 12) * 100) / 100,
+                            region,
+                            lang
+                          ),
+                          defaultValue: `${formatPrice(Math.round(charged.finalAmount / 12), region, lang)}/mo equivalent`,
+                        })}
+                      </p>
+                    )}
                   </div>
 
                   <ul className="space-y-3 text-xs sm:text-sm border-t border-border/60 pt-6">
@@ -112,16 +182,30 @@ export default function PricingPreviewSection() {
                 </div>
 
                 <div className="mt-8 pt-4">
-                  <Link href="/pricing" className="w-full block">
+                  <Link
+                    href={
+                      plan.contact
+                        ? "/pricing"
+                        : `/pricing?plan=${plan.key}&cycle=${cycle}`
+                    }
+                    className="w-full block"
+                  >
                     <Button
                       variant={isFeatured ? "default" : "outline"}
                       className={`w-full rounded-full ${
                         isFeatured
-                          ? "bg-primary hover:bg-primary/90 text-primary-foreground"
+                          ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-md shadow-primary/20"
                           : ""
                       }`}
                     >
-                      {lang === "bn" ? "শুরু করুন" : "Get Started"} <Zap className="w-3.5 h-3.5 ml-1.5" />
+                      {plan.contact
+                        ? lang === "bn"
+                          ? "যোগাযোগ করুন"
+                          : "Contact Us"
+                        : lang === "bn"
+                        ? "শুরু করুন"
+                        : "Get Started"}{" "}
+                      <Zap className="w-3.5 h-3.5 ml-1.5" />
                     </Button>
                   </Link>
                 </div>
@@ -134,7 +218,7 @@ export default function PricingPreviewSection() {
         <div className="text-center">
           <Link href="/pricing">
             <Button size="lg" variant="ghost" className="rounded-full gap-2 text-primary hover:text-primary/90">
-              {t("pricing.viewAll")} <ArrowRight className="w-4 h-4" />
+              {t("home:pricing.viewAll")} <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
         </div>

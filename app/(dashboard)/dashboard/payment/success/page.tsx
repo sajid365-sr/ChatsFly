@@ -12,8 +12,9 @@ function SuccessContent() {
   const { fetchNotifications } = useNotifications();
   const params = useSearchParams();
   const invoiceId = params.get("invoice_id");
-  // একমাত্র gateway এখন UddoktaPay — পুরনো Stripe link-এ gateway না থাকলে
-  // invoice_id-ও থাকে না, তাই নিচের guard-এ সেটি ধরা পড়ে।
+  const tranId = params.get("tran_id") || params.get("transaction_id");
+  const gateway = params.get("gateway");
+  const referenceId = tranId || invoiceId;
   const [plan, setPlan] = useState("");
   const [status, setStatus] = useState("checking");
   const router = useRouter();
@@ -23,9 +24,9 @@ function SuccessContent() {
   useEffect(() => {
     let stopped = false;
 
-    // invoice_id ছাড়া verify করার কিছু নেই (যেমন পুরনো Stripe success link) —
+    // referenceId ছাড়া verify করার কিছু নেই —
     // ২০ বার বৃথা poll না করে সাথে সাথেই ব্যর্থ দেখানো হয়।
-    if (!invoiceId) {
+    if (!referenceId) {
       setStatus("error");
       return;
     }
@@ -37,10 +38,13 @@ function SuccessContent() {
       }
       attempts.current += 1;
       try {
-        const r = await fetch("/api/payments/uddoktapay/verify", {
+        const r = await fetch("/api/payments/verify", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ invoice_id: invoiceId }),
+          body: JSON.stringify({
+            id: referenceId,
+            gateway: gateway || undefined,
+          }),
         });
         const data = await r.json();
 
@@ -65,7 +69,7 @@ function SuccessContent() {
     };
     poll();
     return () => { stopped = true; };
-  }, [invoiceId, router, fetchNotifications]);
+  }, [referenceId, gateway, router, fetchNotifications]);
 
   return (
     <motion.div 
