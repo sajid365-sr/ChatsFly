@@ -3,11 +3,15 @@
   "subtitle": "আপনার account preferences, security এবং notification সেটিংস পরিচালনা করুন।",
   "tabs": {
     "profile": "My Profile",
+    "workspace": "Workspace",
     "security": "Security and Data",
     "referrals": "Referrals",
     "notifications": "Notification",
     "team": "টিম সদস্যবৃন্দ"
   },
+  "menu": "মেনু",
+  "expandMenu": "মেনু বড় করুন",
+  "collapseMenu": "মেনু ছোট করুন",
   "helpNote": "আপনার account নিয়ে কোনো সাহায্য প্রয়োজন?",
   "contactSupport": "Contact Support",
   "profile": {
@@ -58,9 +62,47 @@
   },
   "security": {
     "title": "Security & Data Management",
-    "subtitle": "আপনার account security, authentication পদ্ধতি এবং personal data সেটিংস পরিচালনা করুন।",
-    "privacyTitle": "আপনার Privacy আমাদের কাছে গুরুত্বপূর্ণ",
-    "privacyDesc": "আমরা আপনার সমস্ত ডেটা rest এবং transit অবস্থায় এনক্রিপ্ট করি। আপনার স্পষ্ট অনুমতি ছাড়া DRIPLARE AI-এর কোনো কর্মী আপনার প্রাইভেট knowledge base sources অথবা AI Agent conversation logs অ্যাক্সেস করতে পারবে না।",
+    "subtitle": "অ্যাকাউন্ট লগইন নিয়ন্ত্রণ করুন, গ্রাহকদের ফোন নম্বর সুরক্ষিত রাখুন এবং ডেটা লাইফস্প্যান নির্ধারণ করুন।",
+    "healthTitle": "ওয়ার্কস্পেস সিকিউরিটি স্ট্যাটাস: সুরক্ষিত",
+    "healthDesc": "আপনার বিজনেস ক্রেডেনশিয়াল, গ্রাহকের ফোন নম্বর এবং চ্যাট রেকর্ড নিরাপদে সংরক্ষিত আছে।",
+    "healthActive": "সমস্ত সুরক্ষা ফিচার সক্রিয়",
+    "privacyTitle": "আপনার প্রাইভেসি ও ডেটার মালিকানা",
+    "privacyDesc": "আমরা আপনার সমস্ত ডেটা rest এবং transit অবস্থায় এনক্রিপ্ট করি। আপনার ডেটা সম্পূর্ণভাবে আপনারই। DRIPLARE AI কখনো আপনার কাস্টমার ডেটা কারো কাছে বিক্রি বা শেয়ার করে না।",
+    "sessionsCard": {
+      "title": "লগইন সিকিউরিটি ও সক্রিয় ডিভাইস",
+      "subtitle": "কানেক্টেড ডিভাইস ট্র্যাক করুন এবং অ্যাকাউন্ট সুরক্ষিত রাখুন",
+      "currentDevice": "বর্তমান সক্রিয় সেশন",
+      "activeNow": "সক্রিয় রয়েছে",
+      "lastSeen": "সর্বশেষ লগইন:",
+      "pwdActive": "সুরক্ষিত ও সক্রিয়",
+      "twoFactorOn": "চালু আছে",
+      "twoFactorOff": "বন্ধ আছে",
+      "remoteHint": "সন্দেহজনক যেকোনো সেশন তাৎক্ষণিক লগআউট করুন",
+      "manageBtn": "ডিভাইস ও রিমোট লগআউট"
+    },
+    "privacyCard": {
+      "title": "কাস্টমার প্রাইভেসি ও স্টাফ পলিসি",
+      "subtitle": "গ্রাহকদের ফোন নম্বর সুরক্ষিত রাখুন এবং স্টাফদের নিয়ম নির্ধারণ করুন",
+      "maskingTitle": "এজেন্টদের কাছ থেকে কাস্টমারের ফোন নম্বর গোপন রাখুন",
+      "maskingDesc": "এটি অন থাকলে সাপোর্ট এজেন্টরা চ্যাট ও CRM-এ গ্রাহকের নম্বর আংশিক গোপন (যেমন: 01712***678) দেখতে পাবে। ফলে কাস্টমার নম্বর চুরি হওয়া রোধ হবে। শুধুমাত্র Owner ও Admin পূর্ণ নম্বর দেখতে পাবেন।",
+      "enforce2FATitle": "টিম মেম্বারদের জন্য 2FA বাধ্যতামূলক করুন",
+      "enforce2FADesc": "এই ওয়ার্কস্পেসে যোগ দেওয়ার জন্য সকল টিম মেম্বারদের তাদের অ্যাকাউন্টে 2FA চালু রাখা বাধ্যতামূলক হবে।",
+      "autoApply": "পরিবর্তনগুলো সাথে সাথে ওয়ার্কস্পেসে কার্যকর হবে",
+      "saveBtn": "সেটিংস সেভ করুন",
+      "saving": "সেভ হচ্ছে…",
+      "saved": "সেভ হয়েছে",
+      "saveSuccess": "সিকিউরিটি সেটিংস সফলভাবে আপডেট হয়েছে!",
+      "saveError": "সিকিউরিটি সেটিংস আপডেট করতে ব্যর্থ হয়েছে"
+    },
+    "activity": {
+      "title": "সাম্প্রতিক সিকিউরিটি ও ওয়ার্কস্পেস অ্যাক্টিভিটি",
+      "subtitle": "গুরুত্বপূর্ণ সিকিউরিটি এবং অ্যাক্সেস পরিবর্তনের অডিট টাইমলাইন",
+      "allGood": "সবকিছু সুরক্ষিত আছে",
+      "sessionTitle": "বর্তমান ডিভাইস সফলভাবে লগইন হয়েছে",
+      "privacyTitle": "কাস্টমার প্রাইভেসি ও ফোন নম্বর মাস্কিং সক্রিয়",
+      "teamTitle": "টিম মেম্বার পারমিশন ও অ্যাক্সেস কন্ট্রোল কনফিগার করা হয়েছে",
+      "exportTitle": "ডেটা ব্যাকআপ ও এক্সপোর্ট চ্যানেল ভেরিফায়েড"
+    },
     "authCard": {
       "title": "Authentication",
       "password": "Password",
@@ -237,8 +279,17 @@
     "roles": {
       "owner": "মালিক (Owner)",
       "admin": "অ্যাডমিন (Admin)",
+      "manager": "ম্যানেজার (Manager)",
       "agent": "এজেন্ট (Agent)",
-      "viewer": "দর্শক (Viewer)"
+      "viewer": "দর্শক (Viewer)",
+      "custom": "কাস্টম (Custom)"
+    },
+    "roleDescriptions": {
+      "admin": "ওয়ার্কস্পেসের সমস্ত ফিচার ও ডেটাতে সম্পূর্ণ অ্যাক্সেস",
+      "manager": "প্রোডাক্ট, অর্ডার, CRM ও ইনবক্স কথোপকথন পরিচালনা",
+      "agent": "Live Inbox এ কাস্টমার সাপোর্ট ও CRM কন্টাক্ট পরিচালনা",
+      "viewer": "শুধুমাত্র ডেটা, চ্যাট ও রিপোর্ট দেখার অধিকার (রিড-অনলি)",
+      "custom": "প্রতিটি ফিচারের জন্য আপনার পছন্দমতো কাস্টম পারমিশন"
     },
     "status": {
       "active": "সক্রিয়",
@@ -251,12 +302,62 @@
       "namePlaceholder": "উদা: তানভীর আহমেদ",
       "emailLabel": "ইমেইল ঠিকানা",
       "emailPlaceholder": "colleague@yourcompany.com",
-      "roleLabel": "ভূমিকা (Role)",
+      "roleLabel": "রোল প্রিসেট (Role)",
       "submitBtn": "যুক্ত করুন",
       "cancelBtn": "বাতিল",
       "successToast": "Invitation ইমেইল পাঠানো হয়েছে",
-      "errorToast": "টিম সদস্য যুক্ত করতে ব্যর্থ হয়েছে",
-      "emailErrorToast": "Invitation ইমেইল পাঠানো যায়নি। Pending invite সংরক্ষিত আছে; আবার submit করে চেষ্টা করুন।"
+      "emailErrorToast": "Invitation ইমেইল পাঠানো যায়নি। Pending invite সংরক্ষিত আছে; আবার submit করে চেষ্টা করুন।",
+      "errorToast": "টিম সদস্য যুক্ত করতে ব্যর্থ হয়েছে"
+    },
+    "editModal": {
+      "title": "টিম মেম্বার ও পারমিশন এডিট",
+      "description": "রোল পরিবর্তন করুন এবং প্রতিটি ফিচারের জন্য অ্যাক্সেস পারমিশন কাস্টমাইজ করুন।",
+      "saveBtn": "পরিবর্তনগুলো সেভ করুন",
+      "successToast": "মেম্বারের পারমিশন সফলভাবে আপডেট করা হয়েছে",
+      "errorToast": "মেম্বার পারমিশন আপডেট করতে ব্যর্থ হয়েছে"
+    },
+    "permissions": {
+      "title": "ফিচার অ্যাক্সেস ও পারমিশন",
+      "hint": "এই টিম মেম্বার কোন কোন অ্যাকশন সম্পন্ন করতে পারবে তা নির্বাচন করুন",
+      "selectAll": "সব সিলেক্ট করুন",
+      "deselectAll": "সব আনচেক করুন",
+      "showCustom": "এই মেম্বারের পারমিশন কাস্টমাইজ করুন",
+      "hideCustom": "পারমিশন কাস্টমাইজেশন হাইড করুন"
+    },
+    "actions": {
+      "view": "View (দেখা)",
+      "reply": "Reply & Assign (মেসেজ দেওয়া)",
+      "delete": "Delete (ডিলিট)",
+      "edit": "Add & Edit (যুক্ত ও এডিট)",
+      "export": "Export (এক্সপোর্ট)",
+      "train": "Train & Sources (ট্রেনিং ডাটা আপলোড)",
+      "manage": "Manage (পরিচালনা)"
+    },
+    "modules": {
+      "inbox": {
+        "title": "Live Inbox & Chats",
+        "description": "WhatsApp, Facebook, Instagram এবং Web এর কাস্টমার কথোপকথন"
+      },
+      "crm": {
+        "title": "CRM & Contacts",
+        "description": "কাস্টমার ডেটাবেস, লাইফসাইকেল স্টেজ, নোটস এবং ট্যাগ"
+      },
+      "store": {
+        "title": "Store (Products & Orders)",
+        "description": "প্রোডাক্ট ক্যাটালগ, ইনভেন্টরি এবং কাস্টমার অর্ডার প্রসেসিং"
+      },
+      "aiAgent": {
+        "title": "AI Agent & Brain",
+        "description": "AI বট পারসোনা, নলেজ বেস ট্রেনিং এবং প্রম্পট পরিচালনা"
+      },
+      "integrations": {
+        "title": "Channels & Integrations",
+        "description": "Facebook, Instagram, WhatsApp Cloud API এবং ওয়েব উইজেট"
+      },
+      "settings": {
+        "title": "Workspace & Billing",
+        "description": "বিজনেস প্রোফাইল, টিম মেম্বার, ইউসেজ ক্রেডিট এবং সাবস্ক্রিপশন"
+      }
     },
     "removeModal": {
       "confirm": "সদস্য অপসারণ",
@@ -265,5 +366,39 @@
       "errorToast": "সদস্য অপসারণ করতে ব্যর্থ হয়েছে"
     },
     "unlimitedBanner": "আপনার ওয়ার্কস্পেসে সীমাহীন (Unlimited) টিম মেম্বার সুবিধা যুক্ত রয়েছে।"
+  },
+  "workspace": {
+    "title": "Workspace Settings",
+    "subtitle": "আপনার Business branding, category এবং workspace সেটিংস পরিচালনা করুন।",
+    "cardTitle": "Business Information",
+    "cardSubtitle": "আপনার Business এর তথ্য এবং Driplare AI-তে আপনার ব্র্যান্ডের প্রদর্শন আপডেট করুন।",
+    "logoLabel": "Brand Logo",
+    "logoHint": "Square PNG বা JPG ছবি সবচেয়ে ভালো দেখায়। স্বয়ংক্রিয়ভাবে অপ্টিমাইজ করা হবে।",
+    "uploadLogo": "Change Logo",
+    "removeLogo": "Remove Logo",
+    "categoryLabel": "Business Category",
+    "categoryLocked": "Business category তৈরির পরে পরিবর্তন করা যাবে না। ভিন্ন category ব্যবহার করতে নতুন workspace তৈরি করুন।",
+    "businessZoneTitle": "Business Zone Title (ঐচ্ছিক)",
+    "businessZonePlaceholder": "যেমন: Trendirect Store",
+    "businessZoneHint": "এই কাস্টম নামটি ড্যাশবোর্ডের সাইডবার জোনে প্রদর্শিত হবে।",
+    "nameLabel": "Business Name",
+    "namePlaceholder": "যেমন: Trendirect",
+    "save": "পরিবর্তনগুলো সেভ করুন",
+    "saving": "সেভ হচ্ছে…",
+    "saved": "সফলভাবে সেভ হয়েছে",
+    "updateError": "Business আপডেট করতে ব্যর্থ হয়েছে। আবার চেষ্টা করুন।",
+    "dangerTitle": "Delete Business",
+    "dangerDesc": "এই Business এবং এর সাথে সংশ্লিষ্ট সমস্ত AI Agent, কন্টাক্ট, অর্ডার ও চ্যাট হিস্ট্রি স্থায়ীভাবে ডিলিট করুন। এটি আর ফিরিয়ে আনা যাবে না।",
+    "deleteBtn": "Delete Business",
+    "cannotDeleteOnly": "আপনার একমাত্র Business ডিলিট করা সম্ভব নয়।",
+    "deleteConfirmTitle": "Delete Business",
+    "deleteConfirmWarning": "এটি স্থায়ীভাবে এই Business এবং এর সমস্ত ডেটা মুছে ফেলবে — AI Agent, ইন্টিগ্রেশন, অর্ডার, কথোপকথন এবং মেসেজ। এই কাজটি আর ফেরানো যাবে না।",
+    "deleteConfirmPrompt": "নিশ্চিত করতে বিজনেস নামটি হুবহু লিখুন:",
+    "deleting": "ডিলিট হচ্ছে…",
+    "deleteSuccess": "Business সফলভাবে ডিলিট করা হয়েছে",
+    "deleteError": "Business ডিলিট করতে ব্যর্থ হয়েছে। আবার চেষ্টা করুন।",
+    "activeBadge": "সক্রিয় Business",
+    "allBusinesses": "সমস্ত Business",
+    "switchPrompt": "Business পরিবর্তন করলে আপনার সম্পূর্ণ ড্যাশবোর্ডের ডেটা রিফ্রেশ হবে।"
   }
 }

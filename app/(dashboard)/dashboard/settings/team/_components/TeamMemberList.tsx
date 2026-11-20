@@ -1,8 +1,9 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { Trash2, CheckCircle2, Clock3 } from "lucide-react";
+import { Trash2, Pencil, CheckCircle2, Clock3 } from "lucide-react";
 import { MemberRoleBadge } from "./MemberRoleBadge";
+import type { MemberPermissions } from "@/lib/domain/team-member-permissions";
 
 export interface TeamMemberItem {
   id: string;
@@ -11,6 +12,7 @@ export interface TeamMemberItem {
   name: string;
   email: string;
   role: string;
+  permissions?: MemberPermissions;
   status: string;
   picture?: string | null;
   createdAt: string;
@@ -20,6 +22,8 @@ interface TeamMemberListProps {
   members: TeamMemberItem[];
   ownerId: string;
   currentUserId: string;
+  canManage?: boolean;
+  onEdit: (member: TeamMemberItem) => void;
   onRemove: (member: TeamMemberItem) => void;
 }
 
@@ -27,6 +31,8 @@ export const TeamMemberList = ({
   members,
   ownerId,
   currentUserId,
+  canManage = true,
+  onEdit,
   onRemove,
 }: TeamMemberListProps) => {
   const { t } = useTranslation("settings");
@@ -58,6 +64,7 @@ export const TeamMemberList = ({
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-3">
                       {member.picture ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={member.picture}
                           alt={member.name}
@@ -109,14 +116,25 @@ export const TeamMemberList = ({
 
                   {/* Actions */}
                   <td className="py-3 px-4 text-right">
-                    {!isOwner && (
-                      <button
-                        onClick={() => onRemove(member)}
-                        className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
-                        title={t("team.removeModal.confirm")}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                    {!isOwner && canManage && (
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          type="button"
+                          onClick={() => onEdit(member)}
+                          className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors cursor-pointer"
+                          title={t("team.editModal.title", "Edit Member & Permissions")}
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onRemove(member)}
+                          className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors cursor-pointer"
+                          title={t("team.removeModal.confirm", "Remove Member")}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     )}
                   </td>
                 </tr>
@@ -128,4 +146,3 @@ export const TeamMemberList = ({
     </div>
   );
 };
-

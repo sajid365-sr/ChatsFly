@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { db } from "@/lib/core/db";
 import { getAndSyncUser } from "@/lib/core/auth";
 import { appUrl, MailTemplates, sendMail } from "@/lib/services/mail";
+import {
+  getDefaultPermissions,
+  ROLE_PRESET_PERMISSIONS,
+  MEMBER_ROLES,
+  type MemberPermissions,
+} from "@/lib/domain/team-member-permissions";
 
-const MEMBER_ROLES = new Set(["agent", "admin", "viewer"]);
+const VALID_ROLES = new Set<string>([...MEMBER_ROLES, "agent", "admin", "viewer", "manager", "custom"]);
 
 // GET /api/workspaces/[workspaceId]/members - List workspace members
 export async function GET(
@@ -41,11 +48,11 @@ export async function GET(
     }
 
     const isOwner = workspace.userId === user.userId;
-    const isActiveMember = await db.workspaceMember.findFirst({
+    const activeMember = await db.workspaceMember.findFirst({
       where: { workspaceId, userId: user.userId, status: "active" },
-      select: { id: true },
+      select: { id: true, role: true },
     });
-    if (!isOwner && !isActiveMember) {
+    if (!isOwner && !activeMember) {
       return NextResponse.json({ error: "Workspace access denied" }, { status: 403 });
     }
 
@@ -57,26 +64,38 @@ export async function GET(
       name: workspace.user.name || "Owner",
       email: workspace.user.email,
       role: "owner",
+      permissions: ROLE_PRESET_PERMISSIONS.owner,
       status: "active",
       picture: workspace.user.picture,
       createdAt: workspace.createdAt,
     };
 
-    const memberEntries = workspace.members.map((m) => ({
-      id: m.id,
-      workspaceId: m.workspaceId,
-      userId: m.userId,
-      name: m.name || m.email.split("@")[0],
-      email: m.email,
-      role: m.role,
-      status: m.status,
-      picture: null,
-      createdAt: m.createdAt,
-    }));
+    const memberEntries = workspace.members.map((m) => {
+      const storedPerms = m.permissions as MemberPermissions | null;
+      const resolvedPerms =
+        storedPerms && Object.keys(storedPerms).length > 0
+          ? storedPerms
+          : getDefaultPermissions(m.role);
+
+      return {
+        id: m.id,
+        workspaceId: m.workspaceId,
+        userId: m.userId,
+        name: m.name || m.email.split("@")[0],
+        email: m.email,
+        role: m.role,
+        permissions: resolvedPerms,
+        status: m.status,
+        picture: null,
+        createdAt: m.createdAt,
+      };
+    });
 
     return NextResponse.json({
       ownerId: workspace.userId,
       currentUserId: user.userId,
+      isOwner,
+      currentUserRole: isOwner ? "owner" : (activeMember?.role ?? "agent"),
       members: [ownerEntry, ...memberEntries],
     });
   } catch (error) {
@@ -93,7 +112,7 @@ export async function POST(
   try {
     const user = await getAndSyncUser();
     const { workspaceId } = await params;
-    let body: { email?: unknown; name?: unknown; role?: unknown };
+    let body: { email?: unknown; name?: unknown; role?: unknown; permissions?: unknown };
     try {
       body = await req.json();
     } catch {
@@ -106,12 +125,16 @@ export async function POST(
 
     const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
     const name = typeof body.name === "string" ? body.name.trim() : "";
-    const role = typeof body.role === "string" ? body.role : "agent";
+    const role = typeof body.role === "string" ? body.role.toLowerCase() : "agent";
+    const customPerms: Prisma.InputJsonValue =
+      body.permissions && typeof body.permissions === "object"
+        ? (body.permissions as Prisma.InputJsonValue)
+        : (getDefaultPermissions(role) as Prisma.InputJsonValue);
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: "Valid email is required" }, { status: 400 });
     }
-    if (!MEMBER_ROLES.has(role)) {
+    if (!VALID_ROLES.has(role)) {
       return NextResponse.json({ error: "Invalid team member role" }, { status: 400 });
     }
 
@@ -154,6 +177,7 @@ export async function POST(
       update: {
         name: name || existingUser?.name || undefined,
         role,
+        permissions: customPerms,
         userId: null,
         status: "invited",
         joinedAt: null,
@@ -163,6 +187,7 @@ export async function POST(
         email,
         name: name || existingUser?.name || email.split("@")[0],
         role,
+        permissions: customPerms,
         status: "invited",
         userId: null,
         joinedAt: null,
@@ -198,6 +223,103 @@ export async function POST(
   }
 }
 
+// PATCH /api/workspaces/[workspaceId]/members - Edit member role, name, or permissions
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ workspaceId: string }> }
+) {
+  try {
+    const user = await getAndSyncUser();
+    const { workspaceId } = await params;
+    let body: { memberId?: unknown; name?: unknown; role?: unknown; permissions?: unknown };
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    }
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const memberId = typeof body.memberId === "string" ? body.memberId.trim() : "";
+    if (!memberId) {
+      return NextResponse.json({ error: "memberId is required" }, { status: 400 });
+    }
+    if (memberId.startsWith("owner-")) {
+      return NextResponse.json({ error: "Workspace owner permissions cannot be altered" }, { status: 400 });
+    }
+
+    // Only owner or admin members can edit team member roles & permissions
+    const workspace = await db.workspace.findUnique({
+      where: { workspaceId },
+      select: { userId: true },
+    });
+    if (!workspace) {
+      return NextResponse.json({ error: "Workspace not found" }, { status: 404 });
+    }
+
+    const isOwner = workspace.userId === user.userId;
+    const callerMember = await db.workspaceMember.findFirst({
+      where: { workspaceId, userId: user.userId, status: "active" },
+      select: { role: true },
+    });
+    const isAdmin = callerMember?.role === "admin";
+
+    if (!isOwner && !isAdmin) {
+      return NextResponse.json(
+        { error: "Only the workspace owner or an admin can manage member permissions" },
+        { status: 403 }
+      );
+    }
+
+    const existingMember = await db.workspaceMember.findFirst({
+      where: { id: memberId, workspaceId },
+    });
+    if (!existingMember) {
+      return NextResponse.json({ error: "Team member not found" }, { status: 404 });
+    }
+
+    const name = typeof body.name === "string" ? body.name.trim() : existingMember.name;
+    const role = typeof body.role === "string" ? body.role.toLowerCase() : existingMember.role;
+
+    if (!VALID_ROLES.has(role)) {
+      return NextResponse.json({ error: "Invalid team member role" }, { status: 400 });
+    }
+
+    const permissions: Prisma.InputJsonValue =
+      body.permissions && typeof body.permissions === "object"
+        ? (body.permissions as Prisma.InputJsonValue)
+        : ((existingMember.permissions as Prisma.InputJsonValue) ?? Prisma.JsonNull);
+
+    const updated = await db.workspaceMember.update({
+      where: { id: memberId },
+      data: {
+        name,
+        role,
+        permissions,
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      member: {
+        id: updated.id,
+        workspaceId: updated.workspaceId,
+        userId: updated.userId,
+        name: updated.name,
+        email: updated.email,
+        role: updated.role,
+        permissions: updated.permissions,
+        status: updated.status,
+      },
+    });
+  } catch (error) {
+    console.error("[WORKSPACE_MEMBER_PATCH]", error);
+    return NextResponse.json({ error: "Internal Error" }, { status: 500 });
+  }
+}
+
 // DELETE /api/workspaces/[workspaceId]/members - Remove member by email or id
 export async function DELETE(
   req: Request,
@@ -214,11 +336,23 @@ export async function DELETE(
     }
 
     const workspace = await db.workspace.findUnique({
-      where: { workspaceId, userId: user.userId },
+      where: { workspaceId },
+      select: { userId: true },
     });
 
     if (!workspace) {
-      return NextResponse.json({ error: "Only workspace owner can remove members" }, { status: 403 });
+      return NextResponse.json({ error: "Workspace not found" }, { status: 404 });
+    }
+
+    const isOwner = workspace.userId === user.userId;
+    const callerMember = await db.workspaceMember.findFirst({
+      where: { workspaceId, userId: user.userId, status: "active" },
+      select: { role: true },
+    });
+    const isAdmin = callerMember?.role === "admin";
+
+    if (!isOwner && !isAdmin) {
+      return NextResponse.json({ error: "Only workspace owner or admin can remove members" }, { status: 403 });
     }
 
     if (!memberId) {
@@ -255,4 +389,3 @@ export async function DELETE(
     return NextResponse.json({ error: "Internal Error" }, { status: 500 });
   }
 }
-

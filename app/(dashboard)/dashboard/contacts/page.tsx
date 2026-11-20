@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -14,15 +14,28 @@ import {
   UserPlus,
   Sparkles,
   ShoppingBag,
+  RefreshCw,
+  MoreVertical,
+  Trash2,
+  AlertTriangle,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -45,7 +58,6 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -80,6 +92,7 @@ interface Contact {
   source: string;
   createdAt: string;
   updatedAt: string;
+  aiSummary?: string[];
   identities: ContactIdentity[];
   deals: ContactDeal[];
   tasks: ContactTask[];
@@ -205,8 +218,8 @@ function TableSkeleton() {
     <>
       {Array.from({ length: 6 }).map((_, i) => (
         <TableRow key={i}>
-          {Array.from({ length: 7 }).map((__, j) => (
-            <TableCell key={j}>
+          {Array.from({ length: 8 }).map((__, j) => (
+            <TableCell key={j} className={j === 0 ? "w-10 px-3" : ""}>
               <Skeleton className="h-4 w-full" />
             </TableCell>
           ))}
@@ -375,6 +388,7 @@ export default function ContactsPage() {
   const [stats, setStats] = useState<ContactStats>({ total: 0, totalCustomers: 0, newThisWeek: 0, highIntentCount: 0 });
   const [pagination, setPagination] = useState({ total: 0, page: 1, totalPages: 1 });
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   // Filters
@@ -385,7 +399,74 @@ export default function ContactsPage() {
   const [sortBy, setSortBy] = useState("updatedAt");
   const [page, setPage] = useState(1);
 
+  // Selection & Delete State
+  const [selectedContactIds, setSelectedContactIds] = useState<string[]>([]);
+  const [deleteTarget, setDeleteTarget] = useState<
+    { type: "single"; contact: Contact } | { type: "bulk"; count: number } | null
+  >(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Selection helpers
+  const allOnPageSelected =
+    contacts.length > 0 && contacts.every((c) => selectedContactIds.includes(c.contactId));
+  const someOnPageSelected =
+    contacts.some((c) => selectedContactIds.includes(c.contactId)) && !allOnPageSelected;
+
+  const handleToggleSelectAll = () => {
+    if (allOnPageSelected) {
+      setSelectedContactIds((prev) =>
+        prev.filter((id) => !contacts.some((c) => c.contactId === id))
+      );
+    } else {
+      const pageIds = contacts.map((c) => c.contactId);
+      setSelectedContactIds((prev) => Array.from(new Set([...prev, ...pageIds])));
+    }
+  };
+
+  const handleToggleSelectContact = (id: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setSelectedContactIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleExecuteDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    try {
+      if (deleteTarget.type === "single") {
+        const res = await fetch(`/api/crm/contacts/${deleteTarget.contact.contactId}`, {
+          method: "DELETE",
+        });
+        if (!res.ok) throw new Error("Failed to delete contact");
+        toast.success("Contact deleted successfully");
+        setSelectedContactIds((prev) =>
+          prev.filter((id) => id !== deleteTarget.contact.contactId)
+        );
+      } else {
+        const res = await fetch(`/api/crm/contacts`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contactIds: selectedContactIds }),
+        });
+        if (!res.ok) throw new Error("Failed to delete contacts");
+        const data = (await res.json()) as { deletedCount?: number };
+        toast.success(
+          `${data.deletedCount ?? selectedContactIds.length} contact(s) deleted successfully`
+        );
+        setSelectedContactIds([]);
+      }
+      setDeleteTarget(null);
+      void fetchContacts();
+    } catch (err) {
+      console.error("[DELETE_CONTACT_ERROR]", err);
+      toast.error("Failed to delete contact. Please try again.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   // Debounced search
   const handleSearchChange = (val: string) => {
@@ -451,6 +532,23 @@ export default function ContactsPage() {
     toast.success("CSV exported");
   };
 
+  const handleSyncChats = async () => {
+    try {
+      setSyncing(true);
+      const res = await fetch("/api/crm/contacts?sync=true");
+      if (!res.ok) throw new Error("Sync failed");
+      const data = (await res.json()) as ContactsResponse;
+      setContacts(data.contacts);
+      setStats(data.stats);
+      setPagination(data.pagination);
+      toast.success("Contacts synced from chat sessions");
+    } catch {
+      toast.error("Failed to sync contacts from chats");
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const handleStageFilter = (stage: string) => {
     setStageFilter(stage);
     setPage(1);
@@ -474,7 +572,17 @@ export default function ContactsPage() {
             <p className="text-sm text-muted-foreground">Manage your CRM contacts across all channels</p>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleSyncChats}
+            disabled={syncing || loading}
+            className="gap-2"
+          >
+            <RefreshCw className={`h-4 w-4 ${syncing ? "animate-spin" : ""}`} />
+            {syncing ? "Syncing..." : "Sync from Chats"}
+          </Button>
           <Button variant="outline" size="sm" onClick={handleExportCSV} className="gap-2">
             <Download className="h-4 w-4" />
             Export CSV
@@ -546,6 +654,44 @@ export default function ContactsPage() {
         </Select>
       </div>
 
+      {/* Bulk actions banner */}
+      <AnimatePresence>
+        {selectedContactIds.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-primary/20 bg-primary/5 px-4 py-2.5 shadow-xs">
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium text-foreground">
+                  <span className="font-semibold text-primary">{selectedContactIds.length}</span>{" "}
+                  contact{selectedContactIds.length > 1 ? "s" : ""} selected
+                </span>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setSelectedContactIds([])}
+                  className="h-7 text-xs text-muted-foreground hover:text-foreground"
+                >
+                  Clear selection
+                </Button>
+              </div>
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={() => setDeleteTarget({ type: "bulk", count: selectedContactIds.length })}
+                className="gap-1.5 h-8 text-xs font-medium"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                Delete Selected ({selectedContactIds.length})
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Table */}
       <Card className="bg-card border-border">
         <CardContent className="p-0">
@@ -553,13 +699,21 @@ export default function ContactsPage() {
             <Table>
               <TableHeader>
                 <TableRow className="border-border hover:bg-transparent">
+                  <TableHead className="w-10 px-3">
+                    <Checkbox
+                      checked={allOnPageSelected}
+                      indeterminate={someOnPageSelected}
+                      onCheckedChange={handleToggleSelectAll}
+                      aria-label="Select all"
+                    />
+                  </TableHead>
                   <TableHead className="text-muted-foreground">Contact</TableHead>
                   <TableHead className="text-muted-foreground">Stage</TableHead>
                   <TableHead className="text-muted-foreground">Channels</TableHead>
                   <TableHead className="text-muted-foreground text-center">Deals</TableHead>
                   <TableHead className="text-muted-foreground text-center">Tasks</TableHead>
                   <TableHead className="text-muted-foreground">Last Updated</TableHead>
-                  <TableHead className="text-muted-foreground text-right">Actions</TableHead>
+                  <TableHead className="text-muted-foreground text-right pr-4">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -567,7 +721,7 @@ export default function ContactsPage() {
                   <TableSkeleton />
                 ) : contacts.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="py-16 text-center text-muted-foreground">
+                    <TableCell colSpan={8} className="py-16 text-center text-muted-foreground">
                       <Users className="mx-auto mb-2 h-8 w-8 opacity-30" />
                       <p>No contacts found</p>
                     </TableCell>
@@ -581,9 +735,18 @@ export default function ContactsPage() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0 }}
                         transition={{ delay: idx * 0.03, duration: 0.2 }}
-                        className="cursor-pointer border-border hover:bg-muted/50 transition-colors"
+                        className={`cursor-pointer border-border transition-colors hover:bg-muted/50 ${
+                          selectedContactIds.includes(contact.contactId) ? "bg-primary/5" : ""
+                        }`}
                         onClick={() => router.push(`/dashboard/contacts/${contact.contactId}`)}
                       >
+                        <TableCell className="w-10 px-3" onClick={(e) => e.stopPropagation()}>
+                          <Checkbox
+                            checked={selectedContactIds.includes(contact.contactId)}
+                            onCheckedChange={() => handleToggleSelectContact(contact.contactId)}
+                            aria-label={`Select ${contact.name ?? "contact"}`}
+                          />
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <Avatar className="h-8 w-8 shrink-0">
@@ -596,6 +759,15 @@ export default function ContactsPage() {
                                 {contact.name ?? "—"}
                               </p>
                               <p className="text-xs text-muted-foreground">{contact.phone ?? contact.email ?? "—"}</p>
+                              {contact.aiSummary && contact.aiSummary.length > 0 && (
+                                <div
+                                  className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground bg-primary/5 hover:bg-primary/10 rounded px-2 py-0.5 max-w-[280px] border border-primary/15 transition-colors"
+                                  title={contact.aiSummary[contact.aiSummary.length - 1]}
+                                >
+                                  <Sparkles className="h-3 w-3 shrink-0 text-violet-500" />
+                                  <span className="truncate">{contact.aiSummary[contact.aiSummary.length - 1]}</span>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </TableCell>
@@ -625,19 +797,39 @@ export default function ContactsPage() {
                         <TableCell className="text-sm text-muted-foreground">
                           {new Date(contact.updatedAt).toLocaleDateString()}
                         </TableCell>
-                        <TableCell className="text-right">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              router.push(`/dashboard/contacts/${contact.contactId}`);
-                            }}
-                            className="gap-1.5"
-                          >
-                            <Eye className="h-3.5 w-3.5" />
-                            View
-                          </Button>
+                        <TableCell className="text-right pr-4" onClick={(e) => e.stopPropagation()}>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors focus:outline-none cursor-pointer"
+                              aria-label="Actions"
+                            >
+                              <MoreVertical className="h-4 w-4" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-36">
+                              <DropdownMenuItem
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  router.push(`/dashboard/contacts/${contact.contactId}`);
+                                }}
+                                className="cursor-pointer gap-2"
+                              >
+                                <Eye className="h-4 w-4 text-muted-foreground" />
+                                <span>View</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                variant="destructive"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDeleteTarget({ type: "single", contact });
+                                }}
+                                className="cursor-pointer gap-2 text-destructive focus:text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                                <span>Delete</span>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </TableCell>
                       </motion.tr>
                     ))}
@@ -680,6 +872,55 @@ export default function ContactsPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog
+        open={deleteTarget !== null}
+        onOpenChange={(open) => !open && !isDeleting && setDeleteTarget(null)}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-destructive">
+              <AlertTriangle className="h-5 w-5" />
+              {deleteTarget?.type === "bulk"
+                ? `Delete ${deleteTarget.count} Contacts?`
+                : `Delete Contact: ${deleteTarget?.contact.name || "Unknown"}?`}
+            </DialogTitle>
+            <DialogDescription className="pt-2 text-sm text-muted-foreground">
+              {deleteTarget?.type === "bulk"
+                ? `Are you sure you want to delete ${deleteTarget.count} selected contacts? All associated chat histories, notes, tags, and timeline activities will be permanently deleted. This action cannot be undone.`
+                : `Are you sure you want to delete this contact? All associated notes, activities, and linked channel identities will be permanently removed. This action cannot be undone.`}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteTarget(null)}
+              disabled={isDeleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleExecuteDelete}
+              disabled={isDeleting}
+              className="gap-2"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="h-4 w-4" />
+                  Delete {deleteTarget?.type === "bulk" ? `(${deleteTarget.count})` : ""}
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Create Contact Modal */}
       <CreateContactModal

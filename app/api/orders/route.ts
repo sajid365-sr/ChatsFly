@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/core/db";
 import { getActiveWorkspace } from "@/lib/core/workspace-server";
 import { canUseEcommerce } from "@/lib/domain/usage-limit";
+import { syncSessionToCrmContact } from "@/lib/services/crm-sync";
 
 // Helper to generate human-readable Order ID (e.g., ORD-9482)
 function generateOrderId() {
@@ -285,11 +286,26 @@ export async function POST(req: Request) {
       },
     });
 
+    // Auto-sync customer to crm.Contact and upgrade to 'customer'
+    try {
+      await syncSessionToCrmContact({
+        chatbotId: targetChatbotId,
+        sessionId: resolvedSessionId,
+        guestName: resolvedName,
+        phone: resolvedPhone,
+        address: resolvedAddress,
+        district: district || null,
+      });
+    } catch (err) {
+      console.error("[ORDER_CRM_SYNC_FAILED]", err);
+    }
+
     return NextResponse.json({ success: true, order: newOrder });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[ORDERS_POST]", error);
+    const message = error instanceof Error ? error.message : "Failed to create order";
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to create order" },
+      { success: false, error: message },
       { status: 500 }
     );
   }

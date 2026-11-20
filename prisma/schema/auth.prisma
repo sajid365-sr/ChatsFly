@@ -23,6 +23,7 @@ model User {
   dataRetention String               @default("forever")
   lastDataExportAt DateTime?
   notificationSettings Json          @default("{}")
+  securitySettings     Json?         @default("{\"phoneMasking\":false,\"enforceTeam2FA\":false}")
   supportCostPerHour   Float         @default(15.0)
   role          String               @default("user") // user | admin | super_admin
   createdAt     DateTime             @default(now())
@@ -82,7 +83,8 @@ model WorkspaceMember {
   userId      String?   // Clerk userId if user exists/accepted
   email       String
   name        String?
-  role        String    @default("agent") // "admin" | "agent" | "viewer"
+  role        String    @default("agent") // "admin" | "agent" | "manager" | "viewer" | "custom"
+  permissions Json?     @default("{}")
   status      String    @default("active") // "active" | "invited"
   invitedAt   DateTime  @default(now())
   joinedAt    DateTime?

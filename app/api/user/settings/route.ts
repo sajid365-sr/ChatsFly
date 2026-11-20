@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/core/db";
 import { getAndSyncUser } from "@/lib/core/auth";
+import type { Prisma } from "@prisma/client";
 
 export async function GET() {
   try {
@@ -16,7 +17,8 @@ export async function GET() {
         dataRetention: true,
         lastDataExportAt: true,
         supportCostPerHour: true,
-      }
+        securitySettings: true,
+      },
     });
 
     return NextResponse.json(userData);
@@ -35,23 +37,37 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { dataRetention, supportCostPerHour } = body;
+    const { dataRetention, supportCostPerHour, securitySettings } = body;
 
-    if (!dataRetention) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    const dataToUpdate: {
+      dataRetention?: string;
+      supportCostPerHour?: number;
+      securitySettings?: Prisma.InputJsonValue;
+    } = {};
+
+    if (dataRetention) {
+      dataToUpdate.dataRetention = String(dataRetention);
+    }
+    if (supportCostPerHour !== undefined) {
+      dataToUpdate.supportCostPerHour = parseFloat(supportCostPerHour);
+    }
+    if (securitySettings !== undefined) {
+      dataToUpdate.securitySettings = securitySettings as Prisma.InputJsonValue;
     }
 
     const updatedUser = await db.user.update({
       where: { userId: user.userId },
-      data: {
-        ...(dataRetention && { dataRetention: String(dataRetention) }),
-        ...(supportCostPerHour !== undefined && { supportCostPerHour: parseFloat(supportCostPerHour) }),
+      data: dataToUpdate,
+      select: {
+        dataRetention: true,
+        securitySettings: true,
+        supportCostPerHour: true,
       },
     });
 
     return NextResponse.json({
       success: true,
-      dataRetention: updatedUser.dataRetention,
+      settings: updatedUser,
     });
   } catch (error) {
     console.error("[USER_SETTINGS_POST]", error);

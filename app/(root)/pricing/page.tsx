@@ -12,6 +12,9 @@ import { usePricing, useRegion } from "@/components/region-provider";
 import BookDemoModal from "@/components/landing/BookDemoModal";
 import { resolveLocalStr } from "@/lib/domain/plan-config";
 import { formatPrice, type BillingCycle } from "@/lib/domain/pricing-catalogue";
+import { PaymentTrustBanner } from "@/components/pricing/PaymentTrustBanner";
+import { FeatureMatrix } from "@/components/pricing/FeatureMatrix";
+import { PricingFaq } from "@/components/pricing/PricingFaq";
 
 const PLAN_ICONS = {
   starter: Sparkles,
@@ -257,6 +260,15 @@ export default function PricingPage() {
             {t("pricing.paymentUnavailable")}
           </p>
         )}
+
+        {/* Payment Security & Trust Banner */}
+        <PaymentTrustBanner />
+
+        {/* Side-by-side Feature Matrix */}
+        <FeatureMatrix />
+
+        {/* Pricing FAQs */}
+        <PricingFaq />
       </div>
 
       {/* একই contact form — landing page-এর Demo modal আর এখানে একটিই component,

@@ -3,11 +3,15 @@
   "subtitle": "Manage your account preferences, security, and notification settings.",
   "tabs": {
     "profile": "My Profile",
+    "workspace": "Workspace",
     "security": "Security and Data",
     "referrals": "Referrals",
     "notifications": "Notification",
     "team": "Team Members"
   },
+  "menu": "Menu",
+  "expandMenu": "Expand menu",
+  "collapseMenu": "Collapse menu",
   "helpNote": "Need help with your account?",
   "contactSupport": "Contact Support",
   "profile": {
@@ -58,9 +62,47 @@
   },
   "security": {
     "title": "Security & Data Management",
-    "subtitle": "Manage your account security, authentication methods, and personal data settings.",
-    "privacyTitle": "Your Privacy Matters",
-    "privacyDesc": "We encrypt all your data at rest and in transit. DRIPLARE AI employees cannot access your private knowledge base sources or AI Agent conversation logs without your explicit permission.",
+    "subtitle": "Manage account logins, protect customer phone numbers, and configure data retention.",
+    "healthTitle": "Workspace Security Status: Protected",
+    "healthDesc": "Your business credentials, customer numbers, and chat records are safely guarded.",
+    "healthActive": "All Protections Active",
+    "privacyTitle": "Your Privacy & Data Ownership",
+    "privacyDesc": "We encrypt all your data at rest and in transit. Your business data belongs exclusively to you. DRIPLARE AI never sells or shares your customer records.",
+    "sessionsCard": {
+      "title": "Login Security & Active Devices",
+      "subtitle": "Track connected devices and protect account credentials",
+      "currentDevice": "Current Active Session",
+      "activeNow": "Active Now",
+      "lastSeen": "Last signed in:",
+      "pwdActive": "Configured & Protected",
+      "twoFactorOn": "Enabled",
+      "twoFactorOff": "Not Enabled",
+      "remoteHint": "Log out suspicious sessions anytime",
+      "manageBtn": "Devices & Remote Logout"
+    },
+    "privacyCard": {
+      "title": "Customer Privacy & Staff Policies",
+      "subtitle": "Protect customer phone numbers and control staff access rules",
+      "maskingTitle": "Hide Customer Phone Numbers from Agents",
+      "maskingDesc": "Support agents will see masked phone numbers (e.g. 01712***678) in chat and CRM, preventing customer contact theft. Workspace Owner & Admins always see full numbers.",
+      "enforce2FATitle": "Require 2FA for Team Members",
+      "enforce2FADesc": "Mandates that all team members enable Two-Factor Authentication on their account before accessing this workspace.",
+      "autoApply": "Changes apply immediately across workspace",
+      "saveBtn": "Save Settings",
+      "saving": "Saving…",
+      "saved": "Saved",
+      "saveSuccess": "Security preferences updated successfully!",
+      "saveError": "Failed to update security preferences"
+    },
+    "activity": {
+      "title": "Recent Security & Workspace Activity",
+      "subtitle": "Audit timeline of important security and access changes",
+      "allGood": "All systems secure",
+      "sessionTitle": "Current device authenticated successfully",
+      "privacyTitle": "Customer privacy & phone masking protection active",
+      "teamTitle": "Granular team permissions & access control configured",
+      "exportTitle": "Data export & backup channel verified"
+    },
     "authCard": {
       "title": "Authentication",
       "password": "Password",
@@ -237,8 +279,17 @@
     "roles": {
       "owner": "Owner",
       "admin": "Admin",
+      "manager": "Manager",
       "agent": "Agent",
-      "viewer": "Viewer"
+      "viewer": "Viewer",
+      "custom": "Custom"
+    },
+    "roleDescriptions": {
+      "admin": "Full access across all workspace tools & data",
+      "manager": "Manage products, orders, CRM & inbox chats",
+      "agent": "Customer support via Live Inbox & CRM contacts",
+      "viewer": "Read-only access to view chats, store data & reports",
+      "custom": "Tailor specific permissions for each feature individually"
     },
     "status": {
       "active": "Active",
@@ -251,12 +302,62 @@
       "namePlaceholder": "e.g. Tanvir Ahmed",
       "emailLabel": "Email Address",
       "emailPlaceholder": "colleague@yourcompany.com",
-      "roleLabel": "Role",
+      "roleLabel": "Role Preset",
       "submitBtn": "Send Invitation",
       "cancelBtn": "Cancel",
       "successToast": "Invitation email sent successfully",
       "emailErrorToast": "The invitation could not be emailed. The pending invite is saved; submit again to retry.",
       "errorToast": "Failed to add team member"
+    },
+    "editModal": {
+      "title": "Edit Member & Permissions",
+      "description": "Update roles and adjust granular module permissions.",
+      "saveBtn": "Save Changes",
+      "successToast": "Member permissions updated successfully",
+      "errorToast": "Failed to update member permissions"
+    },
+    "permissions": {
+      "title": "Feature Access & Permissions",
+      "hint": "Select which actions this team member can perform",
+      "selectAll": "Select All",
+      "deselectAll": "Deselect All",
+      "showCustom": "Customize Permissions for this Member",
+      "hideCustom": "Hide Permissions Customization"
+    },
+    "actions": {
+      "view": "View",
+      "reply": "Reply & Assign",
+      "delete": "Delete",
+      "edit": "Add & Edit",
+      "export": "Export",
+      "train": "Train & Upload Sources",
+      "manage": "Manage"
+    },
+    "modules": {
+      "inbox": {
+        "title": "Live Inbox & Chats",
+        "description": "Customer conversations across WhatsApp, Facebook, Instagram & Web"
+      },
+      "crm": {
+        "title": "CRM & Contacts",
+        "description": "Customer database, lifecycle stages, notes & tags"
+      },
+      "store": {
+        "title": "Store (Products & Orders)",
+        "description": "Product catalog, inventory and customer order processing"
+      },
+      "aiAgent": {
+        "title": "AI Agent & Brain",
+        "description": "AI bot personas, knowledge base training, prompts & instructions"
+      },
+      "integrations": {
+        "title": "Channels & Integrations",
+        "description": "Facebook, Instagram, WhatsApp Cloud API, and web widgets"
+      },
+      "settings": {
+        "title": "Workspace & Billing",
+        "description": "Business profile, team members, usage credits and subscription plan"
+      }
     },
     "removeModal": {
       "confirm": "Remove Member",
@@ -265,5 +366,39 @@
       "errorToast": "Failed to remove member"
     },
     "unlimitedBanner": "Unlimited Team Members included on your workspace plan."
+  },
+  "workspace": {
+    "title": "Workspace Settings",
+    "subtitle": "Manage your business branding, category, and workspace preferences.",
+    "cardTitle": "Business Information",
+    "cardSubtitle": "Update your business details and how your brand appears across Driplare AI.",
+    "logoLabel": "Brand Logo",
+    "logoHint": "Square PNG or JPG recommended. Automatically resized and optimized.",
+    "uploadLogo": "Change Logo",
+    "removeLogo": "Remove Logo",
+    "categoryLabel": "Business Category",
+    "categoryLocked": "Business category is locked after creation. To use a different category, create a new workspace.",
+    "businessZoneTitle": "Business Zone Title (optional)",
+    "businessZonePlaceholder": "e.g. Trendirect Store",
+    "businessZoneHint": "This custom label appears in your dashboard navigation zone.",
+    "nameLabel": "Business Name",
+    "namePlaceholder": "e.g. Trendirect",
+    "save": "Save Changes",
+    "saving": "Saving…",
+    "saved": "Saved successfully",
+    "updateError": "Failed to update business. Please try again.",
+    "dangerTitle": "Delete Business",
+    "dangerDesc": "Permanently delete this business and all associated AI agents, contacts, orders, and chat history. This action cannot be undone.",
+    "deleteBtn": "Delete Business",
+    "cannotDeleteOnly": "You cannot delete your only business.",
+    "deleteConfirmTitle": "Delete Business",
+    "deleteConfirmWarning": "This permanently deletes this business and ALL of its data — AI Agents, integrations, orders, conversations, and messages. This action cannot be undone.",
+    "deleteConfirmPrompt": "Type the business name to confirm:",
+    "deleting": "Deleting…",
+    "deleteSuccess": "Business deleted successfully",
+    "deleteError": "Failed to delete business. Please try again.",
+    "activeBadge": "Active Business",
+    "allBusinesses": "All Businesses",
+    "switchPrompt": "Switching business will update all data across your dashboard."
   }
 }

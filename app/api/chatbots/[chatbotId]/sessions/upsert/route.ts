@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/core/db";
+import { syncSessionToCrmContact } from "@/lib/services/crm-sync";
 
 /**
  * POST /api/chatbots/[chatbotId]/sessions/upsert
@@ -101,6 +102,19 @@ export async function POST(
         ...(integrationId && { integrationId }),
       },
     });
+
+    // Auto-sync session to crm.Contact
+    try {
+      await syncSessionToCrmContact({
+        chatbotId,
+        sessionId,
+        guestName,
+        profilePhoto,
+        platform,
+      });
+    } catch (err) {
+      console.error("[SESSION_UPSERT_CRM_SYNC_FAILED]", err);
+    }
 
     return NextResponse.json({ success: true, session });
   } catch (error) {

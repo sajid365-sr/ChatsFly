@@ -20,6 +20,18 @@ export const MemberRoleBadge = ({ role }: MemberRoleBadgeProps) => {
           {t("team.roles.admin", "Admin")}
         </span>
       );
+    case "manager":
+      return (
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/25">
+          {t("team.roles.manager", "Manager")}
+        </span>
+      );
+    case "custom":
+      return (
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
+          {t("team.roles.custom", "Custom")}
+        </span>
+      );
     case "viewer":
       return (
         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-muted text-muted-foreground border border-border">
@@ -35,4 +47,3 @@ export const MemberRoleBadge = ({ role }: MemberRoleBadgeProps) => {
       );
   }
 };
-

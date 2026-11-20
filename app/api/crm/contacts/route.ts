@@ -1,7 +1,9 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/core/db";
 import { getAndSyncUser } from "@/lib/core/auth";
 import { getActiveWorkspace } from "@/lib/core/workspace-server";
+import { syncAllWorkspaceSessionsToContacts } from "@/lib/services/crm-sync";
+import { Prisma } from "@prisma/client";
 import { z } from "zod";
 
 // ── Input validation ─────────────────────────────────────────────────────────
@@ -84,7 +86,7 @@ export async function GET(req: NextRequest) {
     const allowedSortFields = ["name", "email", "phone", "lifecycleStage", "createdAt", "updatedAt"];
     const orderField = allowedSortFields.includes(sortBy) ? sortBy : "updatedAt";
 
-    const [contacts, total] = await Promise.all([
+    let [contacts, total] = await Promise.all([
       db.contact.findMany({
         where,
         skip,
@@ -114,6 +116,45 @@ export async function GET(req: NextRequest) {
       }),
       db.contact.count({ where }),
     ]);
+
+    // Auto-sync backfill from existing chat sessions if table is empty or explicit sync requested
+    const shouldSync = searchParams.get("sync") === "true" || (total === 0 && !search && !lifecycleStage && !assignedTo && !source && !tagId);
+    if (shouldSync) {
+      const syncResult = await syncAllWorkspaceSessionsToContacts(workspace.workspaceId);
+      if (syncResult.synced > 0) {
+        // Re-query with updated contacts
+        [contacts, total] = await Promise.all([
+          db.contact.findMany({
+            where,
+            skip,
+            take: limit,
+            orderBy: { [orderField]: sortDir },
+            include: {
+              identities: {
+                select: { channel: true, externalId: true, sessionId: true },
+              },
+              tagAssignments: {
+                select: { tagId: true },
+              },
+              deals: {
+                where: { stage: { notIn: ["won", "lost"] } },
+                select: { dealId: true, title: true, amount: true, stage: true },
+              },
+              tasks: {
+                where: { status: { in: ["pending", "in_progress"] } },
+                select: { taskId: true, title: true, dueAt: true, priority: true },
+                orderBy: { dueAt: "asc" },
+                take: 3,
+              },
+              _count: {
+                select: { deals: true, tasks: true },
+              },
+            },
+          }),
+          db.contact.count({ where }),
+        ]);
+      }
+    }
 
     // Aggregate stats for the list view
     const [totalCustomers, newThisWeek, highIntentCount] = await Promise.all([
@@ -208,7 +249,7 @@ export async function POST(req: NextRequest) {
         district: data.district,
         marketingConsent: data.marketingConsent,
         smsConsent: data.smsConsent,
-        customFields: (data.customFields as any) ?? {},
+        customFields: (data.customFields as Prisma.InputJsonValue) ?? {},
       },
     });
 
@@ -227,6 +268,75 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ contact }, { status: 201 });
   } catch (error) {
     console.error("[CRM_CONTACTS_POST]", error);
+    return NextResponse.json({ error: "Internal Error" }, { status: 500 });
+  }
+}
+
+const bulkDeleteSchema = z.object({
+  contactIds: z.array(z.string().min(1)).min(1).max(500),
+});
+
+// ── DELETE /api/crm/contacts ──────────────────────────────────────────────────
+// Bulk delete contacts belonging to the active workspace
+export async function DELETE(req: NextRequest) {
+  try {
+    const user = await getAndSyncUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const workspace = await getActiveWorkspace(user.userId);
+    const body = (await req.json()) as unknown;
+    const parsed = bulkDeleteSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Validation error", issues: parsed.error.issues },
+        { status: 400 }
+      );
+    }
+
+    const { contactIds } = parsed.data;
+
+    const result = await db.$transaction(async (tx) => {
+      const validContacts = await tx.contact.findMany({
+        where: {
+          contactId: { in: contactIds },
+          workspaceId: workspace.workspaceId,
+        },
+        select: { contactId: true },
+      });
+
+      const validIds = validContacts.map((c) => c.contactId);
+      if (validIds.length === 0) return { count: 0 };
+
+      await tx.dealStageHistory.deleteMany({
+        where: { deal: { contactId: { in: validIds } } },
+      });
+      await tx.deal.deleteMany({
+        where: { contactId: { in: validIds } },
+      });
+      await tx.contactIdentity.deleteMany({
+        where: { contactId: { in: validIds } },
+      });
+      await tx.contactTagAssignment.deleteMany({
+        where: { contactId: { in: validIds } },
+      });
+      await tx.crmActivity.deleteMany({
+        where: { contactId: { in: validIds } },
+      });
+
+      return tx.contact.deleteMany({
+        where: { contactId: { in: validIds } },
+      });
+    });
+
+    return NextResponse.json({
+      success: true,
+      deletedCount: result.count,
+    });
+  } catch (error) {
+    console.error("[CRM_CONTACTS_BULK_DELETE]", error);
     return NextResponse.json({ error: "Internal Error" }, { status: 500 });
   }
 }

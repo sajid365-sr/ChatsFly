@@ -84,6 +84,8 @@ export async function GET(
 
         const title = s.guestName || (s.platform === 'facebook' 
           ? `Facebook User (${s.sessionId.slice(-5)})` 
+          : s.platform === 'instagram'
+          ? `Instagram User (${s.sessionId.slice(-5)})`
           : `Web User (${s.sessionId.slice(-5)})`);
 
         const extraction =
