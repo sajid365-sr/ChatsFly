@@ -12,7 +12,10 @@ COPY package.json package-lock.json* ./
 COPY prisma.config.ts ./
 COPY prisma ./prisma/
 
-# Install dependencies (Prisma 7 generates automatically via postinstall)
+# Fallback dummy URL so prisma generate during postinstall does not fail
+ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/chatsfly"
+
+# Install dependencies
 RUN npm ci
 
 # ============================================================
@@ -27,13 +30,18 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Dummy env vars needed during Next.js static page analysis / build
+ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/chatsfly"
+ENV NEXT_PUBLIC_APP_URL="https://chatsfly.com"
+ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_dummy"
+ENV CLERK_SECRET_KEY="sk_dummy"
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
 # Generate Prisma client using multi-file schema directory
 RUN npx prisma generate --schema=prisma/schema
 
 # Build Next.js app
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV NODE_ENV=production
-
 RUN npm run build
 
 # ============================================================
