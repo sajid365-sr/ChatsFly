@@ -66,6 +66,44 @@ const isAdminRoute = createRouteMatcher([
 ])
 
 export default clerkMiddleware(async (auth, request) => {
+  const { pathname } = request.nextUrl
+  const host = request.headers.get('host') ?? ''
+
+  // ----------------------------------------------------------------
+  // Subdomain routing
+  // chatsfly.com        → public landing page
+  // app.chatsfly.com    → merchant dashboard (/dashboard)
+  // admin.chatsfly.com  → admin panel (/admin)
+  // ----------------------------------------------------------------
+  const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN ?? 'chatsfly.com'
+  const isMainDomain = host === appDomain || host === `www.${appDomain}`
+  const isAppSubdomain = host === `app.${appDomain}`
+  const isAdminSubdomain = host === `admin.${appDomain}`
+
+  // On admin subdomain: non-admin routes → back to main domain
+  if (
+    isAdminSubdomain &&
+    !pathname.startsWith('/admin') &&
+    !pathname.startsWith('/api/admin') &&
+    !pathname.startsWith('/sign-in') &&
+    !pathname.startsWith('/api/')
+  ) {
+    return NextResponse.redirect(new URL('/', `https://${appDomain}`))
+  }
+
+  // On app subdomain: root path → go to dashboard overview
+  if (isAppSubdomain && pathname === '/') {
+    return NextResponse.redirect(new URL('/dashboard/overview', request.url))
+  }
+
+  // On main domain: /dashboard → app subdomain, /admin → admin subdomain
+  if (isMainDomain && pathname.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL(pathname + request.nextUrl.search, `https://app.${appDomain}`))
+  }
+  if (isMainDomain && pathname.startsWith('/admin')) {
+    return NextResponse.redirect(new URL(pathname + request.nextUrl.search, `https://admin.${appDomain}`))
+  }
+
   if (!isPublicRoute(request)) {
     await auth.protect()
   }
