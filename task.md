@@ -68,10 +68,10 @@ Hobby plan-এ পুরো ডিপ্লয় ফেল করার ঝু�
 ## ডোমেইন ফিক্স — আসল কারণ (এই সেশনের মূল কাজ)
 
 **n8n-এর দুইটো নোডই ভুল ডোমেইনে তাক করা ছিল।** `Core-AI-Brain.json`-এর `Billing API` আর
-`Automation Gate` — দুটোই `https://www.driplare.com/...`। কিন্তু **`driplare.com` ওই Vercel
+`Automation Gate` — দুটোই `https://www.chatsfly.com/...`। কিন্তু **`chatsfly.com` ওই Vercel
 প্রজেক্টে যোগই করা নেই**; ওখানে মার্কেটিং সাইট আছে, আর ওই হোস্টে প্রতিটি `/api` রুট ৪০৪ দেয়।
 
-| রুট | `www.driplare.com` | `driplare-ai.vercel.app` |
+| রুট | `www.chatsfly.com` | `chatsfly-ai.vercel.app` |
 |---|---|---|
 | `/api/automations/evaluate` | 404 | **401** (রুট আছে) |
 | `/api/internal/ai-usage` | 404 | **401** (রুট আছে) |
@@ -86,7 +86,7 @@ Hobby plan-এ পুরো ডিপ্লয় ফেল করার ঝু�
 > localhost-এ ফেরত আসে কারণ সেটা উল্টো দিকের কল (নিজের মেশিনই বাইরে ডাকে) — গেট হলো VPS থেকে
 > আসা inbound কল, তাই ওখানে টানেল ছাড়া উপায় নেই।
 
-**যা বদলানো হয়েছে — সব `driplare-ai.vercel.app`-এ:**
+**যা বদলানো হয়েছে — সব `chatsfly-ai.vercel.app`-এ:**
 
 | ফাইল | কী বদলেছে |
 |---|---|
@@ -94,10 +94,10 @@ Hobby plan-এ পুরো ডিপ্লয় ফেল করার ঝু�
 | `docs/n8n-JSON/Automation-Gate.json` | Gate URL · timeout · sticky note |
 | `docs/cost-analytics/step6-core-ai-brain.js` | **লাইভ জেনারেটর** — না ঠিকলে একবার চালালেই বিলিং URL ফিরে যেত |
 | `docs/n8n-JSON/Automation-Gate-Setup.md` | §২-তে ডোমেইন স্পষ্ট · §৭খ · §৮-এর ভুল ৪০৪ ব্যাখ্যা বাদ · নতুন "AI উত্তর আসছে" বাক্স |
-| `lib/services/mail.ts`, `lib/services/usage-alerts.ts`, `hooks/integrations/useWebsiteIntegration.ts` | `driplare.com` ফলব্যাক → `driplare-ai.vercel.app` |
+| `lib/services/mail.ts`, `lib/services/usage-alerts.ts`, `hooks/integrations/useWebsiteIntegration.ts` | `chatsfly.com` ফলব্যাক → `chatsfly-ai.vercel.app` |
 
 **কে ছোঁয়া হয়নি (ইচ্ছাকৃত):** `docs/JSON Backup/*` ও `docs/cost-analytics/task.md` — ঐতিহাসিক
-স্ন্যাপশট/লগ। `support@driplare.com` জাতীয় **ইমেইল ঠিকানা** ও `BRAND_TAGLINE` — ওগুলো হোস্টিং
+স্ন্যাপশট/লগ। `support@chatsfly.com` জাতীয় **ইমেইল ঠিকানা** ও `BRAND_TAGLINE` — ওগুলো হোস্টিং
 নয়, ব্র্যান্ড পরিচয়, আর ইমেইল ডোমেইন হিসেবে এখনো বৈধ।
 
 **⚠️ আলাদা করে দেখা দরকার (সাইড-ইফেক্ট):** `Billing API`-ও ওই ভুল ডোমেইনে তাক করা ছিল।
@@ -140,7 +140,7 @@ npx prisma migrate diff --from-config-datasource --to-schema prisma/schema --scr
 - [x] `prisma migrate diff` — কোনো `DROP TABLE` নেই
 - [x] automation টেবিল ৭টি DB-তে আছে (আলাদা ডিফ দিয়ে নিশ্চিত)
 - [x] `docs/n8n-JSON/{Core-AI-Brain,Automation-Gate}.json` — `JSON.parse` দুটোই OK
-- [x] সব লাইভ URL `driplare-ai.vercel.app`-এ (বাকি `driplare.com` শুধু ব্যাখ্যা/ইমেইল/লগে)
+- [x] সব লাইভ URL `chatsfly-ai.vercel.app`-এ (বাকি `chatsfly.com` শুধু ব্যাখ্যা/ইমেইল/লগে)
 - [ ] `npm run build` — চালানো হয়নি (dev server পোর্ট ৩০০০-এ চলছে; next.config নিজেই নিষেধ করে)
 - [ ] `npm run lint` — ৬টি error, কিন্তু **একই rule আগে থেকেই deployed কোডে আছে** (knowledge-base,
       inbox) → build আটকায় না। তবু পরিষ্কার করা উচিত

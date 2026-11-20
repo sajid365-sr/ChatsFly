@@ -6,7 +6,7 @@ import {
 
 const validOnboarding = {
   requestId: "9f1f4726-c512-42b0-9d0b-a52792c06731",
-  name: "Driplare Store",
+  name: "ChatsFly Store",
   category: "ecommerce",
   customBusinessTitle: "Orders",
   logoUrl: null,

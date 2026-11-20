@@ -120,7 +120,7 @@ npm run build        # exit 0
 |---|---|---|
 | R1 | ৫টি workflow n8n-এ import — Core · WhatsApp · Facebook · Instagram · Web-Playground | ইউজার |
 | R2 | n8n-এ `Cloudinary Upload` Basic Auth credential + `Cloudinary Config`-এ cloud name | ইউজার |
-| R3 | FB/IG/WA-তে `Driplare Internal` Header Auth (`x-n8n-secret` = `N8N_CALLBACK_SECRET`) | ইউজার |
+| R3 | FB/IG/WA-তে `ChatsFly Internal` Header Auth (`x-n8n-secret` = `N8N_CALLBACK_SECRET`) | ইউজার |
 | R4 | Gemini paid billing চালু | ইউজার |
 | R5 | Cloudinary retention নীতি — এখন কোনো auto-delete নেই | সিদ্ধান্ত |
 | R6 | Privacy policy-তে media সংরক্ষণ যোগ | ইউজার/আইনি |
@@ -406,8 +406,8 @@ export function extractMessageIds(payload: unknown): string[]
 🔧 **করণীয়**
 
 1. **প্রথমে ইউজারকে জিজ্ঞেস করুন** (এটি কোড দেখে বোঝা অসম্ভব): **Facebook-এর জন্য Meta App Dashboard-এ Callback URL কী দেওয়া আছে?** দুটি সম্ভাবনা:
-   - (ক) **n8n-এর URL** (যেমন `https://<n8n-host>/webhook/driplare-facebook`) → তাহলে Meta সরাসরি n8n-এ যায়, Next.js-এর কোনো route লাগবে না। **এইটিই সম্ভবত সত্য** (analysis-ও তাই বলছে)।
-   - (খ) **`https://driplare-ai.vercel.app/api/webhooks/n8n-facebook`** → তাহলে route **তৈরি করতে হবে** (WhatsApp/Instagram-এর মতো: verify signature → dedupe → n8n-এ forward)।
+   - (ক) **n8n-এর URL** (যেমন `https://<n8n-host>/webhook/chatsfly-facebook`) → তাহলে Meta সরাসরি n8n-এ যায়, Next.js-এর কোনো route লাগবে না। **এইটিই সম্ভবত সত্য** (analysis-ও তাই বলছে)।
+   - (খ) **`https://chatsfly-ai.vercel.app/api/webhooks/n8n-facebook`** → তাহলে route **তৈরি করতে হবে** (WhatsApp/Instagram-এর মতো: verify signature → dedupe → n8n-এ forward)।
 2. উত্তর অনুযায়ী:
    - (ক) হলে → `proxy.ts:19`-এর dead pattern **মুছুন** (comment-সহ), `/api/webhooks/meta(.*)` **মুছুন**, এবং `health/route.ts`-এ FB চ্যানেলের endpoint **আসল n8n webhook URL** করুন (এবং `provider`/`endpoint` ধারণাটি পরিষ্কার করুন — কিছু চ্যানেল Next.js route-এ আসে, কিছু সরাসরি n8n-এ)।
    - (খ) হলে → `app/api/webhooks/n8n-facebook/route.ts` বানান, WhatsApp route-এর কাঠামো হুবহু অনুসরণ করে (TASK-07-এর dedupe সহ)।
@@ -665,7 +665,7 @@ n8n token অ্যাপের API দিয়ে নয়, **সরাসর
 
 ⚠️ **এখনো বাকি — ইউজারের কাজ**
 
-- n8n-এ ৩টি workflow import। **কোনো env variable লাগে না** (২০২৬-১০-১৮-এ নকশা বদলেছে — নিচের সংশোধনের লগ দেখুন)। শুধু একটি **Header Auth credential** তৈরি করতে হবে: নাম `Driplare Internal`, header `x-n8n-secret`, মান = Vercel-এর `N8N_CALLBACK_SECRET` — তারপর তিন adapter-এ `Fetch Integration Secrets` node-এ সেটি বেছে নিতে হবে (নির্দেশ: [`integration-token-encryption.md`](../integration-token-encryption.md) §১.২)
+- n8n-এ ৩টি workflow import। **কোনো env variable লাগে না** (২০২৬-১০-১৮-এ নকশা বদলেছে — নিচের সংশোধনের লগ দেখুন)। শুধু একটি **Header Auth credential** তৈরি করতে হবে: নাম `ChatsFly Internal`, header `x-n8n-secret`, মান = Vercel-এর `N8N_CALLBACK_SECRET` — তারপর তিন adapter-এ `Fetch Integration Secrets` node-এ সেটি বেছে নিতে হবে (নির্দেশ: [`integration-token-encryption.md`](../integration-token-encryption.md) §১.২)
 - অ্যাপ deploy → `npm run secrets:encrypt` (**DB-তে লেখে — আলাদা অনুমতি সাপেক্ষ**) → প্রতিটি channel-এ live test
 
 ⚠️ **যাচাই করা হয়নি:** কোনো live Meta webhook end-to-end test চালানো হয়নি, এবং backfill **ইচ্ছাকৃতভাবে চালানো হয়নি** — `--apply` ইউজারের অনুমতি ছাড়া নিষিদ্ধ।
@@ -952,7 +952,7 @@ AI Agent (error output) → AI Failed Reply                          [নতু�
 
 **যা একটি সিদ্ধান্ত দরকার (করা হয়নি, ইউজারের সিদ্ধান্ত):** n8n-এর `OpenAI Chat Model` node-এর credential-এ Base URL এডিটযোগ্য। যদি প্ল্যাটফর্মে একটি OpenAI-সামঞ্জস্যপূর্ণ `/api/ai/v1/chat/completions` বানানো হয়, তাহলে গ্রাহকের reply-ও Part A-র gateway দিয়ে যেত — অর্থাৎ fallback chain, quota ও billing **তিনটাই** এক সূত্রে। খরচ: tool-calling/streaming pass-through লিখতে হবে, আর প্রতি reply-তে প্ল্যাটফর্ম hot path-এ চলে আসবে (Vercel-এ সমস্যা হলে সব bot চুপ)। এটি TASK-11-এর লক্ষ্যের (hop কমানো) ঠিক উল্টো, তাই আলাদা টাস্ক হিসেবে ভাবা উচিত — এখানে চাপানো হয়নি।
 
-**📥 ইউজারকে যা করতে হবে:** n8n → Workflows → Core-AI-Brain → ⋯ → **Import from File** → [`Core-AI-Brain.json`](../n8n-JSON/Core-AI-Brain.json)। ⚠️ import করার আগে বর্তমান workflow-টি JSON হিসেবে এক্সপোর্ট করে রাখুন। নতুন credential বানাতে হবে না — `Quota Check` `Driplare Platform Secret`-ই ব্যবহার করে, যা `Billing API` ও `Create Order`-এ আগেই বসানো আছে।
+**📥 ইউজারকে যা করতে হবে:** n8n → Workflows → Core-AI-Brain → ⋯ → **Import from File** → [`Core-AI-Brain.json`](../n8n-JSON/Core-AI-Brain.json)। ⚠️ import করার আগে বর্তমান workflow-টি JSON হিসেবে এক্সপোর্ট করে রাখুন। নতুন credential বানাতে হবে না — `Quota Check` `ChatsFly Platform Secret`-ই ব্যবহার করে, যা `Billing API` ও `Create Order`-এ আগেই বসানো আছে।
 
 ---
 
@@ -2210,7 +2210,7 @@ Meta Business Suite → WhatsApp Manager → **Payment settings**। দেখ�
 
 | উত্তর | তাহলে |
 |---|---|
-| **আপনার** (DRIPLARE-এর) | ✅ surcharge বসান — তবে **হার যাচাই করার পর** (ধাপ ৫ দেখুন), আর শুরুতে বন্ধ অবস্থায় |
+| **আপনার** (ChatsFly-এর) | ✅ surcharge বসান — তবে **হার যাচাই করার পর** (ধাপ ৫ দেখুন), আর শুরুতে বন্ধ অবস্থায় |
 | **merchant-এর** | 🚫 **সurcharge লিখবেন না — টাস্কটি এখানেই শেষ।** তাঁর নিজের Meta অ্যাকাউন্টে বিল যাচ্ছে, অর্থাৎ আমাদের কিছুই দেওয়ার নেই। বসালে **দুইবার চার্জ** — একটি তাঁর Meta-তে, একটি আমাদের credit-এ |
 
 **যে হারটি লাগবে (নিজের rate card থেকেই, অনুমান থেকে নয়):** Bangladesh-এর service-message rate, আর Meta-র নিজের free-tier সংখ্যা (Meta ১,০০০ বললেও আপনার WABA-র console-এ যেটি লেখা, সেটিই সত্য)।
@@ -2385,7 +2385,7 @@ export async function whatsappSurcharge(userId: string, chatbotId: string, now =
 | ৬ | `INTEGRATION_ENCRYPTION_KEY` সেট | Vercel | TASK-08-এর পর token decrypt হবে না |
 | ৭ | deploy-এর পর VPS-এ একটি cron হাতে চালিয়ে `200` নিশ্চিত করা (`curl` → `307` মানে নির্দিষ্ট matcher নেই) | VPS | [TASK-22](#task-22--cron-route-গুলো-আসলে-চলেই-না-clerk-ব্লকার) — live verification এখনো বাকি |
 | ৮ | ~~৪টি cron-এর schedule **দৈনিক** কি না~~ ✅ **আর প্রযোজ্য নয়** — scheduler এখন **VPS-এর crontab**, তাই `*/10 * * * *` বৈধ | [`scripts/cron/crontab.example`](../../scripts/cron/crontab.example) | — *(আগের ঝুঁকি: Hobby + `*/10 * * * *` = **পুরো deploy ফেল**)। বিস্তারিত: [`cron-demo.md`](../cron-demo.md) §৩ সমস্যা ২* |
-| ৯ | `CRON_SECRET` সেট আছে, এবং `/etc/driplare/cron.env`-এর মানটির সাথে **হুবহু** মেলে (chmod 600) | environment + VPS | প্রতিটি job misconfiguration-এ `500`/`503`, ভুল secret-এ `401` ফেরায় |
+| ৯ | `CRON_SECRET` সেট আছে, এবং `/etc/chatsfly/cron.env`-এর মানটির সাথে **হুবহু** মেলে (chmod 600) | environment + VPS | প্রতিটি job misconfiguration-এ `500`/`503`, ভুল secret-এ `401` ফেরায় |
 | ১০ | VPS crontab চালু হলে `vercel.json` থেকে `crons` ব্লক **মুছে ফেলা** | `vercel.json` | একই job দুইবার চলবে — `run-automations` customer-কে দুটি একই নুডজ পাঠাতে পারে |
 
 ---
@@ -2497,7 +2497,7 @@ export async function whatsappSurcharge(userId: string, chatbotId: string, now =
 | ২০২৬-১০-১৫ | AGENTS.md §3 লঙ্ঘন সংশোধিত — pricing page ও contact form-এ `text-white` | চারটি `text-white` (`pricing/page.tsx` ×৩, `BookDemoModal.tsx` ×১) → `text-primary-foreground`। hardcoded রঙের **আসল কারণ** টোকেনের অভাব নয় — টোকেন আছে, কেবল লেখার সময় ব্যবহার হয়নি |
 | ২০২৬-১০-১৫ | 🔴 ১৫.৬: `refundStatus: { not: "refunded" }` → **`OR: [{ null }, { not: "refunded" }]`** | `refundStatus` একটি **nullable** কলাম, আর স্বাভাবিক payment-এ মানটাই `NULL` (refund কেবল ব্যতিক্রমে লেখা হয়)। Prisma-র `not` একটি nullable কলামে NULL row ফেরত দেয় কি না, সেটি SQL-এর তিন-মান-যুক্তির প্রশ্ন — আর যাচাইয়ের কমান্ড চালানো না যাওয়ায় মিলিয়ে দেখা যায়নি। **যদি `not` NULL বাদ দিত**, তবে `hasPaidForPlan` প্রতিটি সাধারণ payment-এ `false` হত → `listExpiredUnpaidTrials` প্রত্যেক পরিশোধকারীকে "non-paying trial" ধরত → `processExpiredTrials` **তাঁদের chatbot বন্ধ করে দিত**। দুই পড়ার মধ্যেই একই ফলাফল আসে বলেই `OR`-টি স্পষ্ট করে লেখা হলো (বাহুল্য হলেও ক্ষতিকর নয়, আর প্রশ্নটি বাহুল্যের নয় — টাকা-দেওয়া merchant-এর সেবা বন্ধের) |
 | ২০২৬-১০-১৫ | ১৫.৪: DB migration নতুন করে কলাম লেখে **নাই** — বিদ্যমান `setUserPlan` ডাকা হলো | একটি migration script নিজে `user.update(...)` করলে "plan বদল" কথাটির **দ্বিতীয় implementation** জন্মাত — ঠিক যে রোগে `VALID_PLAN_KEYS` থেকে `growth`-এর ভূত এসেছিল (উপরের লগ দেখুন)। তাই [`scripts/task15-migrate-legacy-plans.ts`](../../scripts/task15-migrate-legacy-plans.ts)-এর একমাত্র দায়িত্ব **খুঁজে বের করা**; credit reset, `plan_change_admin` audit row, notification ও chatbot reconciliation — সব `setUserPlan`-এর ভেতরেই থাকে, অর্থাৎ একই audited ফাংশন যা `/admin/workspaces` ডাকে। সাথে: ডিফল্ট **dry-run** (`--apply` ছাড়া কিছুই লেখে না), আর প্রতিটি write-এর ঠিক আগে row আবার পড়া হয় (discovery ও write দুটি আলাদা round-trip — stale পড়ায় migrate করলে একজনকে দেখানো হত আর আরেকজনের বদল হত) |
-| ২০২৬-১০-১৫ | ⚠️ ১৫.৪ migration: audit row-এর `adminId` একটি **system actor** — কোনো মানুষ নয় | `creditTransaction`-এ একজন admin-এর নাম লেখা হত যিনি বোতাম চাপেননি; সেটি না-লেখার চেয়ে খারাপ, কারণ audit-এ মিথ্যা attribution ঢোকে। `system:task15-migrate-legacy-plans` / `system@driplare.invalid` — `system:` prefix-এ filter করে পৃথক করা যায় |
+| ২০২৬-১০-১৫ | ⚠️ ১৫.৪ migration: audit row-এর `adminId` একটি **system actor** — কোনো মানুষ নয় | `creditTransaction`-এ একজন admin-এর নাম লেখা হত যিনি বোতাম চাপেননি; সেটি না-লেখার চেয়ে খারাপ, কারণ audit-এ মিথ্যা attribution ঢোকে। `system:task15-migrate-legacy-plans` / `system@chatsfly.invalid` — `system:` prefix-এ filter করে পৃথক করা যায় |
 | ২০২৬-১০-১৫ | 🔴 ১৫.৭: `pricing.json`-এ রাখা `yearly` key-টি **ঠিক সেই দিনেই মিথ্যা প্রমাণিত** | ১৫.৪-এ লেখা হয়েছিল *"`monthly`/`yearly` রাখা হলো — ১৫.৭ ওগুলোই লাগবে, আর ওরা মিথ্যা কিছু বলে না"*। কিন্তু রাখা **মানটি** ছিল `"Yearly (save 20%)"` / `"বার্ষিক (২০% সাশ্রয়)"` — হাতে লেখা **২০%**, অথচ কোডের ডিফল্ট ছাড় **২৫%**, আর এখন সেই ছাড় admin-এর হাতে যেকোনো মুহূর্তে বদলাতে পারে। অর্থাৎ **একটি অনুবাদ-ফাইলে হার্ডকড করা যেকোনো শতাংশ একটি অপেক্ষমাণ মিথ্যা** — রাখার সিদ্ধান্ত ঠিক ছিল, রাখা মানটি নয়। সংশোধন: `yearly` এখন কেবল লেবেল ("Yearly" / "বার্ষিক"), আর ভগ্নাংশটি কম্পোনেন্টে বসে **ক্যাটালগ থেকে** (`annualDiscountPercent`) — অর্থাৎ বিজ্ঞাপিত ছাড় আর চার্জ করা ছাড় একই সূত্র থেকে আসে, দুটো আলাদা হয়ে যাওয়ার পথই নেই। একই কারণে `payment.json`-এর `cycle.saving`-ও |
 | ২০২৬-১০-১৫ | ১৫.৭: `TopUpCards.tsx`-এর নকল দাম-তালিকা মুছে ফেলা — **কারণ সম্ভাবনা, ঘটনা নয়** | টাস্কে এটি "pre-existing ত্রুটি" বলে লেখা ছিল, তাই প্রথমে যাচাই করা হলো। **পাঁচটি pack-এর `price` ও `credits` হুবহু `PAYMENT_PACKAGES`-এর সাথে মিলেছে** (৪০০/৮০০/২৫০/৪৫০/২০০০) — অর্থাৎ কপিটি লেখার সময়ে ভুল কিছু বলেনি, এবং কোনো ভুল দাম কখনো পর্দায় ওঠেনি। আসল সমস্যা ভিন্ন: checkout চার্জ করে `pkg.amount` থেকে, আর এখন admin `/admin/pricing` থেকে top-up-এর দাম বদলাতে পারেন — তখন হাতে-লেখা তালিকা পুরনো দাম দেখাত অথচ কার্ড থেকে নতুন দাম কাটা যেত। ➡️ **একই দিনে আমার নিজের লেখা কমেন্টে "পর্দায় ৳৪০০ দেখিয়ে ৳৫০০ কাটা যেত" দাবিটি মিথ্যা ছিল** (দুটোই ৪০০)। কমেন্টটি সংশোধিত — কারণ না-ঘটা একটি ঘটনাকে ঘটেছে বলে লিখে রাখা মানে পরের পাঠক একটি ভুল ইতিহাস শেখেন, আর সেই ইতিহাস দিয়েই তিনি পরের সিদ্ধান্ত নেন |
 | ২০২৬-১০-১৫ | ১৫.৭: কুপনের "কতবার ব্যবহৃত" সংখ্যা **blob-এ লেখা হয় না** — অর্থের লেজার থেকে গোনা হয় | স্বাভাবিক পথ ছিল `PricingCatalogue` JSON-এ একটি `redeemedCount` রেখে checkout-এ বাড়ানো। কিন্তু blob-টি read-modify-write, তাই দুটি checkout একসাথে চললে একটি increment হারাত — **আর হারানো সংখ্যাটির অর্থ টাকা**: সীমা ভুল হিসেবে আগেই বন্ধ হয়ে যেত, বা ভুল হিসাবে আরও বিক্রি হত। তাই `countCouponRedemptions` `PaymentTransaction.metadata.couponCode` গোনে — হুবহু যে নীতিতে `hasPaidForPlan` ([trial.ts:205](../../lib/domain/trial.ts#L205)) আলাদা flag না রেখে payment row গোনে। বোনাস: admin পর্দায় দেখানো সংখ্যা আর কুপনটি সত্যিই বন্ধ হওয়ার মুহূর্ত কখনো আলাদা হতে পারে না, কারণ দুটিই **একই ফাংশন** |

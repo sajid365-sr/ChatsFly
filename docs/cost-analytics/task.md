@@ -462,7 +462,7 @@ cache অ্যাডমিন save-এ মুছে যেত না। ফল�
 | `creditsDeducted = 15` হার্ডকড | **নেই** — credit আসে `credit-resolver.ts` থেকে (অ্যাডমিন-নিয়ন্ত্রিত) |
 | `Format Response`-এ `promptTokens × $3 + completionTokens × $15` হার্ডকড | **নেই** — দাম আসে লাইভ OpenRouter থেকে |
 | ব্যালেন্স **কখনো কাটা হতো না** | `Billing API` নোড আসল deduction করে (`runId` = `$execution.id`) |
-| — | নতুন `Billing API` (HTTP Request): `POST https://driplare.com/api/internal/ai-usage` |
+| — | নতুন `Billing API` (HTTP Request): `POST https://chatsfly.com/api/internal/ai-usage` |
 
 **নতুন chain:** `Order Created Check → Save Chat History → Billing API → Return to Platform`
 
@@ -543,14 +543,14 @@ n8n Community-তে environment variable সেট করার কোনো UI
 ভার্সনেও। উল্লেখ্য, এই একই workflow-এর `Gemini Vision` ও `Embed Query` **আগে থেকেই**
 এই প্যাটার্ন ব্যবহার করছে (`Gemini API Key` credential) — অর্থাৎ এটাই প্রমাণিত পথ।
 
-**ত্রুটি ২ — `driplare.com` 308 redirect দেয় `www.driplare.com`-এ।**
+**ত্রুটি ২ — `chatsfly.com` 308 redirect দেয় `www.chatsfly.com`-এ।**
 POST-এ redirect মানে সেই নীরব ব্যর্থতারই আরেক রূপ। **সমাধান:** URL এখন
-`https://www.driplare.com/...`, সাথে `options.redirect.redirect.followRedirects: true`।
+`https://www.chatsfly.com/...`, সাথে `options.redirect.redirect.followRedirects: true`।
 
 **ত্রুটি ৩ (সম্ভাব্য, নিশ্চিত নয়) — production-এ route-টা ডিপ্লয় না থাকা।**
-`www.driplare.com/api/internal/ai-usage` ও এমনকি পুরনো `api/webhooks/whatsapp`-ও
+`www.chatsfly.com/api/internal/ai-usage` ও এমনকি পুরনো `api/webhooks/whatsapp`-ও
 ৪০৪ দেয়। কিন্তু উত্তরের `Age` হেডার ≈১৬.৭ দিন, অর্থাৎ এগুলো **২০২৬-০৯-১০ তারিখের
-cached ৪০৪** — আজকের অবস্থা এভাবে বোঝা যায় না। `driplare.com` → `www` 308 আর
+cached ৪০৪** — আজকের অবস্থা এভাবে বোঝা যায় না। `chatsfly.com` → `www` 308 আর
 `/dashboard` → 307 (Clerk) থেকে নিশ্চিত যে অ্যাপ ওখানেই। **ইউজারকে যাচাই করতে হবে।**
 
 ### ৬.চ — বোনাস সন্ধান: `Gemini Transcribe` নীরবে ভাঙা থাকতে পারে 🔴
@@ -592,7 +592,7 @@ if (!chatbotId) { throw new Error('Missing required field: chatbotId'); }
 `ChatMessage` নেই — এটা বাগের প্রমাণ নয়, বরং টেস্ট না করার প্রমাণ।
 
 **আমার সংশোধন:** `Billing API` নোডে আমি একটা **ভুয়া credential id**
-(`driplarePlatformSecret`) বসিয়ে রেখেছিলাম। ওই id n8n-এ না থাকায় নোডে
+(`chatsflyPlatformSecret`) বসিয়ে রেখেছিলাম। ওই id n8n-এ না থাকায় নোডে
 "Credential not found" দেখায় — যা আসলে activation আটকাতে পারে। এখন `credentials`
 ব্লকটি সম্পূর্ণ বাদ; ড্রপডাউন থেকে ইউজার নিজে credential বেছে নেবেন।
 
@@ -608,7 +608,7 @@ declare করা যায় — তাহলে এডিটর থেকে 
 
 | সন্দেহ | অবস্থা |
 |---|---|
-| `Billing API`-তে **ভুয়া credential id** (`driplarePlatformSecret`) | ✅ সরানো — n8n-এ ওই id নেই, তাই "Credential not found" → activation ব্লক |
+| `Billing API`-তে **ভুয়া credential id** (`chatsflyPlatformSecret`) | ✅ সরানো — n8n-এ ওই id নেই, তাই "Credential not found" → activation ব্লক |
 | `options.redirect.redirect.followRedirects` — nested কাঠামো অচেনা হলে n8n property-validation error দিতে পারে | ✅ সরানো (URL এখন `www` হওয়ায় দরকারও নেই) |
 | নোড `id` UUID না হয়ে `"billing-api-step6"` | ✅ প্রকৃত UUID করা হলো (বাকি ২৭টির মতোই) |
 | ম্যানুয়াল রানে `Ensure Session`-এর FK ত্রুটি | ❌ **এর সাথে সম্পর্ক নেই** — ওটা runtime ত্রুটি, publish আটকায় না। তাই canvas-এ একটি সতর্কীকরণ sticky note যোগ করা হলো |
@@ -631,7 +631,7 @@ declare করা যায় — তাহলে এডিটর থেকে 
 **ক্রেডিট কাটছে না**। কারণটা কোনো বাগ নয় — **নেটওয়ার্কের সীমাবদ্ধতা**:
 
 ```
-n8n (itnut VPS)  ──POST──▶  https://www.driplare.com/api/internal/ai-usage
+n8n (itnut VPS)  ──POST──▶  https://www.chatsfly.com/api/internal/ai-usage
                                      ▲
                                      └─ production — route-টা এখনো ডিপ্লয়ই হয়নি
                                         (app/api/internal/ git-এ untracked)
@@ -1031,7 +1031,7 @@ cache-সহ কোডটা এখনো মেমোরিতে থাকত�
   ১. `$env.N8N_CALLBACK_SECRET` ধরে নিয়েছিলাম — কিন্তু n8n Community-তে env variable
      সেট করার UI নেই, আর ইউজারের সার্ভার-অ্যাক্সেস নেই। **সমাধান:** Header Auth
      credential, যা এই workflow-এ (`Gemini Vision`) আগে থেকেই চলে।
-  ২. `https://driplare.com` ব্যবহার করেছিলাম — ওটা 308 redirect দেয় `www`-তে।
+  ২. `https://chatsfly.com` ব্যবহার করেছিলাম — ওটা 308 redirect দেয় `www`-তে।
      **সমাধান:** `www` + `followRedirects`।
   ➡️ **শিক্ষা:** "নীরব ব্যর্থতা" টেস্ট (৬.গ) শুধু body-র গঠন দেখেছিল, কিন্তু
   **প্রমাণীকরণ ও নেটওয়ার্ক পথ** যাচাই করেনি। পরেরবার credential/URL-ও টেস্ট করতে হবে।

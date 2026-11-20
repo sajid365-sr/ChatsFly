@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Calendar, CheckCircle2, Sparkles, User, Mail, Phone } from "lucide-react";
 
 /**
- * Contact Form Modal — DRIPLARE AI
+ * Contact Form Modal — ChatsFly
  * ─────────────────────────────────────────────────────────────────────────────
  * প্ল্যাটফর্মে **একটিই** contact form, দুই entry point-এর জন্য:
  *  - Landing page → "Book a Live Demo" (`source: "demo"`)

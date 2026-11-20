@@ -1,4 +1,4 @@
-# DRIPLARE AI — Universal Chatbot Setup & Custom Entity Engine Tasks
+# ChatsFly — Universal Chatbot Setup & Custom Entity Engine Tasks
 
 > **সেকশন:** Dashboard → Chatbot Quick Setup & Dynamic Custom Data Engine  
 > **ভিত্তি:** `docs/feature-update/chatbot/chatbot-setup-improvement-plan.md`  
@@ -69,7 +69,7 @@
 
 > **Tracking Data (Phase 3):**  
 > • Node: `Save Custom Data` (httpRequestTool, ID: `78b4a391-e412-4c8d-9a81-d419b45e8f23`)  
-> • Target URL: `https://driplare-ai.vercel.app/api/internal/custom-records`  
+> • Target URL: `https://chatsfly-ai.vercel.app/api/internal/custom-records`  
 > • Headers: `x-n8n-secret`, Auth: `httpHeaderAuth`  
 > • Connection: Wired into `AI Agent` as an `ai_tool`.  
 > • Contract verified via Vitest workflow drift validation.

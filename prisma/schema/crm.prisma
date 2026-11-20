@@ -93,7 +93,7 @@ model ContactIdentity {
   // Facebook: PSID, WhatsApp: phone number, Web: sessionId
   externalId  String
 
-  // Back-reference to Driplare's own data
+  // Back-reference to ChatsFly's own data
   chatbotId   String?
   sessionId   String?  // ChatSession.sessionId (plain string, no FK by design)
 

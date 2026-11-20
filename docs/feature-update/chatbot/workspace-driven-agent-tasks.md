@@ -1,4 +1,4 @@
-# DRIPLARE AI — Workspace-Driven Agent Setup Tasks
+# ChatsFly — Workspace-Driven Agent Setup Tasks
 
 > **সেকশন:** Chatbot / Agent Setup Decoupling from Business Category  
 > **ভিত্তি:** Workspace-Centric Business Architecture  

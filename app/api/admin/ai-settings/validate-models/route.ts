@@ -26,7 +26,7 @@ export async function POST() {
 
     // ── ১. OpenRouter-এর লাইভ ক্যাটালগ ──────────────────────────────────────
     const res = await fetch("https://openrouter.ai/api/v1/models", {
-      headers: { "User-Agent": "DriplareAI-Admin/1.0" },
+      headers: { "User-Agent": "ChatsFly-Admin/1.0" },
       next: { revalidate: 0 },
     });
 

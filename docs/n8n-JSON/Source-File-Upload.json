@@ -100,7 +100,7 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "driplare-ingest",
+        "path": "chatsfly-ingest",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -112,7 +112,7 @@
         -1040,
         1216
       ],
-      "webhookId": "driplare-ingest"
+      "webhookId": "chatsfly-ingest"
     },
     {
       "parameters": {
@@ -708,7 +708,7 @@
         },
         "options": {}
       },
-      "id": "driplare-pdf-text-check",
+      "id": "chatsfly-pdf-text-check",
       "name": "PDF Text Extracted?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -721,7 +721,7 @@
       "parameters": {
         "jsCode": "const pdf = await this.helpers.getBinaryDataBuffer(0, 'file');\nif (!pdf || pdf.length === 0) throw new Error('The uploaded PDF binary is unavailable for OCR.');\nif (pdf.length > 10 * 1024 * 1024) throw new Error('This scanned PDF is too large for OCR. Please upload a PDF smaller than 10 MB.');\nreturn [{ json: { pdfBase64: pdf.toString('base64') } }];"
       },
-      "id": "driplare-pdf-ocr-prepare",
+      "id": "chatsfly-pdf-ocr-prepare",
       "name": "Prepare PDF OCR",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -753,7 +753,7 @@
           "timeout": 120000
         }
       },
-      "id": "driplare-gemini-pdf-ocr",
+      "id": "chatsfly-gemini-pdf-ocr",
       "name": "Gemini PDF OCR",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -773,7 +773,7 @@
       "parameters": {
         "jsCode": "const parts = $input.all().flatMap((item) => item.json.candidates?.[0]?.content?.parts || []);\nconst candidate = $input.first().json.candidates?.[0];\nif (candidate?.finishReason === 'MAX_TOKENS') throw new Error('OCR output reached the model limit. Split this PDF into smaller files and retry.');\nconst text = parts.map((part) => typeof part.text === 'string' ? part.text : '').filter(Boolean).join('\\n\\n').trim();\nif (!text) throw new Error('OCR could not read any text from this scanned PDF.');\nreturn [{ json: { text } }];"
       },
-      "id": "driplare-extract-pdf-ocr-text",
+      "id": "chatsfly-extract-pdf-ocr-text",
       "name": "Extract PDF OCR Text",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -807,7 +807,7 @@
         },
         "options": {}
       },
-      "id": "driplare-prepared-spreadsheet-check",
+      "id": "chatsfly-prepared-spreadsheet-check",
       "name": "Prepared Spreadsheet Text?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,

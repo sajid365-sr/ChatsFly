@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Driplare — scheduled-job runner for a self-hosted deployment (Hostinger VPS / Coolify).
+# ChatsFly — scheduled-job runner for a self-hosted deployment (Hostinger VPS / Coolify).
 #
 # Vercel Cron is deliberately NOT used: Hobby plans only accept once-per-day
 # schedules, but `run-automations` has to tick every few minutes (broadcast
@@ -15,7 +15,7 @@
 #   run-cron.sh <job> [job...]     # run one or more jobs
 #   run-cron.sh --list             # print the known job names
 #
-# Configuration is read from $CRON_ENV_FILE (default /etc/driplare/cron.env),
+# Configuration is read from $CRON_ENV_FILE (default /etc/chatsfly/cron.env),
 # a 0600 file holding:
 #   BASE_URL="https://app.example.com"   # or http://127.0.0.1:3000 if the app
 #                                        # runs on this same machine
@@ -27,7 +27,7 @@ set -uo pipefail
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
-ENV_FILE="${CRON_ENV_FILE:-/etc/driplare/cron.env}"
+ENV_FILE="${CRON_ENV_FILE:-/etc/chatsfly/cron.env}"
 TIMEOUT="${CRON_TIMEOUT:-120}"        # seconds per attempt
 RETRIES="${CRON_RETRIES:-2}"          # total attempts, not extra ones
 RETRY_DELAY="${CRON_RETRY_DELAY:-15}" # seconds between attempts

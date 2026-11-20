@@ -58,18 +58,18 @@ describe("Instagram Login", () => {
   it("does not use Facebook App credentials as Instagram Login credentials", async () => {
     vi.stubEnv("INSTAGRAM_APP_ID", "");
     vi.stubEnv("NEXT_PUBLIC_INSTAGRAM_APP_ID", "");
-    vi.stubEnv("NEXT_PUBLIC_META_APP_ID", "driplare-meta-app");
-    vi.stubEnv("NEXT_PUBLIC_FACEBOOK_APP_ID", "driplare-facebook-app");
+    vi.stubEnv("NEXT_PUBLIC_META_APP_ID", "chatsfly-meta-app");
+    vi.stubEnv("NEXT_PUBLIC_FACEBOOK_APP_ID", "chatsfly-facebook-app");
     vi.stubEnv("INSTAGRAM_APP_SECRET", "");
-    vi.stubEnv("META_APP_SECRET", "driplare-meta-secret");
-    vi.stubEnv("FACEBOOK_APP_SECRET", "driplare-facebook-secret");
+    vi.stubEnv("META_APP_SECRET", "chatsfly-meta-secret");
+    vi.stubEnv("FACEBOOK_APP_SECRET", "chatsfly-facebook-secret");
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
 
     const { exchangeInstagramLoginCode } = await import("./instagram");
     await expect(
       exchangeInstagramLoginCode("auth-code", "https://app.example.com/callback")
-    ).rejects.toThrow("Driplare's Instagram Login App ID is not configured");
+    ).rejects.toThrow("ChatsFly's Instagram Login App ID is not configured");
 
     expect(fetchMock).not.toHaveBeenCalled();
   });

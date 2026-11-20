@@ -7,7 +7,7 @@
  * server-only imports so it can be used inside client components.
  */
 
-export const WORKSPACE_COOKIE = "driplare_workspace";
+export const WORKSPACE_COOKIE = "chatsfly_workspace";
 
 export interface Workspace {
   id: string;

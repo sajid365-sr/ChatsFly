@@ -486,7 +486,7 @@
       "phone": "Phone"
     },
     "approvalTitle": "WhatsApp approval",
-    "approvalHint": "Driplare does not submit templates to Meta yet — copy the status across from WhatsApp Manager so broadcasts know what they can use.",
+    "approvalHint": "ChatsFly does not submit templates to Meta yet — copy the status across from WhatsApp Manager so broadcasts know what they can use.",
     "approvalStatus": "Status",
     "approvalId": "Meta template name / id",
     "approvalIdPlaceholder": "Optional",

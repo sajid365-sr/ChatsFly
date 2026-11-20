@@ -1,5 +1,5 @@
 /**
- * Payment Package Catalog — DRIPLARE AI
+ * Payment Package Catalog — ChatsFly
  *
  * সব purchasable plan ও top-up pack-এর একমাত্র তালিকা।
  *

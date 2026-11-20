@@ -87,7 +87,7 @@ export async function POST(req: Request) {
           const { sendMail, MailTemplates } = await import("@/lib/services/mail");
           await sendMail({
             to: email,
-            subject: "Security Alert: Your account was updated - DRIPLARE AI",
+            subject: "Security Alert: Your account was updated - ChatsFly",
             html: MailTemplates.securityAlert(
               name,
               "Profile/Security Update",

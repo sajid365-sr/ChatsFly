@@ -15,7 +15,7 @@
 - Rename **Snoozed** to **Later** in the Inbox UI; preserve the existing reminder behavior and due-time resurfacing.
 - Use recognizable channel icons for the channel filter and channel options.
 - Add **Mine** (assigned to the current user), **Everyone** (filter by assignee), and **Any** (date range) filters.
-- Workspace owners can invite any email address, whether or not the invitee already has a Driplare account or workspace. New invitees remain pending until they sign up/log in with that email; existing accounts join immediately. Only active members can be assigned to a conversation.
+- Workspace owners can invite any email address, whether or not the invitee already has a ChatsFly account or workspace. New invitees remain pending until they sign up/log in with that email; existing accounts join immediately. Only active members can be assigned to a conversation.
 - Assignment updates the conversation, displays its assignee, and notifies the assigned member.
 - English and Bengali translations; responsive layout and dark/light theme support.
 

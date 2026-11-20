@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Driplare AI Settings</title>
+  <title>ChatsFly Settings</title>
   <style>
     body {
       width: 280px;
@@ -56,9 +56,9 @@
   </style>
 </head>
 <body>
-  <h3>Driplare AI Copilot</h3>
-  <label for="apiUrl">Driplare App URL</label>
-  <input type="text" id="apiUrl" placeholder="https://driplare.com">
+  <h3>ChatsFly Copilot</h3>
+  <label for="apiUrl">ChatsFly App URL</label>
+  <input type="text" id="apiUrl" placeholder="https://chatsfly.com">
 
   <label for="apiKey">API Key / Token</label>
   <input type="password" id="apiKey" placeholder="sk-...">
@@ -74,7 +74,7 @@
       });
 
       document.getElementById("saveBtn").addEventListener("click", () => {
-        const apiUrl = document.getElementById("apiUrl").value.trim() || "https://driplare.com";
+        const apiUrl = document.getElementById("apiUrl").value.trim() || "https://chatsfly.com";
         const apiKey = document.getElementById("apiKey").value.trim();
         chrome.storage.sync.set({ apiUrl, apiKey }, () => {
           const status = document.getElementById("status");

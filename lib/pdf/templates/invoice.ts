@@ -74,7 +74,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(18);
     doc.setFont("helvetica", "bold");
-    doc.text("DRIPLARE AI", MARGIN, 22);
+    doc.text("ChatsFly", MARGIN, 22);
   }
 
   // ── Invoice label + number (right side of header) ─────────────

@@ -68,7 +68,7 @@ This flow should be hidden behind an `Advanced setup` option once Embedded Signu
 
 Current status from screenshots:
 
-- App exists: DRIPLARE
+- App exists: ChatsFly
 - App type: Business
 - App mode: Development
 - Facebook Login for Business exists

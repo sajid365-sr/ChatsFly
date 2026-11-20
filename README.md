@@ -2,7 +2,7 @@
 
 ChatsFly is a powerful SaaS platform designed to automate customer interactions across multiple channels (Facebook, WhatsApp, and Web) using state-of-the-art LLMs and RAG (Retrieval-Augmented Generation).
 
-![DRIPLARE AI Dashboard](https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/www/public/og.png) <!-- Replace with real screenshot if available -->
+![ChatsFly Dashboard](https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/www/public/og.png) <!-- Replace with real screenshot if available -->
 
 ## 🚀 Key Features
 
@@ -34,8 +34,8 @@ ChatsFly is a powerful SaaS platform designed to automate customer interactions 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/driplare-ai.git
-   cd driplare-ai
+   git clone https://github.com/your-username/chatsfly-ai.git
+   cd chatsfly-ai
    ```
 
 2. Install dependencies:
@@ -54,7 +54,7 @@ ChatsFly is a powerful SaaS platform designed to automate customer interactions 
 5. Open [http://localhost:3000](http://localhost:3000) to see the application.
 
 ## 🛡️ Health & Reliability
-DRIPLARE AI includes a proactive health monitoring system for Meta integrations. If a Page Access Token expires, the system automatically flags the integration and notifies the user to reconnect, ensuring no messages are missed.
+ChatsFly includes a proactive health monitoring system for Meta integrations. If a Page Access Token expires, the system automatically flags the integration and notifies the user to reconnect, ensuring no messages are missed.
 
 ## 📜 License
 This project is private and owned by Sajid Sorker.

@@ -6,7 +6,7 @@ import { db } from "@/lib/core/db";
 /** Resolve public blog locale from region cookie (BD → bn, Global → en) */
 export async function getBlogLocale(): Promise<"en" | "bn"> {
   const cookieStore = await cookies();
-  const region = cookieStore.get("driplare_region")?.value;
+  const region = cookieStore.get("chatsfly_region")?.value;
   return region === "global" ? "en" : "bn";
 }
 

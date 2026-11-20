@@ -1,5 +1,5 @@
 /**
- * Credit System Configuration — Driplare AI
+ * Credit System Configuration — ChatsFly
  *
  * Model Tier-ভিত্তিক credit cost এবং সব action-এর credit cost এখানে define করা।
  * এটি একটি single source of truth — সব API এখান থেকে import করবে।

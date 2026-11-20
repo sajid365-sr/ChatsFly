@@ -68,7 +68,7 @@ export const AUTOMATION_PRESETS: AutomationPreset[] = [
       {
         type: "send_text",
         body:
-          "আসসালামু আলাইকুম {{name}}! Driplare-এ স্বাগতম। " +
+          "আসসালামু আলাইকুম {{name}}! ChatsFly-এ স্বাগতম। " +
           "আপনি কীভাবে সাহায্য করতে পারি? 😊",
       },
     ],

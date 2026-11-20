@@ -39,7 +39,7 @@ import { buildWidgetApiPath, sanitizeBrandColor } from "@/lib/domain/widget-key"
 
 export interface WidgetScriptInput {
   widgetKey: string;
-  /** Origin the widget posts back to, e.g. `https://app.driplare.com`. */
+  /** Origin the widget posts back to, e.g. `https://app.chatsfly.com`. */
   origin: string;
   /** The AI agent's name, shown in the header. */
   agentName: string;
@@ -80,7 +80,7 @@ function embedJson(value: unknown): string {
  */
 export function renderDisabledWidgetScript(reason: string): string {
   return [
-    "/* Driplare widget: not served — " + reason.replace(/\*\//g, "*\\/") + " */",
+    "/* ChatsFly widget: not served — " + reason.replace(/\*\//g, "*\\/") + " */",
     "/* Nothing is injected into the page. See the server log for the reason. */",
     "",
   ].join("\n");
@@ -132,8 +132,8 @@ const WIDGET_SCRIPT_TEMPLATE = `(function () {
 
   // Embedding twice — a tag duplicated by a CMS, or a theme that renders the
   // footer twice — must not stack two launchers on top of each other.
-  if (window.__driplareWidgetLoaded) return;
-  window.__driplareWidgetLoaded = true;
+  if (window.__chatsflyWidgetLoaded) return;
+  window.__chatsflyWidgetLoaded = true;
 
   var KEY = __KEY__;
   var API = __API__;
@@ -143,7 +143,7 @@ const WIDGET_SCRIPT_TEMPLATE = `(function () {
   var WELCOME = __WELCOME__;
   var COPY = __COPY__;
 
-  var STORE_KEY = "driplare.widget.session." + KEY;
+  var STORE_KEY = "chatsfly.widget.session." + KEY;
   var MAX_LENGTH = 2000;
 
   /**
@@ -185,7 +185,7 @@ const WIDGET_SCRIPT_TEMPLATE = `(function () {
   // Everything below lives inside this root, so the host page's CSS and ours
   // cannot reach each other.
   var host = document.createElement("div");
-  host.setAttribute("data-driplare-widget", KEY);
+  host.setAttribute("data-chatsfly-widget", KEY);
   var root = host.attachShadow({ mode: "open" });
 
   var style = document.createElement("style");

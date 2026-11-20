@@ -70,7 +70,7 @@ n8n → Credentials → **Create New** → **Header Auth**
 
 | Field | মান |
 |---|---|
-| Name | `Driplare Internal` |
+| Name | `ChatsFly Internal` |
 | Header Name | `x-n8n-secret` |
 | Header Value | Vercel-এর `N8N_CALLBACK_SECRET`-এর হুবহু একই মান |
 

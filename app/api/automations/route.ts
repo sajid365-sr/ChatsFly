@@ -13,7 +13,7 @@ import {
  * GET  /api/automations — the rules list.
  * POST /api/automations — create a rule.
  *
- * Both are scoped to the workspace resolved from the `driplare_workspace`
+ * Both are scoped to the workspace resolved from the `chatsfly_workspace`
  * cookie; nothing here accepts a workspace id from the client.
  */
 

@@ -21,10 +21,10 @@ export const PDF_BRAND = {
 /** Page constants */
 export const PAGE = { W: 210, H: 297, MARGIN: 15 };
 
-/** DRIPLARE brand name */
-export const BRAND_NAME = "DRIPLARE AI";
-export const BRAND_TAGLINE = "driplare.com";
-export const BRAND_EMAIL = "support@driplare.com";
+/** ChatsFly brand name */
+export const BRAND_NAME = "ChatsFly";
+export const BRAND_TAGLINE = "chatsfly.com";
+export const BRAND_EMAIL = "support@chatsfly.com";
 export const CEO_NAME = "Sajid Sorker";
 export const CEO_TITLE = "Founder & CEO, ChatsFly";
 

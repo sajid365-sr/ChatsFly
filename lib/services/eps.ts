@@ -92,7 +92,7 @@ export async function initiateEpsCheckout(
     fail_url: params.failUrl,
     cancel_url: params.cancelUrl,
     ipn_url: params.ipnUrl,
-    product_name: params.productName ?? "DRIPLARE AI Subscription",
+    product_name: params.productName ?? "ChatsFly Subscription",
     product_category: params.productCategory ?? "SaaS",
     product_profile: "general",
     cus_name: params.customerName,

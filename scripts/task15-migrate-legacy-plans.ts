@@ -51,7 +51,7 @@ import { setUserPlan, type AdminActor } from "../lib/services/admin-credits";
  */
 const SYSTEM_ACTOR: AdminActor = {
   userId: "system:task15-migrate-legacy-plans",
-  email: "system@driplare.invalid",
+  email: "system@chatsfly.invalid",
 };
 
 const APPLY = process.argv.includes("--apply");

@@ -3,7 +3,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "Core AI Brain — billing via platform API (v7)\n\nONE-TIME SETUP (n8n UI, no server access needed):\n  Credentials → New → \"Header Auth\"\n    Name  : x-n8n-secret\n    Value : (driplare.com-এর N8N_CALLBACK_SECRET মান)\n  তারপর \"Billing API\" নোডের Credential ড্রপডাউনে\n  credential-টা select করুন — খালি রাখলে নোড চলবে না।\n\n  ⚠️ এটা না করলে \"Billing API\" 401 পাবে আর প্রতিটি\n  reply-তে credit কাটা চুপচাপ বন্ধ থাকবে — reply ঠিকই\n  আসবে, তাই ভুল ধরা পড়বে না। ইমপোর্টের পর একটা টেস্ট\n  মেসেজ দিয়ে ব্যালেন্স সত্যিই কমছে কি না দেখে নিন।\n\nCHAIN: ... → Save Chat History → Billing API → Return to Platform\nBilling API → POST https://www.driplare.com/api/internal/ai-usage\n  (www আবশ্যক — driplare.com 308 redirect দেয়)\n\nThis node is the ONLY place credits are deducted now. It also\nwrites the AIUsageLog. runId = $execution.id makes retries\nidempotent — the same run can never be charged twice.\n\nCost is NOT computed here. Prices come from live OpenRouter\ndata on the platform side, so there is nothing to keep in sync.",
+        "content": "Core AI Brain — billing via platform API (v7)\n\nONE-TIME SETUP (n8n UI, no server access needed):\n  Credentials → New → \"Header Auth\"\n    Name  : x-n8n-secret\n    Value : (chatsfly.com-এর N8N_CALLBACK_SECRET মান)\n  তারপর \"Billing API\" নোডের Credential ড্রপডাউনে\n  credential-টা select করুন — খালি রাখলে নোড চলবে না।\n\n  ⚠️ এটা না করলে \"Billing API\" 401 পাবে আর প্রতিটি\n  reply-তে credit কাটা চুপচাপ বন্ধ থাকবে — reply ঠিকই\n  আসবে, তাই ভুল ধরা পড়বে না। ইমপোর্টের পর একটা টেস্ট\n  মেসেজ দিয়ে ব্যালেন্স সত্যিই কমছে কি না দেখে নিন।\n\nCHAIN: ... → Save Chat History → Billing API → Return to Platform\nBilling API → POST https://www.chatsfly.com/api/internal/ai-usage\n  (www আবশ্যক — chatsfly.com 308 redirect দেয়)\n\nThis node is the ONLY place credits are deducted now. It also\nwrites the AIUsageLog. runId = $execution.id makes retries\nidempotent — the same run can never be charged twice.\n\nCost is NOT computed here. Prices come from live OpenRouter\ndata on the platform side, so there is nothing to keep in sync.",
         "height": 660,
         "width": 580
       },
@@ -680,7 +680,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://www.driplare.com/api/internal/ai-usage",
+        "url": "https://www.chatsfly.com/api/internal/ai-usage",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,

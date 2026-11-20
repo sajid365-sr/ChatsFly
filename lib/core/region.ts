@@ -1,5 +1,5 @@
 /**
- * Region detection & configuration for DRIPLARE.
+ * Region detection & configuration for ChatsFly.
  *
  * Bangladesh (bd)  → Bangla default, BDT, Uddoktapay
  * Global  (global) → English only,  USD, no payment
@@ -14,7 +14,7 @@
 
 export type Region = "bd" | "global";
 
-export const REGION_COOKIE = "driplare_region";
+export const REGION_COOKIE = "chatsfly_region";
 
 /**
  * Narrow any stored or transmitted region value to a `Region`.

@@ -17,7 +17,7 @@ import {
  * already entitled to see.
  *
  * Authenticated by the widget key alone. There is no Clerk session here by
- * definition — the caller is a shopper on a storefront, not a Driplare user.
+ * definition — the caller is a shopper on a storefront, not a ChatsFly user.
  * What that key can do is bounded elsewhere: it resolves one chatbot's display
  * configuration and nothing else, and every route that could *change* anything
  * stays behind Clerk and an ownership check.

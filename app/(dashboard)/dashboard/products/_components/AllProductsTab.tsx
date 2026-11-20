@@ -64,7 +64,7 @@ export function AllProductsTab({
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("driplare_product_view_mode");
+      const saved = localStorage.getItem("chatsfly_product_view_mode");
       if (saved === "table" || saved === "grid") {
         setViewMode(saved);
       }
@@ -76,7 +76,7 @@ export function AllProductsTab({
   const handleViewModeChange = (mode: "grid" | "table") => {
     setViewMode(mode);
     try {
-      localStorage.setItem("driplare_product_view_mode", mode);
+      localStorage.setItem("chatsfly_product_view_mode", mode);
     } catch {
       // fallback
     }

@@ -90,7 +90,7 @@ export async function transcribeAudio(options: TranscribeAudioOptions): Promise<
         headers: {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": "https://driplare.com",
+          "HTTP-Referer": "https://chatsfly.com",
           "X-Title": "ChatsFly Omnichannel",
         },
         body: JSON.stringify({

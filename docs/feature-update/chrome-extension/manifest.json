@@ -1,15 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "Driplare AI - Meta Business Suite Copilot",
+  "name": "ChatsFly - Meta Business Suite Copilot",
   "version": "1.0.0",
-  "description": "Control Driplare AI directly inside Meta Business Suite: Pause/Resume AI, Assign Agents, and Generate Instant Replies.",
+  "description": "Control ChatsFly directly inside Meta Business Suite: Pause/Resume AI, Assign Agents, and Generate Instant Replies.",
   "permissions": [
     "storage",
     "activeTab"
   ],
   "host_permissions": [
     "https://business.facebook.com/*",
-    "https://*.driplare.com/*",
+    "https://*.chatsfly.com/*",
     "http://localhost:3000/*"
   ],
   "background": {
@@ -27,7 +27,7 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Driplare AI Settings"
+    "default_title": "ChatsFly Settings"
   }
 }
 

@@ -3,7 +3,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## Facebook Integration (lightweight handler)\nVerifies Meta webhook, resolves `pageId → chatbotId`, handles Meta Message Echoes (`is_echo: true`) without AI reply, fetches **Meta User Profile** (name + photo), upserts **ChatSession**, calls **Core AI Brain**, then sends the reply.\n\n### Setup\n1. Open **Execute Core AI Brain** and select the imported *Core-AI-Brain* workflow.\n2. Meta webhook Verify Token: `driplare_n8n_facebook_secret_2026`.\n3. Subscribe the Page to `messages`, `messaging_postbacks`, `feed`.\n4. Integration.config must hold `pageId` + `pageAccessToken`.\n5. **Is Message Echo** filters out merchant messages sent from Meta Business Suite and logs them directly to DB.",
+        "content": "## Facebook Integration (lightweight handler)\nVerifies Meta webhook, resolves `pageId → chatbotId`, handles Meta Message Echoes (`is_echo: true`) without AI reply, fetches **Meta User Profile** (name + photo), upserts **ChatSession**, calls **Core AI Brain**, then sends the reply.\n\n### Setup\n1. Open **Execute Core AI Brain** and select the imported *Core-AI-Brain* workflow.\n2. Meta webhook Verify Token: `chatsfly_n8n_facebook_secret_2026`.\n3. Subscribe the Page to `messages`, `messaging_postbacks`, `feed`.\n4. Integration.config must hold `pageId` + `pageAccessToken`.\n5. **Is Message Echo** filters out merchant messages sent from Meta Business Suite and logs them directly to DB.",
         "height": 300,
         "width": 500
       },
@@ -19,7 +19,7 @@
     {
       "parameters": {
         "multipleMethods": true,
-        "path": "driplare-facebook",
+        "path": "chatsfly-facebook",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -31,7 +31,7 @@
         -1904,
         848
       ],
-      "webhookId": "driplare-facebook"
+      "webhookId": "chatsfly-facebook"
     },
     {
       "parameters": {
@@ -55,7 +55,7 @@
             {
               "id": "v-token",
               "leftValue": "={{ $json.query['hub.verify_token'] }}",
-              "rightValue": "driplare_n8n_facebook_secret_2026",
+              "rightValue": "chatsfly_n8n_facebook_secret_2026",
               "operator": {
                 "type": "string",
                 "operation": "equals"
@@ -746,7 +746,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://driplare-ai.vercel.app/api/internal/integration-secrets",
+        "url": "https://chatsfly-ai.vercel.app/api/internal/integration-secrets",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
@@ -772,7 +772,7 @@
       "credentials": {
         "httpHeaderAuth": {
           "id": "vTzyulOeCQPQoTXO",
-          "name": "Driplare Internal"
+          "name": "ChatsFly Internal"
         }
       }
     },

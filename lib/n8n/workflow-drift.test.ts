@@ -125,7 +125,7 @@ describe("the canonical shared nodes", () => {
 describe("each adapter declares the channel it is", () => {
   it.each(ADAPTERS)("$file names $platform in every place that matters", ({ file, platform }) => {
     const workflow = loaded.get(file)!;
-    const webhookPath = `driplare-${platform}`;
+    const webhookPath = `chatsfly-${platform}`;
 
     // These three values are what make the workflow *this* channel. A copy-paste
     // that updates the webhook path but not the SQL, or the platform input but

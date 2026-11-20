@@ -337,7 +337,7 @@ async function sendInvoiceEmail(args: {
 
     const result = await sendMail({
       to: args.user.email,
-      subject: `Invoice ${args.invoiceNumber} from DRIPLARE AI`,
+      subject: `Invoice ${args.invoiceNumber} from ChatsFly`,
       html: MailTemplates.invoiceIssued({
         name: args.user.name,
         invoiceNumber: args.invoiceNumber,
@@ -347,7 +347,7 @@ async function sendInvoiceEmail(args: {
       }),
       attachments: [
         {
-          filename: `DRIPLARE-${args.invoiceNumber}.pdf`,
+          filename: `ChatsFly-${args.invoiceNumber}.pdf`,
           content: pdfBuffer.toString("base64"),
         },
       ],

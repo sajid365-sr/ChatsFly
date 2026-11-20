@@ -1,5 +1,5 @@
-# 🚀 DriplareAI — Pending Features List
-> **রেফারেন্স:** `docs/VideoScript.txt` (AI Proctor platform) বিশ্লেষণ করে বর্তমান DriplareAI প্রজেক্টের সাথে তুলনা করা হয়েছে।
+# 🚀 ChatsFly — Pending Features List
+> **রেফারেন্স:** `docs/VideoScript.txt` (AI Proctor platform) বিশ্লেষণ করে বর্তমান ChatsFly প্রজেক্টের সাথে তুলনা করা হয়েছে।
 
 ---
 
@@ -43,7 +43,7 @@
 ## ❌ এখনো বাস্তবায়িত হয়নি (Pending Features)
 
 > [!IMPORTANT]
-> নিচের প্রতিটি ফিচার VideoScript-এ স্পষ্টভাবে উল্লেখিত, কিন্তু DriplareAI-তে এখনো নেই বা আংশিক।
+> নিচের প্রতিটি ফিচার VideoScript-এ স্পষ্টভাবে উল্লেখিত, কিন্তু ChatsFly-তে এখনো নেই বা আংশিক।
 
 ---
 
@@ -52,7 +52,7 @@
 | # | ফিচার | VideoScript রেফারেন্স | বর্তমান অবস্থা |
 |---|---|---|---|
 | 1 | **Chat Snooze / Reminder** — নির্দিষ্ট সময়ে chat স্বয়ংক্রিয়ভাবে সামনে আসে | *"বলে দিন কখন দেখবেন। ঠিক সেই সময়ে chatটা সামনে চলে আসে"* | ✅ সম্পূর্ণ — authenticated snooze/unsnooze, Snoozed filter, countdown badge এবং সময় হলে active inbox-এর শীর্ষে ফেরে |
-| 2 | **Seen → Typing → Reply** human-like delay simulation | *"আগে seen, তারপর typing, তারপর উত্তর"* | ❌ n8n-এ আংশিক কিন্তু DriplareAI dashboard-এ কোনো config নেই |
+| 2 | **Seen → Typing → Reply** human-like delay simulation | *"আগে seen, তারপর typing, তারপর উত্তর"* | ❌ n8n-এ আংশিক কিন্তু ChatsFly dashboard-এ কোনো config নেই |
 | 3 | **Full-text Chat Search** — message-এর ভেতরের কথা দিয়ে customer খোঁজা | *"নাম, ফোন নম্বর, order নম্বর এমনকি chat's ভেতরের যেকোনো একটা কথা লিখুন"* | ⚠️ নাম/session দিয়ে search আছে, কিন্তু message content full-text search নেই |
 | 4 | **Chat Assignment to Specific Team Member** (with notification) | *"chatটা তাকে assign করে দিন। তিনি notification পান"* | ⚠️ Schema-তে `assignedToUserId` আছে কিন্তু UI assignment + notification সিস্টেম নেই |
 | 5 | **Unlimited Team Members** (per-workspace) | *"Team member যোগ করুন যতজন খুশি। কোনো সীমা নেই"* | ⚠️ Workspace concept আছে কিন্তু team member invite/management UI নেই |
@@ -71,7 +71,7 @@
 | 11 | **Interactive Product Page** (no website needed) — buy now → order form → confirm → bill in chat | *"Buy Now tap করলেই order form সামনে। আরেক tap order confirm। Confirmation আর bill নিজেই chat চলে আসে"* | ⚠️ Product card আছে, কিন্তু standalone product page (chat-native checkout flow) সম্পূর্ণ নেই |
 | 12 | **Quick-reply Buttons** — options automatically become tappable buttons | *"যেখানে customerকে কিছু বেছে নিতে হয়, সেখানে type করার ঝামেলা নেই। Optionগুলো নিজে থেকেই button হয়ে যায়"* | ⚠️ Product card-এ আছে কিন্তু general quick-reply button generation নেই |
 | 13 | **Cross-platform Customer Identity** — একই customer-কে সব channel-এ চেনা | *"Customer যেখানেই যান, agent তাকে চেনে। আজ inbox কথা হলো। কাল একটা post comment করলেন..."* | ❌ প্রতিটি session আলাদা — cross-platform identity linking নেই |
-| 14 | **Comment Auto-DM** — post comment করলে inbox-এ DM যায় + comment reply | *"এক ছবির post কেউ comment করলে agent সেই product ধরেই comment উত্তর দেয়। সাথে inbox message পাঠায়"* | ⚠️ n8n-এ comment handling আছে কিন্তু DriplareAI dashboard-এ comment-specific config/UI নেই |
+| 14 | **Comment Auto-DM** — post comment করলে inbox-এ DM যায় + comment reply | *"এক ছবির post কেউ comment করলে agent সেই product ধরেই comment উত্তর দেয়। সাথে inbox message পাঠায়"* | ⚠️ n8n-এ comment handling আছে কিন্তু ChatsFly dashboard-এ comment-specific config/UI নেই |
 | 15 | **Comment Re-engagement** — comment করে DM-এ সাড়া না দিলে কিছুক্ষণ পরে আবার মনে করায় | *"comment করে কেউ inbox সাড়া না দিলে? কিছু সময় পরে সেই comment আরেকবার মনে করিয়ে দেয়"* | ❌ অনুপস্থিত |
 | 16 | **Spam/Junk Detection & Per-user AI Block** — এলোমেলো message করলে AI বন্ধ করে দেওয়া | *"একবার দেখে তার জন্য AI বন্ধ করে দিন। তার লেখা message AI এক পয়সাও আর খরচ হয় না"* | ⚠️ AI toggle (dot command) আছে, কিন্তু per-user AI disable (permanent block) নেই |
 | 17 | **Multi-message Batching** — customer একসাথে অনেক message দিলে সব পড়ে একটি reply | *"Customer একসাথে অনেকগুলো message দিলে সবগুলো পড়ে, বুঝে এক messageই উত্তর দেয়"* | ❌ অনুপস্থিত — প্রতিটি message আলাদা প্রসেস হয় |

@@ -1,5 +1,5 @@
-/* Driplare AI Meta Copilot Floating Dock Styles */
-#driplare-copilot-container {
+/* ChatsFly Meta Copilot Floating Dock Styles */
+#chatsfly-copilot-container {
   position: fixed;
   bottom: 24px;
   right: 24px;
@@ -8,7 +8,7 @@
   color: #0f172a;
 }
 
-#driplare-toggle-btn {
+#chatsfly-toggle-btn {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -24,12 +24,12 @@
   user-select: none;
 }
 
-#driplare-toggle-btn:hover {
+#chatsfly-toggle-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 15px 30px -5px rgba(124, 58, 237, 0.5);
 }
 
-.driplare-badge-dot {
+.chatsfly-badge-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -37,7 +37,7 @@
   box-shadow: 0 0 8px #10b981;
 }
 
-#driplare-sidebar-panel {
+#chatsfly-sidebar-panel {
   position: absolute;
   bottom: 56px;
   right: 0;
@@ -52,14 +52,14 @@
   transition: all 0.25s ease;
 }
 
-#driplare-copilot-container.driplare-collapsed #driplare-sidebar-panel {
+#chatsfly-copilot-container.chatsfly-collapsed #chatsfly-sidebar-panel {
   opacity: 0;
   pointer-events: none;
   transform: translateY(16px) scale(0.96);
   display: none;
 }
 
-.driplare-panel-header {
+.chatsfly-panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -68,7 +68,7 @@
   border-bottom: 1px solid #e2e8f0;
 }
 
-.driplare-brand-name {
+.chatsfly-brand-name {
   font-weight: 700;
   font-size: 14px;
   background: linear-gradient(135deg, #7c3aed 0%, #2563eb 100%);
@@ -76,13 +76,13 @@
   -webkit-text-fill-color: transparent;
 }
 
-.driplare-brand-sub {
+.chatsfly-brand-sub {
   font-size: 11px;
   color: #64748b;
   margin-left: 4px;
 }
 
-.driplare-icon-btn {
+.chatsfly-icon-btn {
   background: none;
   border: none;
   font-size: 20px;
@@ -93,58 +93,58 @@
   padding: 2px 6px;
 }
 
-.driplare-icon-btn:hover {
+.chatsfly-icon-btn:hover {
   background: #e2e8f0;
   color: #1e293b;
 }
 
-.driplare-panel-body {
+.chatsfly-panel-body {
   padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.driplare-card {
+.chatsfly-card {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 12px;
 }
 
-.driplare-card-row {
+.chatsfly-card-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.driplare-label {
+.chatsfly-label {
   font-size: 12px;
   font-weight: 600;
   color: #334155;
   margin-bottom: 2px;
 }
 
-.driplare-sublabel {
+.chatsfly-sublabel {
   font-size: 11px;
   color: #10b981;
 }
 
 /* Switch */
-.driplare-switch {
+.chatsfly-switch {
   position: relative;
   display: inline-block;
   width: 40px;
   height: 22px;
 }
 
-.driplare-switch input {
+.chatsfly-switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-.driplare-slider {
+.chatsfly-slider {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -156,7 +156,7 @@
   border-radius: 34px;
 }
 
-.driplare-slider:before {
+.chatsfly-slider:before {
   position: absolute;
   content: "";
   height: 16px;
@@ -168,23 +168,23 @@
   border-radius: 50%;
 }
 
-input:checked + .driplare-slider {
+input:checked + .chatsfly-slider {
   background: #7c3aed;
 }
 
-input:checked + .driplare-slider:before {
+input:checked + .chatsfly-slider:before {
   transform: translateX(18px);
 }
 
 /* Action buttons */
-.driplare-action-buttons {
+.chatsfly-action-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
   margin-top: 8px;
 }
 
-.driplare-action-btn {
+.chatsfly-action-btn {
   background: #ffffff;
   border: 1px solid #cbd5e1;
   padding: 8px 10px;
@@ -199,22 +199,22 @@ input:checked + .driplare-slider:before {
   transition: all 0.15s;
 }
 
-.driplare-action-btn:hover {
+.chatsfly-action-btn:hover {
   background: #f1f5f9;
   border-color: #94a3b8;
 }
 
-.driplare-action-btn-primary {
+.chatsfly-action-btn-primary {
   background: #7c3aed;
   color: #ffffff;
   border-color: #7c3aed;
 }
 
-.driplare-action-btn-primary:hover {
+.chatsfly-action-btn-primary:hover {
   background: #6d28d9;
 }
 
-.driplare-output-box {
+.chatsfly-output-box {
   margin-top: 10px;
   padding: 10px;
   background: #ffffff;
@@ -227,7 +227,7 @@ input:checked + .driplare-slider:before {
   overflow-y: auto;
 }
 
-.driplare-mini-btn {
+.chatsfly-mini-btn {
   margin-top: 8px;
   display: inline-block;
   background: #2563eb;
@@ -240,7 +240,7 @@ input:checked + .driplare-slider:before {
   cursor: pointer;
 }
 
-.driplare-select {
+.chatsfly-select {
   width: 100%;
   margin-top: 6px;
   padding: 7px 10px;

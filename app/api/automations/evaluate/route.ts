@@ -54,7 +54,7 @@ import { QUOTA_REPLY_TEXT, failOpenAnswer, resolveQuotaAnswer, type QuotaAnswer 
  *        caught separately below for exactly that reason.
  */
 
-const INTERNAL_HEADER = "x-driplare-internal";
+const INTERNAL_HEADER = "x-chatsfly-internal";
 
 /**
  * The engine's "nothing to do" verdict — the shape n8n has always received.

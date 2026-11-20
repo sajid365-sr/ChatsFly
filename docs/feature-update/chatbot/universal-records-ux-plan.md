@@ -1,4 +1,4 @@
-# DRIPLARE AI — "Business Zone" & Dynamic Form Navigation Architecture
+# ChatsFly — "Business Zone" & Dynamic Form Navigation Architecture
 
 > **মূল লক্ষ্য:** সাইডবারে হার্ডকোডেড "E-Commerce" প্রিভিলেজ দূর করে একটি সর্বজনীন **"Business Zone"** প্রতিষ্ঠা করা — যেখানে ই-কমার্সের ক্ষেত্রে তাদের শপ মেনু আসবে এবং অন্যান্য ব্যবসার ক্ষেত্রে তাদের তৈরি করা কাস্টম ফর্মগুলো (Doctor Serial, Tour Bookings, Table Reservations) সরাসরি সাব-মেনু হিসেবে দৃশ্যমান হবে।
 

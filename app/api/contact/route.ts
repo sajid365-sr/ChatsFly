@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     if (adminEmail) {
       await sendMail({
         to: adminEmail,
-        subject: `[Driplare] New contact — ${source}`,
+        subject: `[ChatsFly] New contact — ${source}`,
         html: `
           <div style="font-family:sans-serif;max-width:560px;margin:auto;padding:20px;">
             <h2 style="color:#6d28d9;">New Contact Submission</h2>

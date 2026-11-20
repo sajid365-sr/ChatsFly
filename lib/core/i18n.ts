@@ -128,10 +128,10 @@ function getInitialLanguage(): string {
   if (typeof document === "undefined") return "bn"; // SSR default
 
   // Check saved preference
-  const saved = localStorage.getItem("driplare_lang");
+  const saved = localStorage.getItem("chatsfly_lang");
   
   // Read region from cookie
-  const regionMatch = document.cookie.match(/(?:^|;\s*)driplare_region=([^;]*)/);
+  const regionMatch = document.cookie.match(/(?:^|;\s*)chatsfly_region=([^;]*)/);
   const region = regionMatch?.[1] || "bd";
   
   if (region === "global") {

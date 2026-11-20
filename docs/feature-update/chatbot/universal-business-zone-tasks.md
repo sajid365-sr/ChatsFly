@@ -1,4 +1,4 @@
-# DRIPLARE AI — Universal "Business Zone" & Dynamic Form Navigation Tasks
+# ChatsFly — Universal "Business Zone" & Dynamic Form Navigation Tasks
 
 > **সেকশন:** Main Navigation & Data Records Overhaul  
 > **ভিত্তি:** `docs/feature-update/chatbot/universal-records-ux-plan.md`  

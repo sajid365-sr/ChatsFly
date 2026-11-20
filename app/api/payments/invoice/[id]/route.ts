@@ -89,7 +89,7 @@ export async function GET(
     });
 
     // Return PDF as a downloadable file
-    const filename = `driplare-invoice-${invoiceNumber}.pdf`;
+    const filename = `chatsfly-invoice-${invoiceNumber}.pdf`;
     return new Response(new Uint8Array(pdfBuffer), {
       headers: {
         "Content-Type": "application/pdf",

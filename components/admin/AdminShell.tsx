@@ -33,12 +33,12 @@ export function AdminShell({ children }: AdminShellProps) {
       setCollapsed(customEv.detail);
     };
 
-    window.addEventListener("driplare:collapse-sidebar", handleCollapse);
+    window.addEventListener("chatsfly:collapse-sidebar", handleCollapse);
 
     return () => {
       document.documentElement.classList.remove("overflow-hidden");
       document.body.classList.remove("overflow-hidden");
-      window.removeEventListener("driplare:collapse-sidebar", handleCollapse);
+      window.removeEventListener("chatsfly:collapse-sidebar", handleCollapse);
     };
   }, []);
 

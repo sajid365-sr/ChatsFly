@@ -62,7 +62,7 @@ export async function GET(
       description:
         typeof meta.description === "string" && meta.description
           ? meta.description
-          : "DRIPLARE AI Invoice",
+          : "ChatsFly Invoice",
       creditsToGrant:
         typeof meta.creditsToGrant === "number" ? meta.creditsToGrant : null,
       plan: typeof meta.plan === "string" ? meta.plan : null,

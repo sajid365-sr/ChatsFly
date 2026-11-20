@@ -34,7 +34,7 @@ export type CloudinaryMediaUploadResult = {
 
 /**
  * Uploads a product image to Cloudinary using the multi-tenant folder hierarchy:
- * `driplare/{env}/workspaces/{workspaceId}/products`
+ * `chatsfly/{env}/workspaces/{workspaceId}/products`
  */
 export async function uploadProductImage(
   fileBuffer: Buffer,
@@ -42,7 +42,7 @@ export async function uploadProductImage(
 ): Promise<CloudinaryUploadResult> {
   initCloudinary();
   const env = process.env.NODE_ENV === "production" ? "production" : "development";
-  const folderPath = `driplare/${env}/workspaces/${workspaceId}/products`;
+  const folderPath = `chatsfly/${env}/workspaces/${workspaceId}/products`;
   const publicId = `prod_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
   return new Promise((resolve, reject) => {
@@ -74,7 +74,7 @@ export async function uploadProductImage(
 
 /**
  * Uploads a human-agent media attachment (image or audio) to Cloudinary.
- * Folder: `driplare/{env}/workspaces/{workspaceId}/inbox`
+ * Folder: `chatsfly/{env}/workspaces/{workspaceId}/inbox`
  *
  * For audio files, Cloudinary requires resource_type "video" (handles both).
  */
@@ -85,7 +85,7 @@ export async function uploadInboxMedia(
 ): Promise<CloudinaryMediaUploadResult> {
   initCloudinary();
   const env = process.env.NODE_ENV === "production" ? "production" : "development";
-  const folderPath = `driplare/${env}/workspaces/${workspaceId}/inbox`;
+  const folderPath = `chatsfly/${env}/workspaces/${workspaceId}/inbox`;
   const prefix = mediaType === "image" ? "img" : "aud";
   const publicId = `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
@@ -158,7 +158,7 @@ export function createFeedbackUploadSignature(args: {
   }
 
   const env = process.env.NODE_ENV === "production" ? "production" : "development";
-  const folder = `driplare/${env}/feedback/${args.userId}`;
+  const folder = `chatsfly/${env}/feedback/${args.userId}`;
   const timestamp = Math.round(Date.now() / 1000);
 
   // Only the fields signed here may be sent by the client — Cloudinary rejects

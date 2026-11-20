@@ -47,7 +47,7 @@ const CHANNELS = [
   {
     id: "web_widget",
     channel: "Web Chat Widget Hook",
-    provider: "Driplare AI Edge",
+    provider: "ChatsFly Edge",
     endpoint: "/api/chatbots/[chatbotId]/chat",
     platforms: ["web"],
   },
@@ -138,7 +138,7 @@ export async function GET() {
         const res = await fetch(n8nOrigin, {
           method: "GET",
           signal: controller.signal,
-          headers: { "User-Agent": "DriplareAI-HealthCheck/1.0" },
+          headers: { "User-Agent": "ChatsFly-HealthCheck/1.0" },
           cache: "no-store",
         });
         clearTimeout(timeoutId);

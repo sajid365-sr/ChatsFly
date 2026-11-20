@@ -3,7 +3,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "Core AI Brain — billing via platform API (v7)\n\nONE-TIME SETUP (n8n UI, no server access needed):\n  Credentials → New → \"Header Auth\"\n    Name  : x-n8n-secret\n    Value : (Vercel project \"driplare-ai\"-এর N8N_CALLBACK_SECRET মান)\n  তারপর \"Billing API\" নোডের Credential ড্রপডাউনে\n  credential-টা select করুন — খালি রাখলে নোড চলবে না।\n\n  ⚠️ এটা না করলে \"Billing API\" 401 পাবে আর প্রতিটি\n  reply-তে credit কাটা চুপচাপ বন্ধ থাকবে — reply ঠিকই\n  আসবে, তাই ভুল ধরা পড়বে না। ইমপোর্টের পর একটা টেস্ট\n  মেসেজ দিয়ে ব্যালেন্স সত্যিই কমছে কি না দেখে নিন।\n\nCHAIN: ... → Save Chat History → Billing API → Return to Platform\nBilling API → POST https://driplare-ai.vercel.app/api/internal/ai-usage\n  (এটাই প্ল্যাটফর্ম অ্যাপের ডোমেইন। www.driplare.com-এ\n   অ্যাপটি নেই — ওখানে সব /api রুট ৪০৪ দেয়।)\n\nThis node is the ONLY place credits are deducted now. It also\nwrites the AIUsageLog. runId = $execution.id makes retries\nidempotent — the same run can never be charged twice.\n\nCost is NOT computed here. Prices come from live OpenRouter\ndata on the platform side, so there is nothing to keep in sync.",
+        "content": "Core AI Brain — billing via platform API (v7)\n\nONE-TIME SETUP (n8n UI, no server access needed):\n  Credentials → New → \"Header Auth\"\n    Name  : x-n8n-secret\n    Value : (Vercel project \"chatsfly-ai\"-এর N8N_CALLBACK_SECRET মান)\n  তারপর \"Billing API\" নোডের Credential ড্রপডাউনে\n  credential-টা select করুন — খালি রাখলে নোড চলবে না।\n\n  ⚠️ এটা না করলে \"Billing API\" 401 পাবে আর প্রতিটি\n  reply-তে credit কাটা চুপচাপ বন্ধ থাকবে — reply ঠিকই\n  আসবে, তাই ভুল ধরা পড়বে না। ইমপোর্টের পর একটা টেস্ট\n  মেসেজ দিয়ে ব্যালেন্স সত্যিই কমছে কি না দেখে নিন।\n\nCHAIN: ... → Save Chat History → Billing API → Return to Platform\nBilling API → POST https://chatsfly-ai.vercel.app/api/internal/ai-usage\n  (এটাই প্ল্যাটফর্ম অ্যাপের ডোমেইন। www.chatsfly.com-এ\n   অ্যাপটি নেই — ওখানে সব /api রুট ৪০৪ দেয়।)\n\nThis node is the ONLY place credits are deducted now. It also\nwrites the AIUsageLog. runId = $execution.id makes retries\nidempotent — the same run can never be charged twice.\n\nCost is NOT computed here. Prices come from live OpenRouter\ndata on the platform side, so there is nothing to keep in sync.",
         "height": 660,
         "width": 580
       },
@@ -561,7 +561,7 @@
         "descriptionType": "manual",
         "toolDescription": "Create a confirmed customer order. Call ONLY after the customer confirms the items, quantity, customer name, phone, full delivery address, delivery fee, and grand total. delivery_fee must come from verified business delivery rules or the amount already quoted and confirmed in this conversation; never guess it. total_amount must equal the product subtotal plus delivery_fee. The response tells you whether the order was created; if it was not, read the reason and ask the customer for what is missing or needs reconfirmation.",
         "method": "POST",
-        "url": "https://driplare-ai.vercel.app/api/internal/orders",
+        "url": "https://chatsfly-ai.vercel.app/api/internal/orders",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
@@ -582,7 +582,7 @@
       "credentials": {
         "httpHeaderAuth": {
           "id": "wPlRocKN1ryxg2jy",
-          "name": "Driplare Platform Secret"
+          "name": "ChatsFly Platform Secret"
         }
       },
       "onError": "continueRegularOutput",
@@ -760,7 +760,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://driplare-ai.vercel.app/api/internal/ai-usage",
+        "url": "https://chatsfly-ai.vercel.app/api/internal/ai-usage",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
@@ -782,7 +782,7 @@
       "credentials": {
         "httpHeaderAuth": {
           "id": "wPlRocKN1ryxg2jy",
-          "name": "Driplare Platform Secret"
+          "name": "ChatsFly Platform Secret"
         }
       },
       "onError": "continueRegularOutput"
@@ -805,7 +805,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://driplare-ai.vercel.app/api/automations/evaluate",
+        "url": "https://chatsfly-ai.vercel.app/api/automations/evaluate",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
@@ -831,7 +831,7 @@
         }
       },
       "onError": "continueRegularOutput",
-      "notes": "Header Auth credential must send x-driplare-internal = AUTOMATION_INTERNAL_SECRET"
+      "notes": "Header Auth credential must send x-chatsfly-internal = AUTOMATION_INTERNAL_SECRET"
     },
     {
       "parameters": {
@@ -966,7 +966,7 @@
     },
     {
       "parameters": {
-        "content": "═══ AUTOMATION GATE — অবস্থা ও চেকলিস্ট ═══\n\nসম্পূর্ণ গাইড (troubleshooting সহ):\n  docs/n8n-JSON/Automation-Gate-Setup.md\n\nএই ফাইলে কানেকশন আগেই বসানো আছে:\n  Ensure Session → Automation Gate → Gate Decision → Gate Reply?\n  Gate Reply? (true)     → Gate Return\n  Gate Reply? (false)    → Quota Allowed?\n  Quota Allowed? (true)  → Media Router\n  Quota Allowed? (false) → Quota Blocked Reply\n\n⚠️ TASK-11: `Quota Check` নোডটি বাদ দেওয়া হয়েছে।\n  credit জিজ্ঞেস করাটা এখন Automation Gate-এর\n  নিজের উত্তরের ভেতরেই আসে (`quota` field), তাই\n  একটা পুরো আন্তঃমহাদেশীয় হপ বাঁচে।\n  Quota Allowed? এখন `$json.quota?.allowed`\n  দেখে — অর্থাৎ আগের `$json.allowed` নয়।\nআর Format Response-এ gateText prepend করার কোডও আছে।\nতাই হাতে আর কিছু জোড়ার দরকার নেই।\n\nএখন শুধু দুটো কাজ বাকি:\n\n১) Credentials → New → \"Header Auth\"\n     Name  : x-driplare-internal\n     Value : (Vercel project \"driplare-ai\"-এর\n              AUTOMATION_INTERNAL_SECRET মান)\n   তারপর \"Automation Gate\" নোডের Credential\n   ড্রপডাউনে credential-টা select করুন —\n   খালি রাখলে 401 আসবে।\n\n২) ⚠️ আগে অন্তত একটা সক্রিয় Rule বানান!\n   Rule না থাকলে ইঞ্জিন কোনো run row লেখেই না,\n   তাই Activity Log খালি থাকবে — অথচ Gate ঠিকই\n   ডাকছিল।\n   (/dashboard/automations → Create Rule → Active)\n\nURL: https://driplare-ai.vercel.app/api/automations/evaluate\n  www.driplare.com-এ অ্যাপটি নেই — ওখানে সব\n  /api রুট ৪০৪ দেয়, আর Gate-এ onError:\n  continueRegularOutput থাকায় সেই ৪০৪ চুপচাপ\n  গিলে ফেলা হয়: AI উত্তর দিয়ে দেয়, অথচ\n  Activity Log খালি থাকে।\n\n✓ সঠিক পরীক্ষা: Playground থেকে \"দাম কত\" পাঠান।\n   - Activity Log-এ একটি row এলেই Gate সক্রিয়।\n   - ক্যানড উত্তর সাথে সাথে এলে AI Agent\n     পুরো এড়িয়ে গেছে — credit খরচ ০।\n\n⚠️ localhost থেকে টেস্ট করলে n8n (VPS) আপনার\n   মেশিনে পৌঁছাতে পারবে না — cloudflared/ngrok\n   টানেল লাগবে (গাইডের ৭খ)।"
+        "content": "═══ AUTOMATION GATE — অবস্থা ও চেকলিস্ট ═══\n\nসম্পূর্ণ গাইড (troubleshooting সহ):\n  docs/n8n-JSON/Automation-Gate-Setup.md\n\nএই ফাইলে কানেকশন আগেই বসানো আছে:\n  Ensure Session → Automation Gate → Gate Decision → Gate Reply?\n  Gate Reply? (true)     → Gate Return\n  Gate Reply? (false)    → Quota Allowed?\n  Quota Allowed? (true)  → Media Router\n  Quota Allowed? (false) → Quota Blocked Reply\n\n⚠️ TASK-11: `Quota Check` নোডটি বাদ দেওয়া হয়েছে।\n  credit জিজ্ঞেস করাটা এখন Automation Gate-এর\n  নিজের উত্তরের ভেতরেই আসে (`quota` field), তাই\n  একটা পুরো আন্তঃমহাদেশীয় হপ বাঁচে।\n  Quota Allowed? এখন `$json.quota?.allowed`\n  দেখে — অর্থাৎ আগের `$json.allowed` নয়।\nআর Format Response-এ gateText prepend করার কোডও আছে।\nতাই হাতে আর কিছু জোড়ার দরকার নেই।\n\nএখন শুধু দুটো কাজ বাকি:\n\n১) Credentials → New → \"Header Auth\"\n     Name  : x-chatsfly-internal\n     Value : (Vercel project \"chatsfly-ai\"-এর\n              AUTOMATION_INTERNAL_SECRET মান)\n   তারপর \"Automation Gate\" নোডের Credential\n   ড্রপডাউনে credential-টা select করুন —\n   খালি রাখলে 401 আসবে।\n\n২) ⚠️ আগে অন্তত একটা সক্রিয় Rule বানান!\n   Rule না থাকলে ইঞ্জিন কোনো run row লেখেই না,\n   তাই Activity Log খালি থাকবে — অথচ Gate ঠিকই\n   ডাকছিল।\n   (/dashboard/automations → Create Rule → Active)\n\nURL: https://chatsfly-ai.vercel.app/api/automations/evaluate\n  www.chatsfly.com-এ অ্যাপটি নেই — ওখানে সব\n  /api রুট ৪০৪ দেয়, আর Gate-এ onError:\n  continueRegularOutput থাকায় সেই ৪০৪ চুপচাপ\n  গিলে ফেলা হয়: AI উত্তর দিয়ে দেয়, অথচ\n  Activity Log খালি থাকে।\n\n✓ সঠিক পরীক্ষা: Playground থেকে \"দাম কত\" পাঠান।\n   - Activity Log-এ একটি row এলেই Gate সক্রিয়।\n   - ক্যানড উত্তর সাথে সাথে এলে AI Agent\n     পুরো এড়িয়ে গেছে — credit খরচ ০।\n\n⚠️ localhost থেকে টেস্ট করলে n8n (VPS) আপনার\n   মেশিনে পৌঁছাতে পারবে না — cloudflared/ngrok\n   টানেল লাগবে (গাইডের ৭খ)।"
       },
       "id": "cdf1e448-9a30-4c12-ba7d-42379559d4d0",
       "name": "Gate Setup (বাংলা)",
@@ -1041,7 +1041,7 @@
     },
     {
       "parameters": {
-        "content": "═══ QUOTA GUARD — কেন, কীভাবে, কী পরীক্ষা করবেন ═══\n\nCHAIN: Gate Reply? (false) → Quota Allowed? → Media Router\n       Quota Allowed? (false) → Quota Blocked Reply  [শেষ]\n\n● TASK-11: আলাদা `Quota Check` নোডটি আর নেই\n  verdict আসে `Automation Gate`-এর নিজের উত্তরেই, `quota` field-এ।\n  n8n বাংলাদেশে, প্ল্যাটফর্ম Vercel-এ, ডাটাবেস Singapore-এ — তাই প্রতিটি বাড়তি\n  node মানে দুই দিকের আন্তঃমহাদেশীয় যাতায়াত। প্রশ্নটা এখনো আলাদা প্রশ্নই,\n  শুধু এখন একই অনুরোধে একসাথে জিজ্ঞেস করা হয় — আর রেড-দুটো Gate-এর আটটির\n  নিচে লুকিয়ে যায়, তাই latency বাড়ে না।\n  `Quota Allowed?` পড়ে `$json.quota?.allowed` — পুরনো `$json.allowed` নয়।\n\n● কেন এখানে, Gate-এর পরে?\n  Gate-এর ক্যানড উত্তর (canned reply) প্ল্যাটফর্মের কাছে বিনামূল্যে — credit\n  না থাকলেও সেটি পাঠানো উচিত। তাই ভ্রমণটা Gate-এর পরে, ঠিক যেখানে টাকা খরচ\n  শুরু হয় সেখানে।\n  ⚠️ আগে এখানে লেখা ছিল \"Gate-এর সাথে জুড়বেন না, কারণ TASK-11 গেটটিকে cache\n     করবে\"। সেটি ভুল প্রমাণিত: runEvent কেবল পড়ে না — ChatMessage ও\n     AutomationRun লেখে, side effect চালায়, আর frequency cap আগের run-এর উপর\n     নির্ভর করে। তাই উত্তর cache করা যায় না। যা করা হয়েছে তা ভিন্ন কিছু:\n     কলটা সরানো হয়নি, একত্রে করা হয়েছে।\n\n● Credential\n  এই যাচাইয়ের নিজের আলাদা কিছু লাগে না — উত্তরটা বয়ে আনে `Automation Gate`,\n  যার credential দেয় x-driplare-internal = AUTOMATION_INTERNAL_SECRET।\n  (`/api/internal/ai-quota` রুটটি এখনো আছে — ফেরার পথ হিসেবে। সেটি ব্যবহার\n  করলে credential \"Driplare Platform Secret\": x-n8n-secret = N8N_CALLBACK_SECRET।)\n  ⚠️ দুটো আলাদা secret — গুলিয়ে ফেললে 401।\n\n● fail-open — ইচ্ছে করেই\n  কেবল `allowed: false` পেলেই আটকায়। প্ল্যাটফর্ম ডাউন / timeout / 404 হলে\n  AI চলে — একটি ক্ষণিকের সার্ভার ত্রুটি যেন চলতি গ্রাহক-কথোপকথন চুপ না করে।\n  `quota` field না এলেও (`undefined !== false`) AI চলবে — অর্থাৎ পুরনো\n  `Automation Gate` নোডের সাথেও এই chain কাজ করে। নিয়মিত চেক করুন:\n  n8n → Executions → Automation Gate নোডে 200, উত্তরে `quota` এসেছে কি না।\n  ⚠️ প্ল্যাটফর্মের দিকেও একই নিয়ম মানা হয়, তবে verdict-টা আলাদা করে ধরা হয় —\n     রুটের fail-open catch কেবল **ইঞ্জিনের** উত্তরের জন্য। নইলে credit শেষ\n     হওয়া merchant-এর AI চুপচাপ চলতেই থাকত।\n\n● Model fallback এখানে নেই কেন\n  OpenRouter-এর আসল fallback হলো request body-র `models: [...]` তালিকা।\n  n8n-এর \"OpenRouter Chat Model\" node-এ ওই field নেই (শুধু একটা Model\n  dropdown + temperature/maxTokens/timeout/maxRetries) — তাই LangChain\n  Agent-এর ভেতর দিয়ে cross-model fallback পাঠানো সম্ভব নয়।\n  যা করা হয়েছে: node-এ timeout ৬০ সেকেন্ড (আগে ৬ মিনিট ছিল), maxRetries 2,\n  আর ব্যর্থ হলে AI Failed Reply — অর্থাৎ নিরবতা নয়, একটা বোধগম্য বার্তা।\n\n● পরীক্ষা\n  ১) Playground/Web থেকে একটা সাধারণ মেসেজ — উত্তর আসা উচিত।\n  ২) Executions খুলে দেখুন Automation Gate → 200, উত্তরে quota.allowed: true।\n  ৩) কোনো টেস্ট merchant-এর creditsBalance 0 করে দিন, তারপর মেসেজ দিন —\n     AI Agent একেবারেই চলবে না (credit খরচ ০), আর গ্রাহক পাবেন\n     \"দুঃখিত, এই মুহূর্তে উত্তর দিতে পারছি না...\" — merchant পাবেন মেইল।",
+        "content": "═══ QUOTA GUARD — কেন, কীভাবে, কী পরীক্ষা করবেন ═══\n\nCHAIN: Gate Reply? (false) → Quota Allowed? → Media Router\n       Quota Allowed? (false) → Quota Blocked Reply  [শেষ]\n\n● TASK-11: আলাদা `Quota Check` নোডটি আর নেই\n  verdict আসে `Automation Gate`-এর নিজের উত্তরেই, `quota` field-এ।\n  n8n বাংলাদেশে, প্ল্যাটফর্ম Vercel-এ, ডাটাবেস Singapore-এ — তাই প্রতিটি বাড়তি\n  node মানে দুই দিকের আন্তঃমহাদেশীয় যাতায়াত। প্রশ্নটা এখনো আলাদা প্রশ্নই,\n  শুধু এখন একই অনুরোধে একসাথে জিজ্ঞেস করা হয় — আর রেড-দুটো Gate-এর আটটির\n  নিচে লুকিয়ে যায়, তাই latency বাড়ে না।\n  `Quota Allowed?` পড়ে `$json.quota?.allowed` — পুরনো `$json.allowed` নয়।\n\n● কেন এখানে, Gate-এর পরে?\n  Gate-এর ক্যানড উত্তর (canned reply) প্ল্যাটফর্মের কাছে বিনামূল্যে — credit\n  না থাকলেও সেটি পাঠানো উচিত। তাই ভ্রমণটা Gate-এর পরে, ঠিক যেখানে টাকা খরচ\n  শুরু হয় সেখানে।\n  ⚠️ আগে এখানে লেখা ছিল \"Gate-এর সাথে জুড়বেন না, কারণ TASK-11 গেটটিকে cache\n     করবে\"। সেটি ভুল প্রমাণিত: runEvent কেবল পড়ে না — ChatMessage ও\n     AutomationRun লেখে, side effect চালায়, আর frequency cap আগের run-এর উপর\n     নির্ভর করে। তাই উত্তর cache করা যায় না। যা করা হয়েছে তা ভিন্ন কিছু:\n     কলটা সরানো হয়নি, একত্রে করা হয়েছে।\n\n● Credential\n  এই যাচাইয়ের নিজের আলাদা কিছু লাগে না — উত্তরটা বয়ে আনে `Automation Gate`,\n  যার credential দেয় x-chatsfly-internal = AUTOMATION_INTERNAL_SECRET।\n  (`/api/internal/ai-quota` রুটটি এখনো আছে — ফেরার পথ হিসেবে। সেটি ব্যবহার\n  করলে credential \"ChatsFly Platform Secret\": x-n8n-secret = N8N_CALLBACK_SECRET।)\n  ⚠️ দুটো আলাদা secret — গুলিয়ে ফেললে 401।\n\n● fail-open — ইচ্ছে করেই\n  কেবল `allowed: false` পেলেই আটকায়। প্ল্যাটফর্ম ডাউন / timeout / 404 হলে\n  AI চলে — একটি ক্ষণিকের সার্ভার ত্রুটি যেন চলতি গ্রাহক-কথোপকথন চুপ না করে।\n  `quota` field না এলেও (`undefined !== false`) AI চলবে — অর্থাৎ পুরনো\n  `Automation Gate` নোডের সাথেও এই chain কাজ করে। নিয়মিত চেক করুন:\n  n8n → Executions → Automation Gate নোডে 200, উত্তরে `quota` এসেছে কি না।\n  ⚠️ প্ল্যাটফর্মের দিকেও একই নিয়ম মানা হয়, তবে verdict-টা আলাদা করে ধরা হয় —\n     রুটের fail-open catch কেবল **ইঞ্জিনের** উত্তরের জন্য। নইলে credit শেষ\n     হওয়া merchant-এর AI চুপচাপ চলতেই থাকত।\n\n● Model fallback এখানে নেই কেন\n  OpenRouter-এর আসল fallback হলো request body-র `models: [...]` তালিকা।\n  n8n-এর \"OpenRouter Chat Model\" node-এ ওই field নেই (শুধু একটা Model\n  dropdown + temperature/maxTokens/timeout/maxRetries) — তাই LangChain\n  Agent-এর ভেতর দিয়ে cross-model fallback পাঠানো সম্ভব নয়।\n  যা করা হয়েছে: node-এ timeout ৬০ সেকেন্ড (আগে ৬ মিনিট ছিল), maxRetries 2,\n  আর ব্যর্থ হলে AI Failed Reply — অর্থাৎ নিরবতা নয়, একটা বোধগম্য বার্তা।\n\n● পরীক্ষা\n  ১) Playground/Web থেকে একটা সাধারণ মেসেজ — উত্তর আসা উচিত।\n  ২) Executions খুলে দেখুন Automation Gate → 200, উত্তরে quota.allowed: true।\n  ৩) কোনো টেস্ট merchant-এর creditsBalance 0 করে দিন, তারপর মেসেজ দিন —\n     AI Agent একেবারেই চলবে না (credit খরচ ০), আর গ্রাহক পাবেন\n     \"দুঃখিত, এই মুহূর্তে উত্তর দিতে পারছি না...\" — merchant পাবেন মেইল।",
         "height": 900,
         "width": 620
       },
@@ -1269,7 +1269,7 @@
             },
             {
               "name": "folder",
-              "value": "=driplare/{{ $('Cloudinary Config').first().json.folderEnv || 'production' }}/workspaces/{{ $('Fetch Bot Config').first().json.workspaceId || 'unknown' }}/inbox"
+              "value": "=chatsfly/{{ $('Cloudinary Config').first().json.folderEnv || 'production' }}/workspaces/{{ $('Fetch Bot Config').first().json.workspaceId || 'unknown' }}/inbox"
             }
           ]
         },
@@ -1303,7 +1303,7 @@
             },
             {
               "name": "folder",
-              "value": "=driplare/{{ $('Cloudinary Config').first().json.folderEnv || 'production' }}/workspaces/{{ $('Fetch Bot Config').first().json.workspaceId || 'unknown' }}/inbox"
+              "value": "=chatsfly/{{ $('Cloudinary Config').first().json.folderEnv || 'production' }}/workspaces/{{ $('Fetch Bot Config').first().json.workspaceId || 'unknown' }}/inbox"
             }
           ]
         },
@@ -1385,7 +1385,7 @@
         "descriptionType": "manual",
         "toolDescription": "Save customer intake form data, bookings, reservations, inquiries, or custom form submissions. Call ONLY after confirming the required details with the customer.",
         "method": "POST",
-        "url": "https://driplare-ai.vercel.app/api/internal/custom-records",
+        "url": "https://chatsfly-ai.vercel.app/api/internal/custom-records",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
@@ -1406,7 +1406,7 @@
       "credentials": {
         "httpHeaderAuth": {
           "id": "wPlRocKN1ryxg2jy",
-          "name": "Driplare Platform Secret"
+          "name": "ChatsFly Platform Secret"
         }
       },
       "onError": "continueRegularOutput",
@@ -1417,7 +1417,7 @@
         "descriptionType": "manual",
         "toolDescription": "Look up the status of one existing order. Call only after the customer gives BOTH the order ID and the phone number used at checkout. If either is missing, ask the customer for it first. The server checks the phone against the saved order before returning any details.",
         "method": "POST",
-        "url": "https://driplare-ai.vercel.app/api/internal/orders/lookup",
+        "url": "https://chatsfly-ai.vercel.app/api/internal/orders/lookup",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
@@ -1438,7 +1438,7 @@
       "credentials": {
         "httpHeaderAuth": {
           "id": "wPlRocKN1ryxg2jy",
-          "name": "Driplare Platform Secret"
+          "name": "ChatsFly Platform Secret"
         }
       },
       "onError": "continueRegularOutput",

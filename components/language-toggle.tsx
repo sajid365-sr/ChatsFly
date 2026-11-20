@@ -15,7 +15,7 @@ export function LanguageToggle() {
   
   const set = (lng: string) => {
     i18n.changeLanguage(lng);
-    localStorage.setItem("driplare_lang", lng);
+    localStorage.setItem("chatsfly_lang", lng);
     if (typeof document !== "undefined") {
       document.documentElement.lang = lng;
     }

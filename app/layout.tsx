@@ -30,7 +30,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const regionCookie = cookieStore.get("driplare_region")?.value;
+  const regionCookie = cookieStore.get("chatsfly_region")?.value;
   const initialRegion = (regionCookie === "global" ? "global" : "bd") as "bd" | "global";
 
   // দাম এবং প্ল্যাটফর্ম ব্র্যান্ডিং একযোগে লোড করা হয়

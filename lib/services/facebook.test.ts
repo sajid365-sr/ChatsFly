@@ -11,8 +11,8 @@ afterEach(() => {
 
 describe("Facebook Login for Business", () => {
   it("exchanges the Facebook Login for Business popup code with the SDK callback URI", async () => {
-    vi.stubEnv("NEXT_PUBLIC_META_APP_ID", "driplare-meta-app");
-    vi.stubEnv("META_APP_SECRET", "driplare-meta-secret");
+    vi.stubEnv("NEXT_PUBLIC_META_APP_ID", "chatsfly-meta-app");
+    vi.stubEnv("META_APP_SECRET", "chatsfly-meta-secret");
     const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
       void input;
       return Response.json({
@@ -31,8 +31,8 @@ describe("Facebook Login for Business", () => {
     const parsedUrl = new URL(String(url));
     expect(parsedUrl.origin).toBe("https://graph.facebook.com");
     expect(parsedUrl.pathname).toBe("/v20.0/oauth/access_token");
-    expect(parsedUrl.searchParams.get("client_id")).toBe("driplare-meta-app");
-    expect(parsedUrl.searchParams.get("client_secret")).toBe("driplare-meta-secret");
+    expect(parsedUrl.searchParams.get("client_id")).toBe("chatsfly-meta-app");
+    expect(parsedUrl.searchParams.get("client_secret")).toBe("chatsfly-meta-secret");
     expect(parsedUrl.searchParams.get("code")).toBe("one-time-code");
     expect(parsedUrl.searchParams.get("redirect_uri"))
       .toBe("https://www.facebook.com/connect/login_success.html");

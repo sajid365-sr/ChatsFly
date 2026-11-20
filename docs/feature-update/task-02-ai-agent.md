@@ -69,7 +69,7 @@ A standalone, shareable product detail page (no separate website needed) that is
 
 ### Key Logic
 
-- Product page URL: `https://driplare.ai/p/{productId}?session={sessionId}&channel=messenger`
+- Product page URL: `https://chatsfly.ai/p/{productId}?session={sessionId}&channel=messenger`
 - On order submit → create Order in DB → call platform API to send bill to chat session
 - No login required for customer
 

@@ -28,7 +28,7 @@ const isPublicRoute = createRouteMatcher([
   // n8n's `Automation Gate` node calls this, so there is never a Clerk session
   // on the request. Leaving it out would hand the call to `auth.protect()`,
   // which redirects to sign-in — and the gate would never reach the engine.
-  // Its security is the route's own `x-driplare-internal` shared-secret check
+  // Its security is the route's own `x-chatsfly-internal` shared-secret check
   // (timingSafeEqual), same as `/api/internal/*`.
   '/api/automations/evaluate(.*)',
   // Scheduled cron routes authenticate themselves with CRON_SECRET.
@@ -40,7 +40,7 @@ const isPublicRoute = createRouteMatcher([
   '/api/cron/process-conversation-learning(.*)',
   // The website widget. Both halves are fetched from a **merchant's own site**,
   // where no Clerk session can exist: the shopper reading that page has never
-  // heard of Driplare. Handing either call to `auth.protect()` would send it to
+  // heard of ChatsFly. Handing either call to `auth.protect()` would send it to
   // sign-in — the embed tag would receive an HTML login page instead of
   // JavaScript, and every message would 401.
   //

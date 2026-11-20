@@ -66,27 +66,27 @@ describe("path builders", () => {
 
 describe("buildWidgetEmbedCode", () => {
   it("points at the origin it was given", () => {
-    expect(buildWidgetEmbedCode("https://app.driplare.com", KEY)).toBe(
-      `<script src="https://app.driplare.com/widget/${KEY}.js" async></script>`
+    expect(buildWidgetEmbedCode("https://app.chatsfly.com", KEY)).toBe(
+      `<script src="https://app.chatsfly.com/widget/${KEY}.js" async></script>`
     );
   });
 
   it("does not double the slash when the origin ends in one", () => {
-    expect(buildWidgetEmbedCode("https://app.driplare.com/", KEY)).toContain(
+    expect(buildWidgetEmbedCode("https://app.chatsfly.com/", KEY)).toContain(
       `com/widget/${KEY}.js`
     );
   });
 
   it("keeps the tag loadable without blocking the host page", () => {
     // The merchant's own site performance is not ours to spend.
-    expect(buildWidgetEmbedCode("https://app.driplare.com", KEY)).toContain("async");
+    expect(buildWidgetEmbedCode("https://app.chatsfly.com", KEY)).toContain("async");
   });
 });
 
 describe("isSafeHost", () => {
   it.each([
-    "app.driplare.com",
-    "driplare-ai.vercel.app",
+    "app.chatsfly.com",
+    "chatsfly-ai.vercel.app",
     "localhost:3000",
     "192.168.1.10",
     "192.168.1.10:8080",
@@ -115,20 +115,20 @@ describe("resolveRequestOrigin", () => {
     // the widget's API base.
     const headers = new Headers({
       host: "internal-abc123:3000",
-      "x-forwarded-host": "app.driplare.com",
+      "x-forwarded-host": "app.chatsfly.com",
       "x-forwarded-proto": "https",
     });
 
-    expect(resolveRequestOrigin(headers)).toBe("https://app.driplare.com");
+    expect(resolveRequestOrigin(headers)).toBe("https://app.chatsfly.com");
   });
 
   it("takes the first entry of a comma-separated chain", () => {
     const headers = new Headers({
-      "x-forwarded-host": "app.driplare.com, edge.internal",
+      "x-forwarded-host": "app.chatsfly.com, edge.internal",
       "x-forwarded-proto": "https, http",
     });
 
-    expect(resolveRequestOrigin(headers)).toBe("https://app.driplare.com");
+    expect(resolveRequestOrigin(headers)).toBe("https://app.chatsfly.com");
   });
 
   it("refuses a host carrying a path", () => {
@@ -142,8 +142,8 @@ describe("resolveRequestOrigin", () => {
   });
 
   it("defaults to https away from localhost", () => {
-    expect(resolveRequestOrigin(new Headers({ host: "app.driplare.com" }))).toBe(
-      "https://app.driplare.com"
+    expect(resolveRequestOrigin(new Headers({ host: "app.chatsfly.com" }))).toBe(
+      "https://app.chatsfly.com"
     );
   });
 
@@ -156,9 +156,9 @@ describe("resolveRequestOrigin", () => {
   it("ignores a proto header that is neither http nor https", () => {
     // The value is interpolated into a URL, so an unexpected scheme is dropped
     // rather than trusted.
-    const headers = new Headers({ host: "app.driplare.com", "x-forwarded-proto": "javascript" });
+    const headers = new Headers({ host: "app.chatsfly.com", "x-forwarded-proto": "javascript" });
 
-    expect(resolveRequestOrigin(headers)).toBe("https://app.driplare.com");
+    expect(resolveRequestOrigin(headers)).toBe("https://app.chatsfly.com");
   });
 });
 
