@@ -2,23 +2,24 @@
 # Stage 1: Dependencies
 # Install all node_modules (including devDependencies for build)
 # ============================================================
-FROM node:20-alpine AS deps
+FROM node:22-alpine AS deps
 RUN apk add --no-cache libc6-compat openssl
 
 WORKDIR /app
 
-# Copy package files
+# Copy package and prisma configuration files
 COPY package.json package-lock.json* ./
+COPY prisma.config.ts ./
 COPY prisma ./prisma/
 
-# Install dependencies (including dev for build)
+# Install dependencies (Prisma 7 generates automatically via postinstall)
 RUN npm ci
 
 # ============================================================
 # Stage 2: Builder
 # Build the Next.js application in standalone mode
 # ============================================================
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -26,11 +27,10 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Generate Prisma client
-RUN npx prisma generate
+# Generate Prisma client using multi-file schema directory
+RUN npx prisma generate --schema=prisma/schema
 
 # Build Next.js app
-# NEXT_TELEMETRY_DISABLED prevents any telemetry calls during build
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
@@ -40,7 +40,7 @@ RUN npm run build
 # Stage 3: Runner
 # Minimal production image using Next.js standalone output
 # ============================================================
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 
 WORKDIR /app
 
@@ -55,7 +55,6 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/public ./public
 
 # Copy Next.js standalone build output
-# next.config.ts must have output: 'standalone'
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
