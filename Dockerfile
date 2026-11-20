@@ -13,7 +13,8 @@ COPY prisma.config.ts ./
 COPY prisma ./prisma/
 
 # Fallback dummy URL so prisma generate during postinstall does not fail
-ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/chatsfly"
+ARG DATABASE_URL="postgresql://postgres:postgres@localhost:5432/chatsfly"
+ENV DATABASE_URL=$DATABASE_URL
 
 # Install dependencies
 RUN npm ci
@@ -30,12 +31,29 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Dummy env vars needed during Next.js static page analysis / build
-ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/chatsfly"
-ENV NEXT_PUBLIC_APP_URL="https://chatsfly.com"
-ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_dummy"
-ENV CLERK_SECRET_KEY="sk_dummy"
-ENV RESEND_API_KEY="re_dummy"
+# Receive build-time environment arguments passed by Coolify
+ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+ARG CLERK_SECRET_KEY
+ARG NEXT_PUBLIC_APP_URL="https://chatsfly.com"
+ARG NEXT_PUBLIC_APP_DOMAIN="chatsfly.com"
+ARG NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
+ARG NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
+ARG NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL="/dashboard"
+ARG NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL="/onboarding"
+ARG DATABASE_URL="postgresql://postgres:postgres@localhost:5432/chatsfly"
+ARG RESEND_API_KEY="re_dummy"
+
+# Set them as environment variables during build
+ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+ENV CLERK_SECRET_KEY=$CLERK_SECRET_KEY
+ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
+ENV NEXT_PUBLIC_APP_DOMAIN=$NEXT_PUBLIC_APP_DOMAIN
+ENV NEXT_PUBLIC_CLERK_SIGN_IN_URL=$NEXT_PUBLIC_CLERK_SIGN_IN_URL
+ENV NEXT_PUBLIC_CLERK_SIGN_UP_URL=$NEXT_PUBLIC_CLERK_SIGN_UP_URL
+ENV NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=$NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL
+ENV NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=$NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL
+ENV DATABASE_URL=$DATABASE_URL
+ENV RESEND_API_KEY=$RESEND_API_KEY
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
@@ -50,6 +68,9 @@ RUN npm run build
 # Minimal production image using Next.js standalone output
 # ============================================================
 FROM node:22-alpine AS runner
+
+# Install curl for Coolify container healthcheck
+RUN apk add --no-cache curl
 
 WORKDIR /app
 
