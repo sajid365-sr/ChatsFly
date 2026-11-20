@@ -1,6 +1,12 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let _resendClient: Resend | null = null;
+function getResendClient(): Resend {
+  if (!_resendClient) {
+    _resendClient = new Resend(process.env.RESEND_API_KEY || "re_dummy_for_build");
+  }
+  return _resendClient;
+}
 
 interface SendMailProps {
   to: string;
@@ -60,6 +66,12 @@ const BRAND = {
  */
 export async function sendMail({ to, subject, html, attachments }: SendMailProps) {
   try {
+    if (!process.env.RESEND_API_KEY) {
+      console.warn("[MAIL_WARN] RESEND_API_KEY is not configured. Skipping email dispatch.");
+      return { success: false, error: new Error("RESEND_API_KEY is not configured") };
+    }
+
+    const resend = getResendClient();
     const { data, error } = await resend.emails.send({
       from: "ChatsFly <notifications@chatsfly.com>", // Note: You need to verify this domain in Resend
       to: [to],

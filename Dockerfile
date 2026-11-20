@@ -35,6 +35,7 @@ ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/chatsfly"
 ENV NEXT_PUBLIC_APP_URL="https://chatsfly.com"
 ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_dummy"
 ENV CLERK_SECRET_KEY="sk_dummy"
+ENV RESEND_API_KEY="re_dummy"
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
