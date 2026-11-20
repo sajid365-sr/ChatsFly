@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import { useConfirm } from "@/hooks/use-confirm";
 import { TeamMemberList, type TeamMemberItem } from "./_components/TeamMemberList";
 import { InviteMemberModal } from "./_components/InviteMemberModal";
+import { EditMemberModal } from "./_components/EditMemberModal";
+import type { MemberPermissions } from "@/lib/domain/team-member-permissions";
 
 export default function TeamSettingsPage() {
   const { t } = useTranslation("settings");
@@ -16,48 +18,63 @@ export default function TeamSettingsPage() {
   const [workspaceId, setWorkspaceId] = useState<string | null>(null);
   const [ownerId, setOwnerId] = useState<string>("");
   const [currentUserId, setCurrentUserId] = useState<string>("");
+  const [canManage, setCanManage] = useState<boolean>(true);
   const [members, setMembers] = useState<TeamMemberItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showInviteModal, setShowInviteModal] = useState<boolean>(false);
+  const [editingMember, setEditingMember] = useState<TeamMemberItem | null>(null);
 
-  // Load active workspace first
+  // Load workspace and members on mount
   useEffect(() => {
-    fetch("/api/workspaces")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.activeWorkspaceId) {
-          setWorkspaceId(data.activeWorkspaceId);
-        } else if (data.workspaces?.[0]?.workspaceId) {
-          setWorkspaceId(data.workspaces[0].workspaceId);
-        }
-      })
-      .catch((err) => console.error("[LOAD_WS_ERR]", err));
+    let ignore = false;
+    async function load() {
+      try {
+        const wsRes = await fetch("/api/workspaces");
+        const wsData = await wsRes.json();
+        const id = wsData.activeWorkspaceId || wsData.workspaces?.[0]?.workspaceId;
+        if (!id || ignore) return;
+        setWorkspaceId(id);
+
+        const membersRes = await fetch(`/api/workspaces/${id}/members`);
+        const membersData = await membersRes.json();
+        if (ignore) return;
+        setMembers(membersData.members ?? []);
+        setOwnerId(membersData.ownerId ?? "");
+        setCurrentUserId(membersData.currentUserId ?? "");
+        setCanManage(Boolean(membersData.isOwner || membersData.currentUserRole === "admin"));
+      } catch (err) {
+        console.error("[LOAD_WS_ERR]", err);
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      ignore = true;
+    };
   }, []);
 
-  // Fetch members when workspaceId is set
-  const fetchMembers = useCallback(async () => {
-    if (!workspaceId) return;
+  const refreshMembers = useCallback(async (targetWorkspaceId?: string | null) => {
+    const wsId = targetWorkspaceId || workspaceId;
+    if (!wsId) return;
     try {
-      setLoading(true);
-      const res = await fetch(`/api/workspaces/${workspaceId}/members`);
+      const res = await fetch(`/api/workspaces/${wsId}/members`);
       const data = await res.json();
       setMembers(data.members ?? []);
       setOwnerId(data.ownerId ?? "");
       setCurrentUserId(data.currentUserId ?? "");
+      setCanManage(Boolean(data.isOwner || data.currentUserRole === "admin"));
     } catch (err) {
-      console.error("[FETCH_MEMBERS_ERR]", err);
-    } finally {
-      setLoading(false);
+      console.error("[REFRESH_MEMBERS_ERR]", err);
     }
   }, [workspaceId]);
 
-  useEffect(() => {
-    if (workspaceId) {
-      fetchMembers();
-    }
-  }, [workspaceId, fetchMembers]);
-
-  const handleInvite = async (data: { name: string; email: string; role: string }): Promise<boolean> => {
+  const handleInvite = async (data: {
+    name: string;
+    email: string;
+    role: string;
+    permissions?: MemberPermissions;
+  }): Promise<boolean> => {
     if (!workspaceId) return false;
     try {
       const res = await fetch(`/api/workspaces/${workspaceId}/members`, {
@@ -68,7 +85,7 @@ export default function TeamSettingsPage() {
 
       if (res.ok) {
         toast.success(t("team.inviteModal.successToast"));
-        fetchMembers();
+        refreshMembers();
         return true;
       }
       const err = await res.json();
@@ -80,6 +97,34 @@ export default function TeamSettingsPage() {
       return false;
     } catch {
       toast.error(t("team.inviteModal.errorToast"));
+      return false;
+    }
+  };
+
+  const handleUpdateMember = async (data: {
+    memberId: string;
+    name: string;
+    role: string;
+    permissions: MemberPermissions;
+  }): Promise<boolean> => {
+    if (!workspaceId) return false;
+    try {
+      const res = await fetch(`/api/workspaces/${workspaceId}/members`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        toast.success(t("team.editModal.successToast", "Member permissions updated successfully"));
+        refreshMembers();
+        return true;
+      }
+      const err = await res.json();
+      toast.error(err.error || t("team.editModal.errorToast", "Failed to update member permissions"));
+      return false;
+    } catch {
+      toast.error(t("team.editModal.errorToast", "Failed to update member permissions"));
       return false;
     }
   };
@@ -122,13 +167,15 @@ export default function TeamSettingsPage() {
           </p>
         </div>
 
-        <Button
-          onClick={() => setShowInviteModal(true)}
-          className="gap-2 rounded-full self-start sm:self-auto"
-        >
-          <UserPlus className="w-4 h-4" />
-          {t("team.inviteBtn")}
-        </Button>
+        {canManage && (
+          <Button
+            onClick={() => setShowInviteModal(true)}
+            className="gap-2 rounded-full self-start sm:self-auto cursor-pointer"
+          >
+            <UserPlus className="w-4 h-4" />
+            {t("team.inviteBtn")}
+          </Button>
+        )}
       </div>
 
       {/* Unlimited Members Value Banner */}
@@ -148,6 +195,8 @@ export default function TeamSettingsPage() {
           members={members}
           ownerId={ownerId}
           currentUserId={currentUserId}
+          canManage={canManage}
+          onEdit={(member) => setEditingMember(member)}
           onRemove={handleRemove}
         />
       )}
@@ -158,7 +207,17 @@ export default function TeamSettingsPage() {
         onClose={() => setShowInviteModal(false)}
         onInvite={handleInvite}
       />
+
+      {/* Edit Member & Permissions Modal */}
+      {editingMember && (
+        <EditMemberModal
+          key={editingMember.id}
+          isOpen={Boolean(editingMember)}
+          member={editingMember}
+          onClose={() => setEditingMember(null)}
+          onUpdate={handleUpdateMember}
+        />
+      )}
     </div>
   );
 }
-

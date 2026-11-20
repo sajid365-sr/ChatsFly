@@ -238,30 +238,33 @@ export default function WorkspaceSettingsPage() {
             />
           </div>
 
-          {/* Business Category */}
+          {/* Business Category — read-only (locked after creation) */}
           <div className="space-y-2">
             <Label className="text-xs font-semibold">
               {t("workspace.categoryLabel", "Business Category")}
             </Label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {WORKSPACE_BUSINESS_CATEGORIES.map((cat) => {
-                const selected = category === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => setCategory(cat.id)}
-                    className={`p-2.5 text-left rounded-xl text-xs font-medium border transition-all cursor-pointer ${
-                      selected
-                        ? "border-primary bg-primary/10 text-primary font-semibold shadow-sm"
-                        : "border-border/60 hover:bg-muted text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    {t(cat.labelKey, cat.label)}
-                  </button>
+            {/* Show active category as a locked badge */}
+            <div className="flex items-center gap-3">
+              {(() => {
+                const activeCat = WORKSPACE_BUSINESS_CATEGORIES.find(
+                  (c) => c.id === category
                 );
-              })}
+                return (
+                  <span className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold border border-primary/40 bg-primary/10 text-primary select-none">
+                    <Building2 className="w-3.5 h-3.5 shrink-0" />
+                    {activeCat ? t(activeCat.labelKey, activeCat.label) : category}
+                  </span>
+                );
+              })()}
             </div>
+            {/* Locked notice */}
+            <p className="flex items-start gap-1.5 text-[11px] text-muted-foreground bg-muted/40 p-2.5 rounded-lg border border-border/50">
+              <Info className="h-3.5 w-3.5 mt-0.5 shrink-0 text-amber-500" />
+              {t(
+                "workspace.categoryLocked",
+                "Business category is locked after creation. To use a different category, create a new workspace."
+              )}
+            </p>
           </div>
 
           {/* Business Zone Title */}
