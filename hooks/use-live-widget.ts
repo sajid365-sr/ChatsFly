@@ -21,7 +21,7 @@ import { persist } from "zustand/middleware";
  *    float the widgets of all the others — that would stop being a preference.
  */
 
-const STORAGE_KEY = "driplare_live_widget";
+const STORAGE_KEY = "chatsfly_live_widget";
 
 /** Agent-section route: `/dashboard/aiagents/<id>/…` (bare `/chatbots` excluded). */
 const CHATBOT_PATH = /^\/dashboard\/chatbots\/([^/]+)/;

@@ -207,8 +207,8 @@ export async function checkUsageThresholds(userId: string): Promise<AlertOutcome
               to: user.email,
               subject:
                 threshold >= 100
-                  ? "Your DRIPLARE AI credits are exhausted"
-                  : `You've used ${threshold}% of your DRIPLARE AI credits`,
+                  ? "Your ChatsFly credits are exhausted"
+                  : `You've used ${threshold}% of your ChatsFly credits`,
               html: MailTemplates.usageAlert(
                 user.name,
                 threshold,
@@ -437,14 +437,14 @@ async function buildRenewalOffer(
 
 function getAppUrl(): string {
   // Mirrors `lib/services/mail.ts`. The final fallback is the project's own
-  // Vercel domain — `driplare.com` is not attached to this project, so an alert
+  // Vercel domain — `chatsfly.com` is not attached to this project, so an alert
   // email built from it would link nowhere.
   const raw =
     process.env.NEXT_PUBLIC_APP_URL ??
     process.env.APP_URL ??
     (process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`
-      : "https://driplare-ai.vercel.app");
+      : "https://chatsfly-ai.vercel.app");
 
   return raw.replace(/\/+$/, "");
 }
@@ -547,8 +547,8 @@ export async function checkRenewalReminder(
             to: user.email,
             subject:
               phrase.kind === "expired"
-                ? "Your DRIPLARE AI plan has ended"
-                : `Your DRIPLARE AI plan renews ${renewalPhraseText(phrase)}`,
+                ? "Your ChatsFly plan has ended"
+                : `Your ChatsFly plan renews ${renewalPhraseText(phrase)}`,
             html: MailTemplates.renewalReminder({
               name: user.name,
               when: renewalPhraseText(phrase),

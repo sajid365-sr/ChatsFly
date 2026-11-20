@@ -1,6 +1,6 @@
-# 🎨 DriplareAI — Color & Design System Audit Report
+# 🎨 ChatsFly — Color & Design System Audit Report
 
-> **Audit Date:** 2026-08-14 | **Project:** DriplareAI (Next.js App Router, Tailwind CSS v4)
+> **Audit Date:** 2026-08-14 | **Project:** ChatsFly (Next.js App Router, Tailwind CSS v4)
 
 ---
 

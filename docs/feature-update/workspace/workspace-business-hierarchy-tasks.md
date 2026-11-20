@@ -1,4 +1,4 @@
-# DRIPLARE AI — Workspace-Centric Architecture & Hierarchy Tasks
+# ChatsFly — Workspace-Centric Architecture & Hierarchy Tasks
 
 > **সেকশন:** Workspace Category, 1-to-1 Channel Binding & Hierarchical Knowledge  
 > **ভিত্তি:** `docs/feature-update/workspace/workspace-business-hierarchy-ux-plan.md`  

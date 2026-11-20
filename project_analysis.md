@@ -1,7 +1,7 @@
-# 🔍 DRIPLARE AI — প্রজেক্ট সম্পূর্ণ বিশ্লেষণ ও গাইডলাইন
+# 🔍 ChatsFly — প্রজেক্ট সম্পূর্ণ বিশ্লেষণ ও গাইডলাইন
 
 ## 🌟 Project Overview
-**DRIPLARE AI** একটি অত্যাধুনিক **AI-driven Omnichannel Chatbot প্ল্যাটফর্ম**। এটি মূলত ছোট এবং মাঝারি পর্যায়ের ব্যবসায়ীদের (SMBs) জন্য ডিজাইন করা হয়েছে, যাতে তারা তাদের কাস্টমার সার্ভিস এবং সেলস অটোমেশনকে আরও স্মার্ট ও সাশ্রয়ী করতে পারে। 
+**ChatsFly** একটি অত্যাধুনিক **AI-driven Omnichannel Chatbot প্ল্যাটফর্ম**। এটি মূলত ছোট এবং মাঝারি পর্যায়ের ব্যবসায়ীদের (SMBs) জন্য ডিজাইন করা হয়েছে, যাতে তারা তাদের কাস্টমার সার্ভিস এবং সেলস অটোমেশনকে আরও স্মার্ট ও সাশ্রয়ী করতে পারে। 
 
 ### আমরা কী সেবা দিচ্ছি?
 ১. **Omnichannel Presence:** ব্যবসায়ী তার একটি চ্যাটবটকেই ফেসবুক মেসেঞ্জার, হোয়াটসঅ্যাপ, ইনস্টাগ্রাম এবং নিজস্ব ওয়েবসাইটে কানেক্ট করতে পারেন।
@@ -14,7 +14,7 @@
 - **Increased Sales:** দ্রুত উত্তর পাওয়ার ফলে কাস্টমাররা সার্ভিস বা প্রোডাক্ট কেনার ব্যাপারে দ্রুত সিদ্ধান্ত নিতে পারছে।
 
 ## 💳 SaaS & Business Model
-DRIPLARE AI একটি **Subscription-based SaaS (Software as a Service)** মডেলে চলে। 
+ChatsFly একটি **Subscription-based SaaS (Software as a Service)** মডেলে চলে। 
 
 - **Tiered Pricing:** গ্রাহকরা তাদের ব্যবহারের ধরন অনুযায়ী ভিন্ন ভিন্ন প্ল্যান (Starter, Growth, Business, Enterprise) বেছে নিতে পারেন।
 - **Message Quota System:** প্রতিটি প্ল্যানে নির্দিষ্ট সংখ্যক "AI Messages" বরাদ্দ থাকে। কোটা শেষ হলে গ্রাহকরা বাড়তি চার্জের বিনিময়ে সার্ভিস চালু রাখতে পারেন।
@@ -81,7 +81,7 @@ DRIPLARE AI একটি **Subscription-based SaaS (Software as a Service)** ম
 
 ## 🤖 LLM ও Embedding (RAG Pipeline)
 
-- **Backend Automation:** DRIPLARE AI তার মূল ব্যাকএন্ড লজিক হিসেবে **n8n** ব্যবহার করছে। Next.js শুধুমাত্র Auth এবং UI হ্যান্ডেল করে, যেখানে AI প্রসেসিং এবং থার্ড-পার্টি ইন্টিগ্রেশনগুলো n8n ওয়ার্কফ্লোর মাধ্যমে পরিচালিত হয়।
+- **Backend Automation:** ChatsFly তার মূল ব্যাকএন্ড লজিক হিসেবে **n8n** ব্যবহার করছে। Next.js শুধুমাত্র Auth এবং UI হ্যান্ডেল করে, যেখানে AI প্রসেসিং এবং থার্ড-পার্টি ইন্টিগ্রেশনগুলো n8n ওয়ার্কফ্লোর মাধ্যমে পরিচালিত হয়।
 - **Data Synchronization:** প্রতিটি মেসেজ আদান-প্রদান এবং ডাটা ইনজেশন সরাসরি PostgreSQL ডেটাবেস আপডেট করে, যা ইউজার ড্যাশবোর্ডে রিয়েল-টাইম অ্যানালিটিক্স প্রদানে সহায়তা করে।
 - **Webhook-Driven:** n8n ওয়েবুকের মাধ্যমে ইভেন্ট হ্যান্ডেল করে (যেমন: ফেসবুক মেসেজ ইনকামিং), যা সিস্টেমকে স্কেলেবল এবং লো-কোড বান্ধব রাখে।
 
@@ -203,9 +203,9 @@ app/
 - **এন্টারপ্রাইজ ফোল্ডার রিস্ট্রাকচারিং ও অপ্টিমাইজেশন (Enterprise Folder Restructuring & Optimization):**
   - ড্যাশবোর্ডের সব পেজের কম্পোনেন্টগুলোকে তাদের নিজস্ব প্রাইভেট `_components/` ফোল্ডারে **Colocation Pattern**-এ বিন্যস্ত করা হয়েছে (যেমন: `settings/_components`, `settings/security/_components`, `settings/referrals/_components`, `chatbots/_components`, `usage/_components`, `payments/_components`)।
   - রুট `/components` ডিরেক্টরি থেকে সমস্ত ডুপ্লিকেট এবং পেজ-নির্দিষ্ট উপাদান সরিয়ে দিয়ে এটিকে শুধুমাত্র বৈশ্বিক এবং ইউনিভার্সাল রিসোর্সের জন্য (যেমন `ui/`, `layout/`) ডেডিকেটেড করা হয়েছে।
-  - ড্যাশবোর্ডের অতিরিক্ত ডুপ্লিকেট লেআউট লেয়ার `AppShell.tsx` মুছে ফেলে এর সমস্ত প্রিমিয়াম লজিক সরাসরি Next.js-এর নেটিভ লেআউট [app/(dashboard)/layout.tsx](file:///d:/Sajid%20Sorker/Programming/Projects/DRIPLAREAI/app/%28dashboard%29/layout.tsx) ফাইলে এন্টারপ্রাইজ স্ট্যান্ডার্ডের `DashboardLayout` হিসেবে যুক্ত করা হয়েছে।
-  - ড্যাশবোর্ডের ন্যাভবার/টপবার অংশটুকুকে আরও মডিউলার করার জন্য সম্পূর্ণ লজিক এবং রেসপনসিভ বোতামসহ একটি কাস্টম কম্পোনেন্ট [components/layout/dashboardHeader.tsx](file:///d:/Sajid%20Sorker/Programming/Projects/DRIPLAREAI/components/layout/dashboardHeader.tsx) ফাইলে স্থানান্তর করা হয়েছে।
-  - অব্যবহৃত এবং ডুপ্লিকেট `components/layout/Header.tsx` ফাইলটি সম্পূর্ণ মুছে ফেলা হয়েছে এবং পাবলিক ল্যান্ডিং পেজের নেভিগেশন বার `PublicNav.tsx` এর নাম পরিবর্তন করে [components/layout/Header.tsx](file:///d:/Sajid%20Sorker/Programming/Projects/DRIPLAREAI/components/layout/Header.tsx) করা হয়েছে।
+  - ড্যাশবোর্ডের অতিরিক্ত ডুপ্লিকেট লেআউট লেয়ার `AppShell.tsx` মুছে ফেলে এর সমস্ত প্রিমিয়াম লজিক সরাসরি Next.js-এর নেটিভ লেআউট [app/(dashboard)/layout.tsx](file:///d:/Sajid%20Sorker/Programming/Projects/ChatsFlyAI/app/%28dashboard%29/layout.tsx) ফাইলে এন্টারপ্রাইজ স্ট্যান্ডার্ডের `DashboardLayout` হিসেবে যুক্ত করা হয়েছে।
+  - ড্যাশবোর্ডের ন্যাভবার/টপবার অংশটুকুকে আরও মডিউলার করার জন্য সম্পূর্ণ লজিক এবং রেসপনসিভ বোতামসহ একটি কাস্টম কম্পোনেন্ট [components/layout/dashboardHeader.tsx](file:///d:/Sajid%20Sorker/Programming/Projects/ChatsFlyAI/components/layout/dashboardHeader.tsx) ফাইলে স্থানান্তর করা হয়েছে।
+  - অব্যবহৃত এবং ডুপ্লিকেট `components/layout/Header.tsx` ফাইলটি সম্পূর্ণ মুছে ফেলা হয়েছে এবং পাবলিক ল্যান্ডিং পেজের নেভিগেশন বার `PublicNav.tsx` এর নাম পরিবর্তন করে [components/layout/Header.tsx](file:///d:/Sajid%20Sorker/Programming/Projects/ChatsFlyAI/components/layout/Header.tsx) করা হয়েছে।
   - **টাইপ সেফটি ভেরিফিকেশন:** পুরো রিফ্যাক্টরিং শেষে `npx tsc --noEmit` রান করে ১০০% সফল কমপাইল নিশ্চিত করা হয়েছে।
 - **Library:** i18next + react-i18next
 - **Languages:** English + Bengali (Bangla support)

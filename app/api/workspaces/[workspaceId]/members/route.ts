@@ -199,7 +199,7 @@ export async function POST(
     );
     const emailResult = await sendMail({
       to: email,
-      subject: `Invitation to join ${workspace.name} on Driplare AI`,
+      subject: `Invitation to join ${workspace.name} on ChatsFly`,
       html: MailTemplates.teamInvitation({
         inviteeName: name || existingUser?.name || email.split("@")[0],
         inviterName: user.name,

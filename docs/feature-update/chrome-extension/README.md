@@ -1,6 +1,6 @@
-# Driplare AI — Meta Business Suite Chrome Extension (Manifest V3)
+# ChatsFly — Meta Business Suite Chrome Extension (Manifest V3)
 
-এই Chrome Extension-টি ব্যবহার করে সরাসরি **Meta Business Suite** (`business.facebook.com`) এর ভেতর থেকেই Driplare AI নিয়ন্ত্রণ করা যায়।
+এই Chrome Extension-টি ব্যবহার করে সরাসরি **Meta Business Suite** (`business.facebook.com`) এর ভেতর থেকেই ChatsFly নিয়ন্ত্রণ করা যায়।
 
 ---
 
@@ -9,7 +9,7 @@
 1. **AI এক ক্লিকে Pause/Resume:** মেটা ইনবক্সে গ্রাহকের সাথে কথা বলার সময় প্রয়োজন অনুযায়ী AI চালু বা বন্ধ রাখা।
 2. **AI Moderator Assistant:** ইনবক্সের কথোপকথনের ইনস্ট্যান্ট সারসংক্ষেপ (Summary) ও ১-ক্লিকে বেস্ট রিপ্লাই সাজেশন।
 3. **টিম মেম্বার অ্যাসাইনমেন্ট:** Business Suite-এর ভেতরেই চ্যাটটি দলের নির্দিষ্ট সদস্যকে অ্যাসাইন করা।
-4. **সহজ কানেকশন:** Driplare AI ড্যাশবোর্ড থেকে API কী সেট করে সরাসরি কানেক্ট করা।
+4. **সহজ কানেকশন:** ChatsFly ড্যাশবোর্ড থেকে API কী সেট করে সরাসরি কানেক্ট করা।
 
 ---
 
@@ -21,7 +21,7 @@
 4. এই ফোল্ডারটি সিলেক্ট করুন: `docs/feature-update/chrome-extension/`
 5. এক্সটেনশনটি লোড হয়ে যাবে।
 6. মেটা বিজনেস স্যুট ওপেন করুন: `https://business.facebook.com/latest/inbox/`
-7. নিচে ডান কোণে Driplare AI Copilot ফ্লোটিং বাটন দেখতে পাবেন!
+7. নিচে ডান কোণে ChatsFly Copilot ফ্লোটিং বাটন দেখতে পাবেন!
 
 ---
 

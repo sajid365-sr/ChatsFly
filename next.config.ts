@@ -15,6 +15,10 @@ import path from "path";
  * writes into the same `.next` directory and muddies the dev cache.
  */
 const nextConfig: NextConfig = {
+  // Required for Coolify/Docker deployment — generates a self-contained
+  // .next/standalone directory that includes only what's needed to run.
+  output: "standalone",
+
   logging: {
     fetches: {
       fullUrl: true,
@@ -25,6 +29,27 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     turbopackFileSystemCacheForDev: false,
+  },
+
+  // Allow images from Cloudinary and other external sources
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "img.clerk.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.clerk.dev",
+        pathname: "/**",
+      },
+    ],
   },
 };
 

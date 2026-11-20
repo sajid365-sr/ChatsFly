@@ -406,7 +406,7 @@ export const ConversationPanel = ({
         <div className="shrink-0 px-4 py-2 border-t border-border/40 bg-card/80 flex items-center gap-2">
           <Sparkles className="w-3.5 h-3.5 text-violet-400 shrink-0" />
           <span className="text-[11px] text-muted-foreground">
-            Driplare AI is handling this conversation. Click{" "}
+            ChatsFly AI is handling this conversation. Click{" "}
             <strong className="text-foreground font-semibold">Stop AI</strong> to take over manually.
           </span>
         </div>

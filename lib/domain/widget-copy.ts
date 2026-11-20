@@ -6,7 +6,7 @@ import enWidget from "@/public/locales/en/widget.json";
  *
  * This is a different audience from every other locale file in the project.
  * `integrations.json` speaks to the merchant ("Copy the embed code above");
- * these speak to a shopper who has never heard of Driplare and is standing on
+ * these speak to a shopper who has never heard of ChatsFly and is standing on
  * the merchant's own website. So the wording has to survive being read with no
  * context at all — and, like `ai-errors.json`, it must never mention credits,
  * billing or plans. A visitor learning that the business ran out of money is

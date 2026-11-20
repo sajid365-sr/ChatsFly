@@ -40,7 +40,7 @@ const FAQS: FaqItem[] = [
   {
     qEn: "Can I connect my own courier account (Steadfast, Pathao, RedX)?",
     qBn: "আমি কি আমার নিজস্ব কুরিয়ার একাউন্ট (Steadfast, Pathao, RedX) যুক্ত করতে পারি?",
-    aEn: "Yes! On the Business and Enterprise tiers, DRIPLARE AI directly links to your merchant API keys for Steadfast, Pathao, and RedX, automatically creating parcels and recording tracking numbers.",
+    aEn: "Yes! On the Business and Enterprise tiers, ChatsFly directly links to your merchant API keys for Steadfast, Pathao, and RedX, automatically creating parcels and recording tracking numbers.",
     aBn: "অবশ্যই! বিজনেস ও এন্টারপ্রাইজ প্ল্যানে আপনার নিজস্ব Steadfast, Pathao এবং RedX মার্চেন্ট API যুক্ত করে স্বয়ংক্রিয় পার্সেল বুকিং ও ট্র্যাকিং নম্বর হ্যান্ডেল করতে পারবেন।",
   },
 ];

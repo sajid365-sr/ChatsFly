@@ -74,7 +74,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(18);
     doc.setFont("helvetica", "bold");
-    doc.text("DRIPLARE AI", MARGIN, 22);
+    doc.text("ChatsFly", MARGIN, 22);
   }
 
   // ── Invoice label + number (right side of header) ─────────────
@@ -146,7 +146,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
   doc.setFontSize(11);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(PDF_BRAND.dark[0], PDF_BRAND.dark[1], PDF_BRAND.dark[2]);
-  doc.text("Driplare AI", fromColX, infoY + 7);
+  doc.text("ChatsFly", fromColX, infoY + 7);
 
   doc.setFontSize(8.5);
   doc.setFont("helvetica", "normal");
@@ -167,7 +167,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     body: [
       [
         "01",
-        `Driplare AI — ${data.planName.toUpperCase()} Plan\nMonthly Subscription`,
+        `ChatsFly — ${data.planName.toUpperCase()} Plan\nMonthly Subscription`,
         "1",
         `${data.amount.toLocaleString()} ${data.currency.toUpperCase()}`,
         `${data.amount.toLocaleString()} ${data.currency.toUpperCase()}`,
@@ -298,7 +298,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
   doc.text(
     isUnpaid
       ? "Please complete the payment to enjoy uninterrupted services."
-      : "Thank you for choosing Driplare AI. We appreciate your business.",
+      : "Thank you for choosing ChatsFly. We appreciate your business.",
     W / 2,
     242,
     { align: "center" }

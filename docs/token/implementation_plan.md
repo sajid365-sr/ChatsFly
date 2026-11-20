@@ -21,7 +21,7 @@ Chat Playground থেকে মেসেজ দিলে ডুপ্লিক�
 
 ### 1. Next.js API Layer
 
-#### [MODIFY] [route.ts](file:///c:/Users/User/Projects/DriplareAI/app/api/chatbots/%5BchatbotId%5D/chat/route.ts)
+#### [MODIFY] [route.ts](file:///c:/Users/User/Projects/ChatsFly/app/api/chatbots/%5BchatbotId%5D/chat/route.ts)
 - n8n Webhook-এ পাঠানোর সময় `platform: "playground"` এবং `channel: "playground"` মেটাডাটা পাস করা।
 - রেসপন্স পাওয়ার পর ডুপ্লিকেট `logAiUsage` কলটি সরিয়ে নেওয়া (কারণ n8n `Core-AI-Brain` ডাটাবেজ ইনসার্ট এবং ক্রেডিট ডিডাকশন একবারে সম্পন্ন করে)।
 
@@ -29,12 +29,12 @@ Chat Playground থেকে মেসেজ দিলে ডুপ্লিক�
 
 ### 2. n8n Workflows
 
-#### [MODIFY] [Core-AI-Brain.json](file:///c:/Users/User/Projects/DriplareAI/docs/n8n-JSON/Core-AI-Brain.json)
+#### [MODIFY] [Core-AI-Brain.json](file:///c:/Users/User/Projects/ChatsFly/docs/n8n-JSON/Core-AI-Brain.json)
 - `Fetch OpenRouter Usage Payload` নোডটি রিমুভ / বাইপাস করা যাতে OpenRouter-এ অনাকাঙ্ক্ষিত ২য় ডামি কল না যায়।
 - `AI Agent` নোড সরাসরি `Format Response`-এ ডাটা পাঠাবে।
 - `Format Response` কোড নোডে ইনপুট কনটেক্সট (System Prompt + Knowledge Context + User Message) এবং AI এর প্রাপ্ত উত্তর থেকে টোকেন মেট্রিক্স (Prompt & Completion Tokens) এবং OpenRouter প্রাইসিং ফর্মুলা অনুযায়ী খরচ (USD & BDT) নিখুঁতভাবে হিসাব করা।
 
-#### [MODIFY] [Web-Playground-Integration.json](file:///c:/Users/User/Projects/DriplareAI/docs/n8n-JSON/Web-Playground-Integration.json)
+#### [MODIFY] [Web-Playground-Integration.json](file:///c:/Users/User/Projects/ChatsFly/docs/n8n-JSON/Web-Playground-Integration.json)
 - `Validate & Normalize Payload` ও `Build Brain Payload` নোডে ইনকামিং `channel` সঠিক ভাবে `playground` হিসেবে হ্যান্ডেল করা নিশ্চিত করা।
 
 ---

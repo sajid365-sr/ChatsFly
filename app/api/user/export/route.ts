@@ -63,7 +63,7 @@ export async function POST() {
     const exportPayload = {
       reportInfo: {
         generatedAt: new Date().toISOString(),
-        platform: "DRIPLARE AI",
+        platform: "ChatsFly",
         version: "1.0"
       },
       account: {
@@ -159,7 +159,7 @@ export async function POST() {
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(24);
     doc.setFont("helvetica", "bold");
-    doc.text("DRIPLARE AI", 15, 20);
+    doc.text("ChatsFly", 15, 20);
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     doc.text("Complete Data Export Report", 15, 30);
@@ -270,21 +270,21 @@ export async function POST() {
 
     // Sanitize user name for filename (remove spaces and special chars)
     const sanitizedName = userData.name.replace(/\s+/g, "-").replace(/[^a-zA-Z0-9-]/g, "");
-    const pdfFileName = `DRIPLARE-Data-Report-${sanitizedName}.pdf`;
-    const jsonFileName = `DRIPLARE-Full-Data-${sanitizedName}.json`;
+    const pdfFileName = `ChatsFly-Data-Report-${sanitizedName}.pdf`;
+    const jsonFileName = `ChatsFly-Full-Data-${sanitizedName}.json`;
 
     // Send the email with PDF and JSON
     const mailResult = await sendMail({
       to: userData.email,
-      subject: "DRIPLARE AI - Your Complete Data Report is Ready",
+      subject: "ChatsFly - Your Complete Data Report is Ready",
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-          <h2 style="color: #6d28d9;">DRIPLARE AI</h2>
+          <h2 style="color: #6d28d9;">ChatsFly</h2>
           <p>Hello ${userData.name},</p>
           <p>Your requested personal data export is ready. We have attached a professional PDF report for easy viewing and a JSON file for your technical records.</p>
           <p>Please keep these files secure as they contain sensitive account information.</p>
           <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-          <p style="font-size: 12px; color: #666;">&copy; 2026 DRIPLARE AI. All rights reserved.</p>
+          <p style="font-size: 12px; color: #666;">&copy; 2026 ChatsFly. All rights reserved.</p>
         </div>
       `,
       attachments: [

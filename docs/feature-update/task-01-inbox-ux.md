@@ -266,7 +266,7 @@ When a customer replies to a specific message (quoted reply), the AI receives th
 - Chrome Extension manifest v3
 - Content script that injects a floating sidebar into `business.facebook.com`
 - Sidebar UI: AI toggle, AI moderator assistant, assign agent
-- Auth: communicate with DriplareAI API using user's session token
+- Auth: communicate with ChatsFly API using user's session token
 
 ### Completion Checklist
 

@@ -1,7 +1,7 @@
 /**
  * Multi-Business / Multi-Workspace — server-only helpers.
  *
- * Resolves the active workspace for a request from the `driplare_workspace`
+ * Resolves the active workspace for a request from the `chatsfly_workspace`
  * cookie (validated against ownership), auto-provisioning a default workspace
  * and backfilling legacy chatbots the first time. Import this ONLY from server
  * code (route handlers) — it reads next/headers.

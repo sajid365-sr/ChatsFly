@@ -3,7 +3,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## Instagram Integration (lightweight handler)\nVerifies Meta webhook, resolves `instagramAccountId → chatbotId`, handles **Message Echoes** (`is_echo: true`) without AI reply, upserts **ChatSession**, calls **Core AI Brain**, then sends reply via IG Graph API.\n\n### Setup\n1. Open **Execute Core AI Brain** and select the imported *Core-AI-Brain* workflow.\n2. Verify Token: `driplare_n8n_instagram_secret_2026`.\n3. Integration.config holds `instagramAccountId`, `connectionSource`, and either\n   `instagramAccessToken` (instagram_login) or `pageId` + `pageAccessToken` (facebook_login).\n4. **Is Message Echo** guard filters out messages sent by merchant from Meta Business Suite and logs them directly to DB without triggering AI.",
+        "content": "## Instagram Integration (lightweight handler)\nVerifies Meta webhook, resolves `instagramAccountId → chatbotId`, handles **Message Echoes** (`is_echo: true`) without AI reply, upserts **ChatSession**, calls **Core AI Brain**, then sends reply via IG Graph API.\n\n### Setup\n1. Open **Execute Core AI Brain** and select the imported *Core-AI-Brain* workflow.\n2. Verify Token: `chatsfly_n8n_instagram_secret_2026`.\n3. Integration.config holds `instagramAccountId`, `connectionSource`, and either\n   `instagramAccessToken` (instagram_login) or `pageId` + `pageAccessToken` (facebook_login).\n4. **Is Message Echo** guard filters out messages sent by merchant from Meta Business Suite and logs them directly to DB without triggering AI.",
         "height": 360,
         "width": 500
       },
@@ -19,7 +19,7 @@
     {
       "parameters": {
         "multipleMethods": true,
-        "path": "driplare-instagram",
+        "path": "chatsfly-instagram",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -31,7 +31,7 @@
         -1360,
         460
       ],
-      "webhookId": "driplare-instagram"
+      "webhookId": "chatsfly-instagram"
     },
     {
       "parameters": {
@@ -55,7 +55,7 @@
             {
               "id": "v-token",
               "leftValue": "={{ $json.query['hub.verify_token'] }}",
-              "rightValue": "driplare_n8n_instagram_secret_2026",
+              "rightValue": "chatsfly_n8n_instagram_secret_2026",
               "operator": {
                 "type": "string",
                 "operation": "equals"
@@ -612,7 +612,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://driplare-ai.vercel.app/api/internal/integration-secrets",
+        "url": "https://chatsfly-ai.vercel.app/api/internal/integration-secrets",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,

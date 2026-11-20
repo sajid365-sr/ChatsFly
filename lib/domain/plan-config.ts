@@ -1,5 +1,5 @@
 /**
- * Plan configuration for DRIPLARE — separate BD and Global pricing.
+ * Plan configuration for ChatsFly — separate BD and Global pricing.
  *
  * BD market:  Lower prices (lower CAC), BDT currency, Uddoktapay
  * Global:     Higher prices (higher CAC), USD currency — browse-only, no gateway

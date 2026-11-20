@@ -1,7 +1,7 @@
-# DRIPLARE AI — CRM Full Upgrade Task List
+# ChatsFly — CRM Full Upgrade Task List
 
 > **শুরু:** ২৭ অক্টোবর ২০২৬  
-> **লক্ষ্য:** DRIPLARE AI-কে পূর্ণাঙ্গ CRM Platform-এ রূপান্তর  
+> **লক্ষ্য:** ChatsFly-কে পূর্ণাঙ্গ CRM Platform-এ রূপান্তর  
 > **নিয়ম:** একটি task শেষ হলে ✅ দিয়ে চিহ্নিত করা হয়েছে।
 
 ---

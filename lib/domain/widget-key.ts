@@ -6,7 +6,7 @@
  * A merchant embeds one line on their site:
  *
  * ```html
- * <script src="https://app.driplare.com/widget/<widgetKey>.js" async></script>
+ * <script src="https://app.chatsfly.com/widget/<widgetKey>.js" async></script>
  * ```
  *
  * That `<widgetKey>` is the integration's own `integrationId` — the cuid column

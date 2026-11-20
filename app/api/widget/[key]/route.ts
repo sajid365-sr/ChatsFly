@@ -291,7 +291,7 @@ export async function POST(
         maxTokens: bot.maxTokens,
         chatInput: message,
         userId: bot.userId,
-        // `playground` means "a Driplare user is testing". A widget visitor is a
+        // `playground` means "a ChatsFly user is testing". A widget visitor is a
         // real customer, so the platform is `web` — the same channel the billing
         // reports already group the website widget under.
         platform: "web",

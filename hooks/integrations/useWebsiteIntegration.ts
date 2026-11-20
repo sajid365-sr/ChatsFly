@@ -26,14 +26,14 @@ export type ConnectPlatformResult = { integrationId?: string } | null | undefine
  *
  * `window.location.origin` is the real answer in the browser; the fallback only
  * runs during SSR, but it still has to name a host that serves the widget —
- * `driplare.com` is not attached to this project, so it would embed nothing.
+ * `chatsfly.com` is not attached to this project, so it would embed nothing.
  * The same rule is used when the merchant copies the code, so the tag they paste
  * matches the dashboard that showed it to them.
  */
 function currentOrigin(): string {
   return typeof window !== "undefined"
     ? window.location.origin
-    : process.env.NEXT_PUBLIC_APP_URL ?? "https://driplare-ai.vercel.app";
+    : process.env.NEXT_PUBLIC_APP_URL ?? "https://chatsfly-ai.vercel.app";
 }
 
 /**

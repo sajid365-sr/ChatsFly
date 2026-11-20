@@ -1,18 +1,18 @@
-// Background Service Worker for Driplare AI Chrome Extension
+// Background Service Worker for ChatsFly Chrome Extension
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("[Driplare AI] Chrome Extension installed successfully.");
+  console.log("[ChatsFly] Chrome Extension installed successfully.");
   chrome.storage.sync.get(["apiUrl"], (result) => {
     if (!result.apiUrl) {
-      chrome.storage.sync.set({ apiUrl: "https://driplare.com" });
+      chrome.storage.sync.set({ apiUrl: "https://chatsfly.com" });
     }
   });
 });
 
 // Proxy API requests from content script to bypass CORS if necessary
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.type === "DRIPLARE_API_CALL") {
+  if (request.type === "ChatsFly_API_CALL") {
     chrome.storage.sync.get(["apiUrl", "apiKey"], async ({ apiUrl, apiKey }) => {
-      const baseUrl = apiUrl || "https://driplare.com";
+      const baseUrl = apiUrl || "https://chatsfly.com";
       try {
         const response = await fetch(`${baseUrl}${request.endpoint}`, {
           method: request.method || "GET",

@@ -115,7 +115,7 @@ export default function BillingHistoryPage() {
     doc.setFontSize(10);
     doc.setTextColor(100);
     doc.text(`Generated on: ${format(new Date(), "PPP p")}`, 14, 30);
-    doc.text(`Platform: DRIPLARE AI`, 14, 35);
+    doc.text(`Platform: ChatsFly`, 14, 35);
 
     // Summary section
     doc.setDrawColor(200);

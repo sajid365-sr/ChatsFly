@@ -1,7 +1,7 @@
 # =============================================================================
-# Driplare — crontab for the Hostinger VPS
+# ChatsFly — crontab for the Hostinger VPS
 # =============================================================================
-# Install with:      crontab -u driplare crontab.example
+# Install with:      crontab -u chatsfly crontab.example
 #   (or, as root:    crontab crontab.example)
 # Verify with:       crontab -l
 #
@@ -33,12 +33,12 @@ MAILTO=""
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 # run-cron.sh reads BASE_URL and CRON_SECRET from this file (must be chmod 600):
-#   install -m 600 /dev/null /etc/driplare/cron.env
+#   install -m 600 /dev/null /etc/chatsfly/cron.env
 #   # then fill in:
 #   #   BASE_URL="https://your-domain.example"
 #   #   CRON_SECRET="<the same value as the app's CRON_SECRET>"
 # Override the path if you keep it elsewhere:
-#CRON_ENV_FILE=/etc/driplare/cron.env
+#CRON_ENV_FILE=/etc/chatsfly/cron.env
 
 # ── Daily jobs ────────────────────────────────────────────────────────────────
 # Ordered so nothing competes, and spread across the small hours where the least
@@ -47,19 +47,19 @@ MAILTO=""
 
 # Plan downgrades take effect.
 # DISABLED until Hostinger VPS migration:
-# 0 0 * * *   /opt/driplare/scripts/cron/run-cron.sh process-downgrades >> /var/log/driplare-cron.log 2>&1
+# 0 0 * * *   /opt/chatsfly/scripts/cron/run-cron.sh process-downgrades >> /var/log/chatsfly-cron.log 2>&1
 
 # Monthly credit reset (top-up credits roll over).
 # DISABLED until Hostinger VPS migration:
-# 0 1 * * *   /opt/driplare/scripts/cron/run-cron.sh reset-credits >> /var/log/driplare-cron.log 2>&1
+# 0 1 * * *   /opt/chatsfly/scripts/cron/run-cron.sh reset-credits >> /var/log/chatsfly-cron.log 2>&1
 
 # Usage-threshold alerts + prune alerts older than 6 months.
 # DISABLED until Hostinger VPS migration:
-# 0 2 * * *   /opt/driplare/scripts/cron/run-cron.sh usage-alerts >> /var/log/driplare-cron.log 2>&1
+# 0 2 * * *   /opt/chatsfly/scripts/cron/run-cron.sh usage-alerts >> /var/log/chatsfly-cron.log 2>&1
 
 # Prune the webhook idempotency ledger (Meta stops retrying after ~7 days).
 # DISABLED until Hostinger VPS migration:
-# 0 3 * * *   /opt/driplare/scripts/cron/run-cron.sh webhook-cleanup >> /var/log/driplare-cron.log 2>&1
+# 0 3 * * *   /opt/chatsfly/scripts/cron/run-cron.sh webhook-cleanup >> /var/log/chatsfly-cron.log 2>&1
 
 # ── Every 10 minutes ──────────────────────────────────────────────────────────
 # The time-based half of the automation engine: start due broadcasts, drain
@@ -67,16 +67,16 @@ MAILTO=""
 # rule). Those cannot be once-a-day — which is the whole reason this runs on the
 # VPS rather than on Vercel Cron.
 # DISABLED until Hostinger VPS migration:
-# */10 * * * * /opt/driplare/scripts/cron/run-cron.sh run-automations >> /var/log/driplare-cron.log 2>&1
+# */10 * * * * /opt/chatsfly/scripts/cron/run-cron.sh run-automations >> /var/log/chatsfly-cron.log 2>&1
 
 # Resume a bounded batch of Workspace conversation learning jobs every minute.
 # DISABLED until Hostinger VPS migration:
-# * * * * * /opt/driplare/scripts/cron/run-cron.sh process-conversation-learning >> /var/log/driplare-cron.log 2>&1
+# * * * * * /opt/chatsfly/scripts/cron/run-cron.sh process-conversation-learning >> /var/log/chatsfly-cron.log 2>&1
 
 # ── Log rotation ──────────────────────────────────────────────────────────────
-# The log grows steadily. Add /etc/logrotate.d/driplare-cron with:
+# The log grows steadily. Add /etc/logrotate.d/chatsfly-cron with:
 #
-#   /var/log/driplare-cron.log {
+#   /var/log/chatsfly-cron.log {
 #       weekly
 #       rotate 8
 #       compress

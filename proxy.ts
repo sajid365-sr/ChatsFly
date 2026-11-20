@@ -28,7 +28,7 @@ const isPublicRoute = createRouteMatcher([
   // n8n's `Automation Gate` node calls this, so there is never a Clerk session
   // on the request. Leaving it out would hand the call to `auth.protect()`,
   // which redirects to sign-in — and the gate would never reach the engine.
-  // Its security is the route's own `x-driplare-internal` shared-secret check
+  // Its security is the route's own `x-chatsfly-internal` shared-secret check
   // (timingSafeEqual), same as `/api/internal/*`.
   '/api/automations/evaluate(.*)',
   // Scheduled cron routes authenticate themselves with CRON_SECRET.
@@ -40,7 +40,7 @@ const isPublicRoute = createRouteMatcher([
   '/api/cron/process-conversation-learning(.*)',
   // The website widget. Both halves are fetched from a **merchant's own site**,
   // where no Clerk session can exist: the shopper reading that page has never
-  // heard of Driplare. Handing either call to `auth.protect()` would send it to
+  // heard of ChatsFly. Handing either call to `auth.protect()` would send it to
   // sign-in — the embed tag would receive an HTML login page instead of
   // JavaScript, and every message would 401.
   //
@@ -66,6 +66,44 @@ const isAdminRoute = createRouteMatcher([
 ])
 
 export default clerkMiddleware(async (auth, request) => {
+  const { pathname } = request.nextUrl
+  const host = request.headers.get('host') ?? ''
+
+  // ----------------------------------------------------------------
+  // Subdomain routing
+  // chatsfly.com        → public landing page
+  // app.chatsfly.com    → merchant dashboard (/dashboard)
+  // admin.chatsfly.com  → admin panel (/admin)
+  // ----------------------------------------------------------------
+  const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN ?? 'chatsfly.com'
+  const isMainDomain = host === appDomain || host === `www.${appDomain}`
+  const isAppSubdomain = host === `app.${appDomain}`
+  const isAdminSubdomain = host === `admin.${appDomain}`
+
+  // On admin subdomain: non-admin routes → back to main domain
+  if (
+    isAdminSubdomain &&
+    !pathname.startsWith('/admin') &&
+    !pathname.startsWith('/api/admin') &&
+    !pathname.startsWith('/sign-in') &&
+    !pathname.startsWith('/api/')
+  ) {
+    return NextResponse.redirect(new URL('/', `https://${appDomain}`))
+  }
+
+  // On app subdomain: root path → go to dashboard overview
+  if (isAppSubdomain && pathname === '/') {
+    return NextResponse.redirect(new URL('/dashboard/overview', request.url))
+  }
+
+  // On main domain: /dashboard → app subdomain, /admin → admin subdomain
+  if (isMainDomain && pathname.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL(pathname + request.nextUrl.search, `https://app.${appDomain}`))
+  }
+  if (isMainDomain && pathname.startsWith('/admin')) {
+    return NextResponse.redirect(new URL(pathname + request.nextUrl.search, `https://admin.${appDomain}`))
+  }
+
   if (!isPublicRoute(request)) {
     await auth.protect()
   }

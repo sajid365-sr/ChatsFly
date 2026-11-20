@@ -1,4 +1,4 @@
-# DRIPLARE AI — Pricing বিশ্লেষণ ও Plan Architecture রিসার্চ প্লান
+# ChatsFly — Pricing বিশ্লেষণ ও Plan Architecture রিসার্চ প্লান
 
 **তারিখ:** ২০২৬-১০-১৪ · **পাঠক:** founder
 **আগের ভার্সন:** `docs/pricing/pricing-model-analysis.md` (২০ মিনিট আগের) — **ভুল ছিল, এই ফাইল তার সংশোধিত ও সম্পূর্ণ রূপ**

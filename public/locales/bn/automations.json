@@ -486,7 +486,7 @@
       "phone": "Phone"
     },
     "approvalTitle": "WhatsApp approval",
-    "approvalHint": "Driplare এখনো Meta-তে Template জমা দেয় না — WhatsApp Manager থেকে status টি এখানে তুলে দিন, যাতে Broadcast জানে কোনটা ব্যবহার করা যাবে।",
+    "approvalHint": "ChatsFly এখনো Meta-তে Template জমা দেয় না — WhatsApp Manager থেকে status টি এখানে তুলে দিন, যাতে Broadcast জানে কোনটা ব্যবহার করা যাবে।",
     "approvalStatus": "Status",
     "approvalId": "Meta Template-এর নাম / id",
     "approvalIdPlaceholder": "ঐচ্ছিক",

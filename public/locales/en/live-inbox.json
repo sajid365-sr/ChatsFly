@@ -75,7 +75,7 @@
     "selectPrompt": "Select a session to view conversation",
     "loading": "Loading messages...",
     "noMessages": "No messages in this session.",
-    "repliedByAI": "Replied by Driplare AI",
+    "repliedByAI": "Replied by ChatsFly AI",
     "stopAI": "Stop AI",
     "resumeAI": "Resume AI",
     "assignAgent": "Assign Agent",

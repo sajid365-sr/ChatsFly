@@ -409,7 +409,7 @@ function OverrideOrderModal({
               type="text"
               value={form.product}
               onChange={(e) => setForm((f) => ({ ...f, product: e.target.value }))}
-              placeholder="e.g. Driplare Premium Package"
+              placeholder="e.g. ChatsFly Premium Package"
               className="w-full px-3.5 py-2 bg-background border border-border/80 rounded-xl text-[13px] font-medium text-foreground placeholder:text-muted-foreground/50 shadow-2xs focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none"
             />
           </div>

@@ -631,7 +631,7 @@ async function handleRetry(payload: { transactionId: string; note?: string }) {
 
   const mail = await sendMail({
     to: user.email,
-    subject: "Complete your pending payment — DRIPLARE AI",
+    subject: "Complete your pending payment — ChatsFly",
     html: MailTemplates.paymentFailed({
       name: user.name,
       description,

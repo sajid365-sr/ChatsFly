@@ -1,4 +1,4 @@
-# 🧠 DriplareAI — Master Task File
+# 🧠 ChatsFly — Master Task File
 
 > **Branch:** `feature-update`
 > **Reference:** `docs/feature-update/pending-features.md` & `docs/VideoScript.txt`

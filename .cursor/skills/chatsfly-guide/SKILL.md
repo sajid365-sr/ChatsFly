@@ -1,5 +1,5 @@
 ---
-name: driplare-antigravity-guide
+name: chatsfly-antigravity-guide
 description: >-
   Routes REMOVEDAI work to Antigravity Awesome Skills installed in
   ~/.cursor/skills. Use when planning features, building Next.js UI, n8n

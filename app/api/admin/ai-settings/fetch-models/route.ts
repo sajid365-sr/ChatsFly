@@ -86,7 +86,7 @@ export async function GET() {
     //    পাঁচ মিনিটই যথেষ্ট — তার মধ্যেই OpenRouter-কে বারবার আঘাত করা বন্ধ
     //    করে, আবার admin-এর চাপার সাথে সাথে সত্যিকারের উত্তরও আসে।
     const res = await fetch("https://openrouter.ai/api/v1/models", {
-      headers: { "User-Agent": "DriplareAI-Admin/1.0" },
+      headers: { "User-Agent": "ChatsFly-Admin/1.0" },
       next: { revalidate: 300 },
     });
 

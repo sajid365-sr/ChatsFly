@@ -777,7 +777,7 @@ function reportGaps(): string[] {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
-  console.log("Driplare pricing research — TASK-15.1");
+  console.log("ChatsFly pricing research — TASK-15.1");
   console.log("READ-ONLY: every query below is findMany / groupBy / aggregate / count.");
   console.log(`Row cap ${fmtInt(ROW_LIMIT)}${WINDOW_DAYS ? `, window ${WINDOW_DAYS} days` : ", all time"}`);
 

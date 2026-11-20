@@ -83,7 +83,7 @@ export default function SecurityPage() {
           <p className="text-[11.5px] text-muted-foreground leading-relaxed">
             {t(
               "security.privacyDesc",
-              "We encrypt all your data at rest and in transit. Your business data belongs exclusively to you. DRIPLARE AI never sells or shares your customer records."
+              "We encrypt all your data at rest and in transit. Your business data belongs exclusively to you. ChatsFly never sells or shares your customer records."
             )}
           </p>
         </div>

@@ -12,12 +12,12 @@ interface SendMailProps {
 /**
  * The application's public base URL.
  *
- * These links used to be hardcoded to `https://driplare.com/...` inside the
+ * These links used to be hardcoded to `https://chatsfly.com/...` inside the
  * templates, which sent every email from a preview deployment or local
  * development to that host. It now comes from the environment, so each
  * environment links to itself.
  *
- * The last fallback is the project's own Vercel domain: `driplare.com` is not
+ * The last fallback is the project's own Vercel domain: `chatsfly.com` is not
  * attached to this project, so it would be a dead link.
  */
 export function getAppUrl(): string {
@@ -26,7 +26,7 @@ export function getAppUrl(): string {
     process.env.APP_URL ??
     (process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`
-      : "https://driplare-ai.vercel.app");
+      : "https://chatsfly-ai.vercel.app");
 
   return raw.replace(/\/+$/, "");
 }
@@ -61,7 +61,7 @@ const BRAND = {
 export async function sendMail({ to, subject, html, attachments }: SendMailProps) {
   try {
     const { data, error } = await resend.emails.send({
-      from: "DRIPLARE AI <notifications@driplare.com>", // Note: You need to verify this domain in Resend
+      from: "ChatsFly <notifications@chatsfly.com>", // Note: You need to verify this domain in Resend
       to: [to],
       subject,
       html,
@@ -129,7 +129,7 @@ function layout(args: {
       ${args.body}
       <hr style="border: 0; border-top: 1px solid ${BRAND.border}; margin: 20px 0;">
       ${args.footnote ? `<p style="font-size: 12px; color: ${BRAND.muted};">${args.footnote}</p>` : ""}
-      <p style="font-size: 12px; color: ${BRAND.muted};">&copy; 2026 DRIPLARE AI. All rights reserved.</p>
+      <p style="font-size: 12px; color: ${BRAND.muted};">&copy; 2026 ChatsFly. All rights reserved.</p>
     </div>
   `;
 }
@@ -210,11 +210,11 @@ export const MailTemplates = {
     invitationUrl: string;
   }) =>
     layout({
-      title: "You are invited to join a Driplare AI team",
+      title: "You are invited to join a ChatsFly team",
       body: `
         <p>Hello ${escapeHtml(args.inviteeName || "there")},</p>
         <p><strong>${escapeHtml(args.inviterName)}</strong> invited you to join <strong>${escapeHtml(args.workspaceName)}</strong> as a ${escapeHtml(args.role)}.</p>
-        <p>You can accept this invitation by signing in or creating a Driplare AI account with this email address.</p>
+        <p>You can accept this invitation by signing in or creating a ChatsFly account with this email address.</p>
         ${button("Accept Invitation", args.invitationUrl)}
       `,
       footnote: "If you were not expecting this invitation, you can ignore this email.",
@@ -222,7 +222,7 @@ export const MailTemplates = {
 
   dataExport: (name: string) =>
     layout({
-      title: "DRIPLARE AI",
+      title: "ChatsFly",
       body: `
         <p>Hello ${name},</p>
         <p>Your requested personal data export is ready. Attached to this email, you will find:</p>
@@ -258,7 +258,7 @@ export const MailTemplates = {
           ["Amount Paid", amount],
           ["Status", "Completed"],
         ])}
-        <p>You can now enjoy all the premium features of DRIPLARE AI.</p>
+        <p>You can now enjoy all the premium features of ChatsFly.</p>
         ${button("Go to Dashboard", appUrl("/dashboard"))}
       `,
     }),
@@ -340,15 +340,15 @@ export const MailTemplates = {
     payUrl: string;
   }) =>
     layout({
-      title: args.isExpired ? "Your DRIPLARE AI plan has ended" : "Your plan renews soon",
+      title: args.isExpired ? "Your ChatsFly plan has ended" : "Your plan renews soon",
       titleColor: args.isExpired ? BRAND.danger : BRAND.warning,
       body: `
         <p>Hello ${args.name},</p>
         <p>
           ${
             args.isExpired
-              ? `Your DRIPLARE AI plan <strong>ended ${args.when}</strong>. Your chatbots are no longer receiving AI replies on this plan, and your credits stopped renewing.`
-              : `Your DRIPLARE AI plan <strong>renews ${args.when}</strong>. Pay before then and your service continues without a break — no credits are lost either way.`
+              ? `Your ChatsFly plan <strong>ended ${args.when}</strong>. Your chatbots are no longer receiving AI replies on this plan, and your credits stopped renewing.`
+              : `Your ChatsFly plan <strong>renews ${args.when}</strong>. Pay before then and your service continues without a break — no credits are lost either way.`
           }
         </p>
         ${args.invoice ? invoiceBlock(args.invoice) : ""}
@@ -362,7 +362,7 @@ export const MailTemplates = {
         ${button(args.isExpired ? "Reactivate Now" : "Renew Now", args.invoice?.payUrl ?? args.payUrl)}
       `,
       footnote:
-        "You are receiving this because you have an active plan on DRIPLARE AI. You can turn reminders off in your notification settings.",
+        "You are receiving this because you have an active plan on ChatsFly. You can turn reminders off in your notification settings.",
     }),
 
   securityAlert: (name: string, event: string, details: string) =>
@@ -414,10 +414,10 @@ export const MailTemplates = {
     payUrl: string;
   }) =>
     layout({
-      title: "New Invoice from DRIPLARE AI",
+      title: "New Invoice from ChatsFly",
       body: `
         <p>Hello ${args.name},</p>
-        <p>An invoice has been issued for your DRIPLARE AI account. The official PDF is attached to this email.</p>
+        <p>An invoice has been issued for your ChatsFly account. The official PDF is attached to this email.</p>
         ${infoBox([
           ["Invoice", args.invoiceNumber],
           ["Description", args.description],
@@ -604,6 +604,6 @@ export const MailTemplates = {
         <p>You can read the full conversation and reply back from your dashboard.</p>
         ${button("View Conversation", args.feedbackUrl)}
       `,
-      footnote: "You are receiving this because you submitted feedback on DRIPLARE AI.",
+      footnote: "You are receiving this because you submitted feedback on ChatsFly.",
     }),
 };

@@ -49,7 +49,7 @@ import {
  * silently overwrite the wrong record.
  *
  * The WhatsApp approval section appears only when the template can reach
- * WhatsApp. It is a *record* of what Meta decided, not a control — Driplare does
+ * WhatsApp. It is a *record* of what Meta decided, not a control — ChatsFly does
  * not submit templates to Meta in this release, so the merchant copies the
  * status across from WhatsApp Manager. Labelling it as anything other than a
  * record would promise an integration that does not exist.
@@ -400,7 +400,7 @@ export function TemplateEditorSheet({
                 <p className="mt-0.5 text-[11px] text-muted-foreground">
                   {t(
                     "templates.approvalHint",
-                    "Driplare does not submit templates to Meta yet — copy the status across from WhatsApp Manager so broadcasts know what they can use."
+                    "ChatsFly does not submit templates to Meta yet — copy the status across from WhatsApp Manager so broadcasts know what they can use."
                   )}
                 </p>
               </div>

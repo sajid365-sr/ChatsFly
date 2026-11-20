@@ -21,7 +21,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const promptInstructions = `You are an expert AI system prompt engineer for Agents using the DriplareAI platform.
+    const promptInstructions = `You are an expert AI system prompt engineer for Agents using the ChatsFly platform.
 The Workspace already stores the business identity, profile, products, services, and shared policies. Do not ask for or invent those facts.
 Agent identity: ${businessName || "the current business"}.
 Agent role and responsibilities provided by the merchant: ${description}

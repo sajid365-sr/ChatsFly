@@ -7,7 +7,7 @@ import { PAID_STATUSES } from "@/lib/domain/payment-status";
 import { getRegionConfig, type Region } from "@/lib/core/region";
 
 /**
- * Free Trial — DRIPLARE AI (১৫.৬)
+ * Free Trial — ChatsFly (১৫.৬)
  * ─────────────────────────────────────────────────────────────────────────────
  * ক্যাটালগে `trialDays` (BD Starter ৩ দিন, Global Starter ১৪ দিন) আগে থেকেই লেখা
  * ছিল, কিন্তু **কোথাও কার্যকর ছিল না** — অর্থাৎ trial বলে কিছু ছিল না। এই ফাইলটি

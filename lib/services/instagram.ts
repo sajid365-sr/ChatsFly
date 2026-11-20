@@ -105,13 +105,13 @@ function getInstagramLoginCredentials() {
 
   if (!appId) {
     throw new Error(
-      "Driplare's Instagram Login App ID is not configured. Set INSTAGRAM_APP_ID from the Instagram Login product in Meta App Dashboard."
+      "ChatsFly's Instagram Login App ID is not configured. Set INSTAGRAM_APP_ID from the Instagram Login product in Meta App Dashboard."
     );
   }
 
   if (!appSecret) {
     throw new Error(
-      "INSTAGRAM_APP_SECRET is not configured for Driplare's Instagram Login app."
+      "INSTAGRAM_APP_SECRET is not configured for ChatsFly's Instagram Login app."
     );
   }
 

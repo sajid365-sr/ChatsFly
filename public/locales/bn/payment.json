@@ -37,7 +37,7 @@
   "cancelSubscription": "সাবস্ক্রিপশন ক্যান্সেল করুন",
   "cancelling": "ক্যান্সেল হচ্ছে...",
   "perMsgAfterQuota": "কোটার পরে প্রতি ক্রেডিট",
-  "contactSales": "Enterprise প্ল্যান আলোচনার জন্য sales@driplare.com-এ ইমেইল করুন",
+  "contactSales": "Enterprise প্ল্যান আলোচনার জন্য sales@chatsfly.com-এ ইমেইল করুন",
   "history": {
     "loading": "আপনার Billing History লোড হচ্ছে...",
     "loadError": "Billing History লোড করা যায়নি",
@@ -73,7 +73,7 @@
     "next": "Next",
     "reportTitle": "Billing History Report",
     "generatedOn": "Generated on: {{date}}",
-    "platform": "Platform: DRIPLARE AI",
+    "platform": "Platform: ChatsFly",
     "summary": "Summary",
     "totalSuccessfulPayments": "Total Successful Payments: {{count}}",
     "totalAmountSpent": "Total Amount Spent: {{amount}} {{currency}}",

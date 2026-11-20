@@ -26,11 +26,11 @@
 
 ## ২. আগে যা করতে হবে (প্ল্যাটফর্মের দিকে)
 
-> 🌐 **প্ল্যাটফর্ম অ্যাপের ডোমেইন: `https://driplare-ai.vercel.app`**
+> 🌐 **প্ল্যাটফর্ম অ্যাপের ডোমেইন: `https://chatsfly-ai.vercel.app`**
 >
-> `www.driplare.com`-এ এই অ্যাপটি **নেই** — ওখানে মার্কেটিং সাইট আছে, আর ওই হোস্টে **প্রতিটি `/api` রুট ৪০৪** দেয় (`/api/internal/ai-usage`-ও)। driplare.com ডোমেইনটি Vercel প্রজেক্টে যোগই করা নেই। তাই n8n-এর সব নোড `driplare-ai.vercel.app`-এ তাক করা।
+> `www.chatsfly.com`-এ এই অ্যাপটি **নেই** — ওখানে মার্কেটিং সাইট আছে, আর ওই হোস্টে **প্রতিটি `/api` রুট ৪০৪** দেয় (`/api/internal/ai-usage`-ও)। chatsfly.com ডোমেইনটি Vercel প্রজেক্টে যোগই করা নেই। তাই n8n-এর সব নোড `chatsfly-ai.vercel.app`-এ তাক করা।
 
-`app/api/automations/evaluate/route.ts` একটি shared secret দিয়ে সুরক্ষিত। Vercel project **`driplare-ai`** → Settings → Environment Variables-এ যোগ করুন:
+`app/api/automations/evaluate/route.ts` একটি shared secret দিয়ে সুরক্ষিত। Vercel project **`chatsfly-ai`** → Settings → Environment Variables-এ যোগ করুন:
 
 ```
 AUTOMATION_INTERNAL_SECRET = <যেকোনো লম্বা random string>
@@ -51,7 +51,7 @@ n8n UI → **Credentials → New → Header Auth**
 
 | Field | Value |
 |---|---|
-| Name | `x-driplare-internal` |
+| Name | `x-chatsfly-internal` |
 | Value | উপরের `AUTOMATION_INTERNAL_SECRET`-এর **হুবহু** একই মান |
 
 > ⚠️ বিদ্যমান `x-n8n-secret` credential-টা এখানে **কাজ করবে না** — ওটা `N8N_CALLBACK_SECRET`, সম্পূর্ণ আলাদা।
@@ -144,7 +144,7 @@ ngrok http 3000
 https://xxxx.trycloudflare.com/api/automations/evaluate
 ```
 
-> টানেল বন্ধ করলে Gate-ও থেমে যাবে — n8n দিক থেকে টাইমআউট দেখাবে। টেস্ট শেষে URL আবার `https://driplare-ai.vercel.app/api/automations/evaluate`-এ ফিরিয়ে দিন।
+> টানেল বন্ধ করলে Gate-ও থেমে যাবে — n8n দিক থেকে টাইমআউট দেখাবে। টেস্ট শেষে URL আবার `https://chatsfly-ai.vercel.app/api/automations/evaluate`-এ ফিরিয়ে দিন।
 >
 > এছাড়া `.env`-এর `AUTOMATION_INTERNAL_SECRET` আর n8n-এর Header Auth credential — দুটোর মান হুবহু এক থাকতে হবে (লোকাল `.env` আলাদা হলে ৪০১ আসবে)।
 
@@ -162,7 +162,7 @@ https://xxxx.trycloudflare.com/api/automations/evaluate
 | লক্ষণ | কারণ |
 |---|---|
 | Activity Log-এ কিছুই আসে না | প্রথমে দেখুন কোনো সক্রিয় Rule আছে কি না — না থাকলে কোনো row লেখাই হয় না (৭ক দেখুন)। Rule থাকা সত্ত্বেও খালি হলে: `Ensure Session → Automation Gate` কানেকশন নেই, বা `AUTOMATION_INTERNAL_SECRET` সেট করা নেই |
-| 404, আর বডিতে Next.js-এর "Page not found" HTML | রুটটি **ওই ডিপ্লয়মেন্টে** নেই। Gate নোডের URL ঘরে `https://driplare-ai.vercel.app/api/automations/evaluate` বসানো আছে কি না দেখুন — `www.driplare.com` থাকলে নিশ্চিতভাবে ৪০৪ আসবে, কারণ ওখানে অ্যাপটাই নেই |
+| 404, আর বডিতে Next.js-এর "Page not found" HTML | রুটটি **ওই ডিপ্লয়মেন্টে** নেই। Gate নোডের URL ঘরে `https://chatsfly-ai.vercel.app/api/automations/evaluate` বসানো আছে কি না দেখুন — `www.chatsfly.com` থাকলে নিশ্চিতভাবে ৪০৪ আসবে, কারণ ওখানে অ্যাপটাই নেই |
 | Activity Log খালি, **অথচ AI স্বাভাবিক উত্তর দিচ্ছে** | এটাই সবচেয়ে ধোঁকাবাজ লক্ষণ — মনে হবে সব ঠিক আছে। আসলে উল্টো: নিচের বাক্সটি দেখুন |
 | `ECONNREFUSED`, বা নোড টাইমআউট | n8n VPS থেকে আপনার লোকাল মেশিনে পৌঁছাতে পারছে না — টানেল লাগবে (৭খ) |
 | n8n-এ `401 Unauthorized` | Header Auth credential-এর মান প্ল্যাটফর্মের সাথে মিলছে না, বা credential select করা হয়নি |
@@ -189,7 +189,7 @@ https://xxxx.trycloudflare.com/api/automations/evaluate
 
 ```bash
 # 401 = রুট আছে (শুধু secret header বাকি) · 404 = এই ডিপ্লয়মেন্টে রুটটাই নেই
-curl -s -o /dev/null -w "%{http_code}\n" -X POST https://driplare-ai.vercel.app/api/automations/evaluate
+curl -s -o /dev/null -w "%{http_code}\n" -X POST https://chatsfly-ai.vercel.app/api/automations/evaluate
 ```
 
 `401` এলেই ঠিক আছে — Gate নোডের URL এটাই হওয়া উচিত। `404` এলে ডোমেইন ভুল।

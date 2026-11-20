@@ -15,7 +15,7 @@ afterEach(() => {
 describe("Instagram OAuth state", () => {
   it("preserves the exact redirect URI used to start authorization", () => {
     vi.stubEnv("INSTAGRAM_APP_SECRET", "test-instagram-app-secret");
-    const redirectUri = "https://driplare-ai.vercel.app/api/integrations/instagram/oauth/callback";
+    const redirectUri = "https://chatsfly-ai.vercel.app/api/integrations/instagram/oauth/callback";
     const state = signInstagramOAuthState({
       chatbotId: "chatbot-1",
       userId: "user-1",

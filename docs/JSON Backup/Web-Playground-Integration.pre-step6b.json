@@ -3,7 +3,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## Web Playground Integration\nDedicated workflow for the **Next.js Chatbot Playground** and **Web Widget**.\n\n### Webhook Endpoint\n`POST /webhook/driplare-web-playground`\n\n### Expected Payload from Next.js `/api/playground/chat`\n```json\n{\n  \"chatbotId\": \"string\",\n  \"sessionId\": \"string\",\n  \"userMessage\": \"string\",\n  \"platform\": \"WEB\",\n  \"mediaType\": \"text\" | \"image\" | \"audio\",\n  \"mediaUrl\": \"string | null\"\n}\n```",
+        "content": "## Web Playground Integration\nDedicated workflow for the **Next.js Chatbot Playground** and **Web Widget**.\n\n### Webhook Endpoint\n`POST /webhook/chatsfly-web-playground`\n\n### Expected Payload from Next.js `/api/playground/chat`\n```json\n{\n  \"chatbotId\": \"string\",\n  \"sessionId\": \"string\",\n  \"userMessage\": \"string\",\n  \"platform\": \"WEB\",\n  \"mediaType\": \"text\" | \"image\" | \"audio\",\n  \"mediaUrl\": \"string | null\"\n}\n```",
         "height": 400,
         "width": 560
       },
@@ -19,7 +19,7 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "driplare-web-playground",
+        "path": "chatsfly-web-playground",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -31,7 +31,7 @@
         -928,
         48
       ],
-      "webhookId": "driplare-web-playground"
+      "webhookId": "chatsfly-web-playground"
     },
     {
       "parameters": {

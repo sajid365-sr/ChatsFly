@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!product) {
     return {
-      title: "Product Not Found | Driplare AI",
+      title: "Product Not Found | ChatsFly",
     };
   }
 

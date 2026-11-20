@@ -194,7 +194,7 @@ export async function POST(req: Request) {
           recipient_phone: recipientPhone,
           recipient_address: fullAddress || "Dhaka",
           cod_amount: totalAmount,
-          note: resolvedNotes || "Order created via Driplare AI",
+          note: resolvedNotes || "Order created via ChatsFly",
         };
 
         const sfRes = await fetch("https://portal.packzy.com/api/v1/create_order", {

@@ -208,7 +208,7 @@ async function sendPlanReceiptEmail(args: {
 
     await sendMail({
       to: args.user.email,
-      subject: `Invoice for your ${args.plan.toUpperCase()} plan - DRIPLARE AI`,
+      subject: `Invoice for your ${args.plan.toUpperCase()} plan - ChatsFly`,
       html: MailTemplates.paymentReceipt(
         args.user.name,
         args.plan,
@@ -216,7 +216,7 @@ async function sendPlanReceiptEmail(args: {
       ),
       attachments: [
         {
-          filename: `DRIPLARE-Invoice-${args.transaction.id.substring(0, 8)}.pdf`,
+          filename: `ChatsFly-Invoice-${args.transaction.id.substring(0, 8)}.pdf`,
           content: pdfBuffer.toString("base64"),
         },
       ],
@@ -403,7 +403,7 @@ async function notifyPaymentFailure(args: {
       const { sendMail, MailTemplates, appUrl } = await import("@/lib/services/mail");
       await sendMail({
         to: user.email,
-        subject: "Your payment could not be completed — DRIPLARE AI",
+        subject: "Your payment could not be completed — ChatsFly",
         html: MailTemplates.paymentFailed({
           name: user.name,
           description: args.description,
@@ -512,7 +512,7 @@ export async function notifyRefundUpdate(args: {
       const { sendMail, MailTemplates } = await import("@/lib/services/mail");
       await sendMail({
         to: user.email,
-        subject: `Refund update for your DRIPLARE AI payment`,
+        subject: `Refund update for your ChatsFly payment`,
         html: MailTemplates.refundUpdate({
           name: user.name,
           invoiceNumber: args.invoiceNumber,

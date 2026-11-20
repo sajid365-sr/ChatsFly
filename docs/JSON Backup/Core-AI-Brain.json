@@ -3,7 +3,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "Core AI Brain — billing via platform API (v7)\n\nONE-TIME SETUP (n8n UI, no server access needed):\n  Credentials → New → \"Header Auth\"\n    Name  : x-n8n-secret\n    Value : (driplare.com-এর N8N_CALLBACK_SECRET মান)\n  তারপর \"Billing API\" নোডের Credential ড্রপডাউনে\n  credential-টা select করুন — খালি রাখলে নোড চলবে না।\n\n  ⚠️ এটা না করলে \"Billing API\" 401 পাবে আর প্রতিটি\n  reply-তে credit কাটা চুপচাপ বন্ধ থাকবে — reply ঠিকই\n  আসবে, তাই ভুল ধরা পড়বে না। ইমপোর্টের পর একটা টেস্ট\n  মেসেজ দিয়ে ব্যালেন্স সত্যিই কমছে কি না দেখে নিন।\n\nCHAIN: ... → Save Chat History → Billing API → Return to Platform\nBilling API → POST https://www.driplare.com/api/internal/ai-usage\n  (www আবশ্যক — driplare.com 308 redirect দেয়)\n\nThis node is the ONLY place credits are deducted now. It also\nwrites the AIUsageLog. runId = $execution.id makes retries\nidempotent — the same run can never be charged twice.\n\nCost is NOT computed here. Prices come from live OpenRouter\ndata on the platform side, so there is nothing to keep in sync.",
+        "content": "Core AI Brain — billing via platform API (v7)\n\nONE-TIME SETUP (n8n UI, no server access needed):\n  Credentials → New → \"Header Auth\"\n    Name  : x-n8n-secret\n    Value : (chatsfly.com-এর N8N_CALLBACK_SECRET মান)\n  তারপর \"Billing API\" নোডের Credential ড্রপডাউনে\n  credential-টা select করুন — খালি রাখলে নোড চলবে না।\n\n  ⚠️ এটা না করলে \"Billing API\" 401 পাবে আর প্রতিটি\n  reply-তে credit কাটা চুপচাপ বন্ধ থাকবে — reply ঠিকই\n  আসবে, তাই ভুল ধরা পড়বে না। ইমপোর্টের পর একটা টেস্ট\n  মেসেজ দিয়ে ব্যালেন্স সত্যিই কমছে কি না দেখে নিন।\n\nCHAIN: ... → Save Chat History → Billing API → Return to Platform\nBilling API → POST https://www.chatsfly.com/api/internal/ai-usage\n  (www আবশ্যক — chatsfly.com 308 redirect দেয়)\n\nThis node is the ONLY place credits are deducted now. It also\nwrites the AIUsageLog. runId = $execution.id makes retries\nidempotent — the same run can never be charged twice.\n\nCost is NOT computed here. Prices come from live OpenRouter\ndata on the platform side, so there is nothing to keep in sync.",
         "height": 660,
         "width": 580
       },
@@ -680,7 +680,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://driplare-ai.vercel.app/api/internal/ai-usage",
+        "url": "https://chatsfly-ai.vercel.app/api/internal/ai-usage",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
@@ -702,7 +702,7 @@
       "credentials": {
         "httpHeaderAuth": {
           "id": "wPlRocKN1ryxg2jy",
-          "name": "Driplare Platform Secret"
+          "name": "ChatsFly Platform Secret"
         }
       },
       "onError": "continueRegularOutput"
@@ -725,7 +725,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://driplare-ai.vercel.app/api/automations/evaluate",
+        "url": "https://chatsfly-ai.vercel.app/api/automations/evaluate",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
@@ -749,7 +749,7 @@
         }
       },
       "onError": "continueRegularOutput",
-      "notes": "Header Auth credential must send x-driplare-internal = AUTOMATION_INTERNAL_SECRET"
+      "notes": "Header Auth credential must send x-chatsfly-internal = AUTOMATION_INTERNAL_SECRET"
     },
     {
       "parameters": {
@@ -884,7 +884,7 @@
     },
     {
       "parameters": {
-        "content": "═══ AUTOMATION GATE — ইনস্টল গাইড ═══\n\nসম্পূর্ণ ধাপ (troubleshooting টেবিল সহ):\n  docs/n8n-JSON/Automation-Gate-Setup.md\n\n১) Credentials → New → \"Header Auth\"\n     Name  : x-driplare-internal\n     Value : (driplare.com-এর AUTOMATION_INTERNAL_SECRET মান)\n   তারপর \"Automation Gate\" নোডের Credential ড্রপডাউনে\n   credential-টা select করুন — খালি রাখলে 401 আসবে।\n\n২) কানেকশন বদলান (মোট ১টি কাট, ৩টি জোড়):\n     কাট : Ensure Session → Media Router\n     জোড়: Ensure Session      → Automation Gate\n     জোড়: Gate Reply? (true)  → Gate Return\n     জোড়: Gate Reply? (false) → Media Router\n\n৩) Format Response নোডের JS-এর শেষে এই লাইনগুলো যোগ করুন\n   (continueWithAi — \"এটা বলো, তারপর AI চালাও\" — কাজ করার জন্য):\n\n     const gateText = $('Gate Decision').item.json.gateText || '';\n     if (gateText) replyText = gateText + '\\n\\n' + replyText;\n\n   ⚠️ `return [` লাইনের আগে বসবে, এবং `replyText` এখনো\n      `const` থাকলে সেটি `let`-এ বদলাতে হবে।\n\n৪) Test: Playground থেকে \"দাম কত\" পাঠান।\n   - Activity Log-এ একটি row এলেই বুঝবেন Gate সক্রিয়।\n   - AIUsageLog-এ ওই মেসেজের credit খরচ ০ হলে short-circuit কাজ করছে।\n\n⚠️ GET /api/automations/activity-তে gateLastSeenAt খালি থাকলে\n   banner দেখাবে \"Automation Gate is not connected\" — ইমপোর্ট হয়নি\n   বোঝায়। (তবে কোনো rule না থাকলে run row লেখা হয় না, তাই ওই\n   অবস্থায় banner-টা ভুলবার্তা দিতে পারে।)"
+        "content": "═══ AUTOMATION GATE — ইনস্টল গাইড ═══\n\nসম্পূর্ণ ধাপ (troubleshooting টেবিল সহ):\n  docs/n8n-JSON/Automation-Gate-Setup.md\n\n১) Credentials → New → \"Header Auth\"\n     Name  : x-chatsfly-internal\n     Value : (chatsfly.com-এর AUTOMATION_INTERNAL_SECRET মান)\n   তারপর \"Automation Gate\" নোডের Credential ড্রপডাউনে\n   credential-টা select করুন — খালি রাখলে 401 আসবে।\n\n২) কানেকশন বদলান (মোট ১টি কাট, ৩টি জোড়):\n     কাট : Ensure Session → Media Router\n     জোড়: Ensure Session      → Automation Gate\n     জোড়: Gate Reply? (true)  → Gate Return\n     জোড়: Gate Reply? (false) → Media Router\n\n৩) Format Response নোডের JS-এর শেষে এই লাইনগুলো যোগ করুন\n   (continueWithAi — \"এটা বলো, তারপর AI চালাও\" — কাজ করার জন্য):\n\n     const gateText = $('Gate Decision').item.json.gateText || '';\n     if (gateText) replyText = gateText + '\\n\\n' + replyText;\n\n   ⚠️ `return [` লাইনের আগে বসবে, এবং `replyText` এখনো\n      `const` থাকলে সেটি `let`-এ বদলাতে হবে।\n\n৪) Test: Playground থেকে \"দাম কত\" পাঠান।\n   - Activity Log-এ একটি row এলেই বুঝবেন Gate সক্রিয়।\n   - AIUsageLog-এ ওই মেসেজের credit খরচ ০ হলে short-circuit কাজ করছে।\n\n⚠️ GET /api/automations/activity-তে gateLastSeenAt খালি থাকলে\n   banner দেখাবে \"Automation Gate is not connected\" — ইমপোর্ট হয়নি\n   বোঝায়। (তবে কোনো rule না থাকলে run row লেখা হয় না, তাই ওই\n   অবস্থায় banner-টা ভুলবার্তা দিতে পারে।)"
       },
       "id": "cdf1e448-9a30-4c12-ba7d-42379559d4d0",
       "name": "Gate Setup (বাংলা)",

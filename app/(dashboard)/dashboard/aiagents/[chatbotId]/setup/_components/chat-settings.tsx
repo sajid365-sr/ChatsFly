@@ -587,7 +587,7 @@ export const ChatSettings = ({ bot, userPlan = "starter", onBotChange, onModelSe
               onChange={(e) => setRawPrompt(e.target.value)}
               disabled={enhancing}
               className="w-full min-h-[320px] bg-muted/20 border border-border rounded-2xl p-5 text-[15px] focus:ring-2 focus:ring-primary/40 outline-none resize-y transition-all leading-relaxed shadow-inner disabled:opacity-50 disabled:cursor-not-allowed"
-              placeholder={t("chat_test.config.placeholder", "Example: You are a friendly customer support agent for DRIPLARE AI...")}
+              placeholder={t("chat_test.config.placeholder", "Example: You are a friendly customer support agent for ChatsFly...")}
             />
           </div>
         )}

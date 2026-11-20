@@ -5,13 +5,13 @@ import { WIDGET_COPY } from "@/lib/domain/widget-copy";
 import { renderDisabledWidgetScript, renderWidgetScript } from "./render-script";
 
 const KEY = "clx9f2k3b0000abcd1234efgh";
-const ORIGIN = "https://app.driplare.com";
+const ORIGIN = "https://app.chatsfly.com";
 
 function render(overrides: Partial<Parameters<typeof renderWidgetScript>[0]> = {}) {
   return renderWidgetScript({
     widgetKey: KEY,
     origin: ORIGIN,
-    agentName: "Driplare Support",
+    agentName: "ChatsFly Support",
     brandColor: "#6d28d9",
     subtitle: null,
     welcome: null,
@@ -117,7 +117,7 @@ describe("renderWidgetScript — branding", () => {
 describe("renderWidgetScript — resilience on someone else's page", () => {
   it("refuses to mount twice", () => {
     // A CMS that renders the footer twice would otherwise stack two launchers.
-    expect(render()).toContain("window.__driplareWidgetLoaded");
+    expect(render()).toContain("window.__chatsflyWidgetLoaded");
   });
 
   it("survives a browser that blocks localStorage", () => {
@@ -327,7 +327,7 @@ function runWidget(
   };
 
   const window = {
-    __driplareWidgetLoaded: false,
+    __chatsflyWidgetLoaded: false,
     document,
     localStorage: {
       getItem: (key: string) => {
@@ -367,7 +367,7 @@ describe("the served widget, actually running", () => {
     const { body } = runWidget(render());
 
     expect(body.children).toHaveLength(1);
-    expect(body.children[0].attributes["data-driplare-widget"]).toBe(KEY);
+    expect(body.children[0].attributes["data-chatsfly-widget"]).toBe(KEY);
   });
 
   it("mounts into a shadow root, so the host page cannot restyle it", () => {

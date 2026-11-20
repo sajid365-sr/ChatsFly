@@ -58,7 +58,7 @@
 |---|---|---|---|
 | R1 | **৫টি workflow n8n-এ import** — Core-AI-Brain · WhatsApp · Facebook · Instagram · Web-Playground | ইউজার | §৯ · JSON নিজে থেকে n8n-এ যায় না |
 | R2 | n8n-এ **`Cloudinary Upload` Basic Auth credential** + `Cloudinary Config`-এ cloud name | ইউজার | §৯ (২ক) |
-| R3 | FB · IG · WA-তে **`Driplare Internal` Header Auth** (`x-n8n-secret` = `N8N_CALLBACK_SECRET`) | ইউজার | §৯ (২খ) |
+| R3 | FB · IG · WA-তে **`ChatsFly Internal` Header Auth** (`x-n8n-secret` = `N8N_CALLBACK_SECRET`) | ইউজার | §৯ (২খ) |
 | R4 | **Gemini paid billing** চালু | ইউজার | §৯ (৩) |
 | R5 | **Cloudinary retention** নীতি ঠিক করা — এখন কোনো auto-delete নেই, media indefinite জমবে | সিদ্ধান্ত | §৬ |
 | R6 | **Privacy policy**-তে media সংরক্ষণ যোগ | ইউজার/আইনি | §৯ (৫) |
@@ -284,7 +284,7 @@ credit থেকে আসে ১০,০০০ credit/দিন ≈ ৳৬৬৬
 | সংখ্যা | মান |
 |---|---|
 | Meta-র URL আয়ু | Messenger/IG: কয়েক ঘণ্টা · WhatsApp: ~৫ মিনিট |
-| আমাদের সংরক্ষণ | Cloudinary, `driplare/{env}/chatbots/{chatbotId}/inbox` |
+| আমাদের সংরক্ষণ | Cloudinary, `chatsfly/{env}/chatbots/{chatbotId}/inbox` |
 | অনুমিত প্রবৃদ্ধি | ~৮–১২ GB/মাস (১০০ merchant) |
 | Cloudinary free tier | ~২৫ credit/মাস → **কয়েক দিনেই শেষ** |
 
@@ -340,7 +340,7 @@ credit থেকে আসে ১০,০০০ credit/দিন ≈ ৳৬৬৬
 | ১ | **৫টি workflow import** — Core-AI-Brain · WhatsApp · Facebook · Instagram · Web-Playground | n8n-এ JSON সরাসরি বদলানো যায় না |
 | ২ | n8n-এ **Basic Auth credential** তৈরি — নাম `Cloudinary Upload`, username = API Key, password = API Secret | upload node-গুলো এটি ব্যবহার করে (env var লাগে না) |
 | ২ক | `Cloudinary Config` node-এ **cloud name** বসানো | placeholder `REPLACE_WITH_CLOUDINARY_CLOUD_NAME` আছে |
-| ২খ | FB · IG · WA তিন adapter-এ **`Fetch Integration Secrets`** node-এ Header Auth credential বেছে নেওয়া — নাম `Driplare Internal`, header `x-n8n-secret`, মান = Vercel-এর `N8N_CALLBACK_SECRET` | ২০২৬-১০-১৮ থেকে decrypt Code node নয়, অ্যাপের `/api/internal/integration-secrets` থেকে আসে (§ [`integration-token-encryption.md`](../integration-token-encryption.md) §১.২) |
+| ২খ | FB · IG · WA তিন adapter-এ **`Fetch Integration Secrets`** node-এ Header Auth credential বেছে নেওয়া — নাম `ChatsFly Internal`, header `x-n8n-secret`, মান = Vercel-এর `N8N_CALLBACK_SECRET` | ২০২৬-১০-১৮ থেকে decrypt Code node নয়, অ্যাপের `/api/internal/integration-secrets` থেকে আসে (§ [`integration-token-encryption.md`](../integration-token-encryption.md) §১.২) |
 | ৩ | Gemini API key-তে **billing চালু** | paid tier |
 | ৪ | Cloudinary-তে **retention** সিদ্ধান্ত (§৬) | খরচ |
 | ৫ | প্রাইভেসি পলিসিতে media সংরক্ষণ যোগ | আইনি |

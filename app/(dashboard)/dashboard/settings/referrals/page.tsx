@@ -4,7 +4,7 @@ import { getAndSyncUser } from "@/lib/core/auth";
 import { ReferralDashboardView } from "./_components/ReferralDashboardView";
 
 export const metadata: Metadata = {
-  title: "Referrals & Rewards | DRIPLARE AI",
+  title: "Referrals & Rewards | ChatsFly",
   description: "Track your referrals, rewards, and upcoming affiliate earnings.",
 };
 

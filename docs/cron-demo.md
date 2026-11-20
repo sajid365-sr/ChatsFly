@@ -1,4 +1,4 @@
-# Driplare — Cron Jobs (সব scheduled কাজের একক তালিকা)
+# ChatsFly — Cron Jobs (সব scheduled কাজের একক তালিকা)
 
 > **শেষ হালনাগাদ:** ২০২৬-১১-১২ — Workspace conversation learning worker cron যুক্ত
 > **উদ্দেশ্য:** প্রোডাকশনে কোন scheduled কাজ চলা **দরকার**, কোনটি কোথায় schedule করতে হবে, আর কোনটি এখনো করা **যায় না** — সব এক জায়গায়।
@@ -137,24 +137,24 @@ Routes: `process-downgrades`, `reset-credits`, `usage-alerts`, `webhook-cleanup`
 
 | ফাইল | কোথায় বসবে | কী |
 |---|---|---|
-| `scripts/cron/run-cron.sh` | যেমন আছে (`/opt/driplare/scripts/cron/`) | Runner — কোন job, কতবার retry, ব্যর্থতা কীভাবে জানাবে |
-| `scripts/cron/cron.env.example` | `/etc/driplare/cron.env` (chmod **600**) | `BASE_URL` + `CRON_SECRET` |
+| `scripts/cron/run-cron.sh` | যেমন আছে (`/opt/chatsfly/scripts/cron/`) | Runner — কোন job, কতবার retry, ব্যর্থতা কীভাবে জানাবে |
+| `scripts/cron/cron.env.example` | `/etc/chatsfly/cron.env` (chmod **600**) | `BASE_URL` + `CRON_SECRET` |
 | `scripts/cron/crontab.example` | `crontab -u <user>` হিসাবে install | সময়সূচি |
 
 ### ধাপে ধাপে
 
 **১. স্ক্রিপ্ট বসান**
 ```bash
-sudo install -d -m 755 /opt/driplare/scripts
-sudo cp -r scripts/cron /opt/driplare/scripts/cron
-sudo chmod +x /opt/driplare/scripts/cron/run-cron.sh
+sudo install -d -m 755 /opt/chatsfly/scripts
+sudo cp -r scripts/cron /opt/chatsfly/scripts/cron
+sudo chmod +x /opt/chatsfly/scripts/cron/run-cron.sh
 ```
 
 **২. Secret ফাইল বানান**
 ```bash
-sudo install -d -m 750 /etc/driplare
-sudo install -m 600 scripts/cron/cron.env.example /etc/driplare/cron.env
-sudo -e /etc/driplare/cron.env     # BASE_URL ও CRON_SECRET বসান
+sudo install -d -m 750 /etc/chatsfly
+sudo install -m 600 scripts/cron/cron.env.example /etc/chatsfly/cron.env
+sudo -e /etc/chatsfly/cron.env     # BASE_URL ও CRON_SECRET বসান
 ```
 > `CRON_SECRET` অবশ্যই **অ্যাপের `CRON_SECRET`-এর সাথে হুবহু এক** হতে হবে (Vercel/VPS-এর environment-এ যেটি আছে)। না মিললে প্রতিটি job `401` ফেরবে।
 > নতুন secret বানাতে: `openssl rand -hex 32`
@@ -172,13 +172,13 @@ sudo -e /etc/driplare/cron.env     # BASE_URL ও CRON_SECRET বসান
 **৩. install করার আগে হাতে যাচাই করুন**
 ```bash
 sudo -u <app-user> \
-  CRON_ENV_FILE=/etc/driplare/cron.env \
-  /opt/driplare/scripts/cron/run-cron.sh --list
+  CRON_ENV_FILE=/etc/chatsfly/cron.env \
+  /opt/chatsfly/scripts/cron/run-cron.sh --list
 
 # একটি job চালিয়ে দেখুন — অস্থায়ী নয়, আসল কাজটি করবে:
 sudo -u <app-user> \
-  CRON_ENV_FILE=/etc/driplare/cron.env \
-  /opt/driplare/scripts/cron/run-cron.sh usage-alerts
+  CRON_ENV_FILE=/etc/chatsfly/cron.env \
+  /opt/chatsfly/scripts/cron/run-cron.sh usage-alerts
 ```
 প্রত্যাশিত: `[INFO] usage-alerts OK {"success":true,...}`
 
@@ -195,7 +195,7 @@ sudo crontab -u <app-user> -l      # ছয়টি active schedule আছে ক�
 
 **৫. প্রমাণ দেখুন** (এটি বাদ দেবেন না — cron-এর সবচেয়ে সাধারণ বাগ হলো "কিছুই হচ্ছে না কিন্তু কেউ দেখছে না")
 ```bash
-sudo tail -f /var/log/driplare-cron.log
+sudo tail -f /var/log/chatsfly-cron.log
 sudo journalctl -u cron --since "10 min ago"   # cron নিজে ঠিক চলছে কি না
 ```
 প্রতি ১০ মিনিটে `run-automations OK` লাইন আসা উচিত।
@@ -230,7 +230,7 @@ sudo journalctl -u cron --since "10 min ago"   # cron নিজে ঠিক চ
 পছন্দের উপায় — **আসল runner দিয়েই** (VPS-এ যেটি চলবে):
 
 ```bash
-CRON_ENV_FILE=/etc/driplare/cron.env /opt/driplare/scripts/cron/run-cron.sh reset-credits
+CRON_ENV_FILE=/etc/chatsfly/cron.env /opt/chatsfly/scripts/cron/run-cron.sh reset-credits
 ```
 `[INFO] reset-credits OK {...}` → ঠিক আছে। কোনো `ERROR` লাইন → উপরের §৪-এর টেবিল দেখুন।
 
@@ -256,7 +256,7 @@ curl -i -H "Authorization: Bearer $CRON_SECRET" \
 - [ ] অ্যাপের environment-এ `CRON_SECRET` সেট করা আছে (না থাকলে #১, #২, #৪ cron `500` ফেরবে; `run-automations` `503`)
 
 **VPS-এ বসানোর সময়**
-- [ ] `/etc/driplare/cron.env` তৈরি, **chmod 600**, এবং `CRON_SECRET` অ্যাপেরটার সাথে **হুবহু** এক
+- [ ] `/etc/chatsfly/cron.env` তৈরি, **chmod 600**, এবং `CRON_SECRET` অ্যাপেরটার সাথে **হুবহু** এক
 - [ ] `BASE_URL` ঠিক আছে — অ্যাপ একই VPS-এ হলে `http://127.0.0.1:3000`
 - [ ] `run-cron.sh --list` চলে (৬টি scheduled job নাম দেখায়)
 - [ ] হাতে একটি job চালিয়ে `200` পাওয়া গেছে (যেমন `usage-alerts`)
@@ -268,7 +268,7 @@ curl -i -H "Authorization: Bearer $CRON_SECRET" \
 - [ ] ভুল/অনুপস্থিত secret `401`/`503` দেয়; `CRON_SECRET` constant-time comparison-এ যাচাই হয়
 
 **সবশেষে**
-- [ ] `/var/log/driplare-cron.log`-এ প্রথম `OK` লাইন এসেছে (এবং logrotate বসানো হয়েছে)
+- [ ] `/var/log/chatsfly-cron.log`-এ প্রথম `OK` লাইন এসেছে (এবং logrotate বসানো হয়েছে)
 - [ ] `vercel.json` থেকে `crons` ব্লক মুছে ফেলা হয়েছে — **একই job দুই জায়গা থেকে চললে `run-automations` customer-কে দুইবার নুডজ পাঠাতে পারে**
 
 ---

@@ -91,7 +91,7 @@ Meta-র Billing Hub-এ **দুটি আলাদা জিনিস** আছ
 
 | পর্দা | ফল |
 |---|---|
-| Accounts → **Driplare** | Current balance **$0.00** · *"You haven't added any payment methods."* · Payment activity: *"You have no recent spending."* · Currency: **Bangladesh** |
+| Accounts → **ChatsFly** | Current balance **$0.00** · *"You haven't added any payment methods."* · Payment activity: *"You have no recent spending."* · Currency: **Bangladesh** |
 | **Credit lines** | 🚫 *"No credit line has been allocated."* |
 | **Payment methods** | 🚫 *"No payment methods added."* |
 

@@ -67,7 +67,7 @@
     "healthDesc": "Your business credentials, customer numbers, and chat records are safely guarded.",
     "healthActive": "All Protections Active",
     "privacyTitle": "Your Privacy & Data Ownership",
-    "privacyDesc": "We encrypt all your data at rest and in transit. Your business data belongs exclusively to you. DRIPLARE AI never sells or shares your customer records.",
+    "privacyDesc": "We encrypt all your data at rest and in transit. Your business data belongs exclusively to you. ChatsFly never sells or shares your customer records.",
     "sessionsCard": {
       "title": "Login Security & Active Devices",
       "subtitle": "Track connected devices and protect account credentials",
@@ -229,7 +229,7 @@
   },
   "referrals": {
     "title": "Referrals & Rewards",
-    "subtitle": "Share DRIPLARE AI with your friends and earn bonus credits.",
+    "subtitle": "Share ChatsFly with your friends and earn bonus credits.",
     "stats": {
       "total": "Total Referrals",
       "totalDesc": "Friends who joined",
@@ -260,14 +260,14 @@
     },
     "affiliate": {
       "comingSoon": "Coming Soon",
-      "title": "Earn Cash with the DRIPLARE Affiliate Program",
-      "desc": "Soon you will be able to earn real commission for every paying customer you bring to DRIPLARE AI. Stay tuned for our professional affiliate dashboard and higher reward tiers.",
+      "title": "Earn Cash with the ChatsFly Affiliate Program",
+      "desc": "Soon you will be able to earn real commission for every paying customer you bring to ChatsFly. Stay tuned for our professional affiliate dashboard and higher reward tiers.",
       "btn": "Get Notified"
     }
   },
   "team": {
     "title": "Team Members",
-    "description": "Invite teammates by email, even if they do not have a Driplare account yet. Once they join, assign customer conversations to them.",
+    "description": "Invite teammates by email, even if they do not have a ChatsFly account yet. Once they join, assign customer conversations to them.",
     "inviteBtn": "Invite Member",
     "table": {
       "member": "Member",
@@ -297,7 +297,7 @@
     },
     "inviteModal": {
       "title": "Invite Team Member",
-      "description": "Invite any email address to your team. They can create an account with that email and join this workspace, even if they already use Driplare elsewhere.",
+      "description": "Invite any email address to your team. They can create an account with that email and join this workspace, even if they already use ChatsFly elsewhere.",
       "nameLabel": "Full Name",
       "namePlaceholder": "e.g. Tanvir Ahmed",
       "emailLabel": "Email Address",
@@ -371,7 +371,7 @@
     "title": "Workspace Settings",
     "subtitle": "Manage your business branding, category, and workspace preferences.",
     "cardTitle": "Business Information",
-    "cardSubtitle": "Update your business details and how your brand appears across Driplare AI.",
+    "cardSubtitle": "Update your business details and how your brand appears across ChatsFly.",
     "logoLabel": "Brand Logo",
     "logoHint": "Square PNG or JPG recommended. Automatically resized and optimized.",
     "uploadLogo": "Change Logo",

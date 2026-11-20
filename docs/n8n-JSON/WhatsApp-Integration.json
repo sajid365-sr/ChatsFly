@@ -3,7 +3,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## WhatsApp Integration (lightweight handler)\nVerifies Meta webhook, resolves `phone_number_id → chatbotId`, handles **Status / Echo Updates** (delivery receipts, read receipts, status callbacks) by logging and bypassing AI, upserts **ChatSession**, calls **Core AI Brain**, sends via WhatsApp Cloud API.\n\n### Setup\n1. Open **Execute Core AI Brain** and select the imported *Core-AI-Brain* workflow.\n2. Verify Token: `driplare_n8n_whatsapp_secret_2026`.\n3. Integration.config must hold `phoneNumberId` + `accessToken`.\n4. **Is Status / Echo Update** guard filters delivery/read receipts and status-only callbacks. They are logged to DB without AI processing.\n\n### Media\nInbound images and voice notes carry a media ID, not a URL. `Build Brain Payload` exchanges it with `GET /{mediaId}?fields=url,mime_type` and forwards both the URL and the `Authorization` header to the Core Brain, which then transcribes or describes it like any other channel. If that lookup fails the message is downgraded to text so the customer still gets an answer.",
+        "content": "## WhatsApp Integration (lightweight handler)\nVerifies Meta webhook, resolves `phone_number_id → chatbotId`, handles **Status / Echo Updates** (delivery receipts, read receipts, status callbacks) by logging and bypassing AI, upserts **ChatSession**, calls **Core AI Brain**, sends via WhatsApp Cloud API.\n\n### Setup\n1. Open **Execute Core AI Brain** and select the imported *Core-AI-Brain* workflow.\n2. Verify Token: `chatsfly_n8n_whatsapp_secret_2026`.\n3. Integration.config must hold `phoneNumberId` + `accessToken`.\n4. **Is Status / Echo Update** guard filters delivery/read receipts and status-only callbacks. They are logged to DB without AI processing.\n\n### Media\nInbound images and voice notes carry a media ID, not a URL. `Build Brain Payload` exchanges it with `GET /{mediaId}?fields=url,mime_type` and forwards both the URL and the `Authorization` header to the Core Brain, which then transcribes or describes it like any other channel. If that lookup fails the message is downgraded to text so the customer still gets an answer.",
         "height": 400,
         "width": 500
       },
@@ -19,7 +19,7 @@
     {
       "parameters": {
         "multipleMethods": true,
-        "path": "driplare-whatsapp",
+        "path": "chatsfly-whatsapp",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -31,7 +31,7 @@
         -1360,
         460
       ],
-      "webhookId": "driplare-whatsapp"
+      "webhookId": "chatsfly-whatsapp"
     },
     {
       "parameters": {
@@ -55,7 +55,7 @@
             {
               "id": "v-token",
               "leftValue": "={{ $json.query['hub.verify_token'] }}",
-              "rightValue": "driplare_n8n_whatsapp_secret_2026",
+              "rightValue": "chatsfly_n8n_whatsapp_secret_2026",
               "operator": {
                 "type": "string",
                 "operation": "equals"
@@ -701,7 +701,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://driplare-ai.vercel.app/api/internal/integration-secrets",
+        "url": "https://chatsfly-ai.vercel.app/api/internal/integration-secrets",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,

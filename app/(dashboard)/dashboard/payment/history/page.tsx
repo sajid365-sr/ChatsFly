@@ -113,7 +113,7 @@ export default function BillingHistoryPage() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `driplare-invoice-${tx.id.slice(-6).toUpperCase()}.pdf`;
+      link.download = `chatsfly-invoice-${tx.id.slice(-6).toUpperCase()}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -226,7 +226,7 @@ export default function BillingHistoryPage() {
     doc.setFontSize(10);
     doc.setTextColor(100);
     doc.text(t("history.generatedOn", "Generated on: {{date}}", { date: format(new Date(), "PPP p") }), 14, 30);
-    doc.text(t("history.platform", "Platform: DRIPLARE AI"), 14, 35);
+    doc.text(t("history.platform", "Platform: ChatsFly"), 14, 35);
     doc.setDrawColor(200);
     doc.line(14, 40, 196, 40);
     doc.setFontSize(12);

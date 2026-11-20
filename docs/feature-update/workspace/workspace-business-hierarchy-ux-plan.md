@@ -1,4 +1,4 @@
-# DRIPLARE AI — Workspace-Centric Business Architecture & Omnichannel Knowledge System
+# ChatsFly — Workspace-Centric Business Architecture & Omnichannel Knowledge System
 
 > **ডকুমেন্ট টাইপ:** Core Architecture & UI/UX Strategy Plan  
 > **উদ্দেশ্য:** Workspace বনাম Chatbot-এর ভূমিকা স্পষ্ট করা, মেথড A (1-to-1 Channel Binding) বাস্তবায়ন, হায়ারার্কিকাল নলেজবেস এবং ব্যবসার ধরণ অনুযায়ী পারফেক্ট সাইডবার নিশ্চিত করা।  

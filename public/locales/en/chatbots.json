@@ -197,7 +197,7 @@
     "title": "Connect Instagram",
     "description": "Connect a Professional (Business or Creator) Instagram account. Use Facebook Login for Business for a Page-linked account, or Instagram Login for a standalone Professional account. Personal accounts are not supported by Meta messaging APIs.",
     "loginMethodTitle": "Instagram Login",
-    "loginMethodHint": "Use this for a Professional account that is not linked to a Facebook Page. Driplare handles the Meta app authorization.",
+    "loginMethodHint": "Use this for a Professional account that is not linked to a Facebook Page. ChatsFly handles the Meta app authorization.",
     "loginWithInstagram": "Connect with Instagram Login",
     "viaFacebookPage": "Facebook Login for Business",
     "pageLinkHint": "Link a Professional Instagram account to the Page in Meta Business Settings, or connect it directly with Instagram Login.",
@@ -448,7 +448,7 @@
       "system_prompt": "System Prompt (Bot Identity & Role)",
       "system_prompt_identity": "Bot Identity & Role (Identity)",
       "system_prompt_desc": "Describe in detail who your AI assistant is and how it should talk to customers. The more detailed this is, the smarter your bot will be.",
-      "placeholder": "Example: You are a friendly customer support agent for DRIPLARE AI...",
+      "placeholder": "Example: You are a friendly customer support agent for ChatsFly...",
       "templates": "Quick Setup Templates",
       "template_applied": "{{title}} template applied!",
       "click_apply": "Click to apply template"

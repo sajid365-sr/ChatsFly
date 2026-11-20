@@ -11,7 +11,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Only run on client after hydration to catch localStorage preferences
-    const saved = localStorage.getItem("driplare_lang");
+    const saved = localStorage.getItem("chatsfly_lang");
     if (saved && region === "bd") {
       setClientLang(saved);
     }

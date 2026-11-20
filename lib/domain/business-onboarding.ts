@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { WORKSPACE_BUSINESS_CATEGORY_IDS } from "@/lib/domain/workspace-business-categories";
 
-export const BUSINESS_ONBOARDING_STORAGE_KEY = "driplare_business_onboarding";
+export const BUSINESS_ONBOARDING_STORAGE_KEY = "chatsfly_business_onboarding";
 
 const categorySchema = z.enum(WORKSPACE_BUSINESS_CATEGORY_IDS);
 const logoSchema = z.string().max(200_000).nullable();

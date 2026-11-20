@@ -35,7 +35,7 @@
       "templated": false,
       "parameters": {
         "method": "POST",
-        "url": "https://driplare-ai.vercel.app/api/internal/integration-secrets",
+        "url": "https://chatsfly-ai.vercel.app/api/internal/integration-secrets",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,

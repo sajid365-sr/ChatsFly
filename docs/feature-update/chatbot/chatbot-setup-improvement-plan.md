@@ -1,6 +1,6 @@
 # Chatbot Setup & Universal Multi-Industry CRM Architecture Plan
 
-**Project:** DriplareAI  
+**Project:** ChatsFly  
 **Section:** Dashboard → Chatbot Quick Setup & Dynamic Entity Engine  
 **Status:** Approved Architectural Specification  
 **Target Backend:** Next.js (App Router), Prisma (Neon Postgres), n8n Core-AI-Brain  
@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary & Vision
 
-DriplareAI is transitioning from an e-commerce-only bot assistant to a **Universal Multi-Channel AI Business CRM**. 
+ChatsFly is transitioning from an e-commerce-only bot assistant to a **Universal Multi-Channel AI Business CRM**. 
 
 While e-commerce remains a primary use-case with dedicated catalog search and order creation, businesses across diverse industries (Healthcare, Tour & Travel, Real Estate, Restaurants, Education, Consulting, Legal, Agency, etc.) require the same AI-driven automation. 
 
@@ -67,7 +67,7 @@ The n8n workflow routes tools based on `chatbotMode`:
 
 ### 3.2 Custom Entity Engine (Dynamic Schema & Table Builder)
 
-Rather than executing dangerous dynamic DDL (`CREATE TABLE`), DriplareAI implements the **JSONB Entity-Attribute-Value (EAV)** pattern via Neon Postgres & Prisma:
+Rather than executing dangerous dynamic DDL (`CREATE TABLE`), ChatsFly implements the **JSONB Entity-Attribute-Value (EAV)** pattern via Neon Postgres & Prisma:
 
 #### Prisma Schema Additions (`prisma/schema/crm.prisma` or `merchant.prisma`):
 
