@@ -16,6 +16,7 @@
     "systemHealth": "System Health",
     "observability": "AI Observability",
     "platforms": "Platforms",
+    "branding": "ব্র্যান্ডিং ও অ্যাপিয়ারেন্স",
     "referrals": "Referrals",
     "billing": "Billing & Transactions",
     "backToApp": "Dashboard-এ ফিরুন",
@@ -28,7 +29,7 @@
   "dashboard": {
     "title": "Admin Dashboard",
     "description": "Platform content, contacts এবং settings manage করুন।",
-    "welcome": "Driplare Admin Portal-এ স্বাগতম"
+    "welcome": "ChatsFly Admin Portal-এ স্বাগতম"
   },
   "contacts": {
     "title": "Contacts",

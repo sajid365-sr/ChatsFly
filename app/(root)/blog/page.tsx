@@ -7,7 +7,7 @@ import en from "@/public/locales/en/blog.json";
 import bn from "@/public/locales/bn/blog.json";
 
 export const metadata = {
-  title: "Blog | Driplare AI",
+  title: "Blog | ChatsFly",
 };
 
 export default async function BlogListingPage() {

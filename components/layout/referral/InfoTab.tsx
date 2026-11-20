@@ -84,7 +84,7 @@ export function InfoTab({ data, loading, onClose }: InfoTabProps) {
         <p className="text-xs font-bold text-primary uppercase tracking-wider mb-4">Terms & Conditions</p>
         <div className="space-y-4">
           {[
-            { title: "New users only", desc: "Referral program is exclusively for first-time DRIPLARE users." },
+            { title: "New users only", desc: "Referral program is exclusively for first-time ChatsFly users." },
             { title: "Reward eligibility", desc: "You earn +500 messages when your friend subscribes to any paid plan." },
             { title: "Program flexibility", desc: "We may modify or discontinue this program at any time." },
             { title: "Appropriate sharing", desc: "Spam or misleading promotions may result in account penalties." },

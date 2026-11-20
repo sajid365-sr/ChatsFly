@@ -56,10 +56,10 @@ export function ProductPageClient({
         <header className="mb-8 flex items-center justify-between border-b border-border/60 pb-4">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-violet-600 to-blue-600 flex items-center justify-center text-white font-black text-sm shadow-sm">
-              D
+              C
             </div>
             <span className="font-extrabold tracking-tight text-foreground text-sm sm:text-base">
-              Driplare Store
+              ChatsFly Store
             </span>
           </div>
 
@@ -122,7 +122,7 @@ export function ProductPageClient({
 
         {/* Footer */}
         <footer className="mt-16 border-t border-border/60 pt-6 text-center text-xs text-muted-foreground">
-          Powered by Driplare AI • Instant Chat & Social Commerce
+          Powered by ChatsFly • Instant Chat & Social Commerce
         </footer>
       </div>
     </div>

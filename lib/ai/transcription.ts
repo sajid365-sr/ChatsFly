@@ -91,7 +91,7 @@ export async function transcribeAudio(options: TranscribeAudioOptions): Promise<
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
           "HTTP-Referer": "https://driplare.com",
-          "X-Title": "Driplare AI Omnichannel",
+          "X-Title": "ChatsFly Omnichannel",
         },
         body: JSON.stringify({
           model,

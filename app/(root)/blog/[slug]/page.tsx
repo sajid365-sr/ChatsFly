@@ -19,10 +19,10 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const locale = lang === "en" || lang === "bn" ? lang : await getBlogLocale();
   const post = await getPublishedPostBySlug(slug, locale);
 
-  if (!post) return { title: "Blog | Driplare AI" };
+  if (!post) return { title: "Blog | ChatsFly" };
 
   return {
-    title: `${post.title} | Driplare AI Blog`,
+    title: `${post.title} | ChatsFly Blog`,
     description: htmlExcerpt(post.content, 155),
   };
 }

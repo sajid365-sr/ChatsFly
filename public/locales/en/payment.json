@@ -37,7 +37,7 @@
   "cancelSubscription": "Cancel Subscription",
   "cancelling": "Cancelling...",
   "perMsgAfterQuota": "per credit after quota",
-  "contactSales": "Email sales@driplare.com to discuss Enterprise plans",
+  "contactSales": "Email sales@chatsfly.com to discuss Enterprise plans",
   "history": {
     "loading": "Loading your billing history...",
     "loadError": "Failed to load billing history",
@@ -73,7 +73,7 @@
     "next": "Next",
     "reportTitle": "Billing History Report",
     "generatedOn": "Generated on: {{date}}",
-    "platform": "Platform: DRIPLARE AI",
+    "platform": "Platform: ChatsFly",
     "summary": "Summary",
     "totalSuccessfulPayments": "Total Successful Payments: {{count}}",
     "totalAmountSpent": "Total Amount Spent: {{amount}} {{currency}}",

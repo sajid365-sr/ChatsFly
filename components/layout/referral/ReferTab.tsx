@@ -95,7 +95,7 @@ export function ReferTab({ data, loading, copied, copyLink, referralLink }: Refe
             { key: "email", label: "Email", icon: <Mail className="w-4 h-4" /> },
             { key: "whatsapp", label: "WhatsApp", icon: <WhatsAppIcon /> },
           ].map(({ key, label, icon }) => {
-            const text = `Join me on DRIPLARE AI and build powerful AI Agents! Use my link: ${referralLink}`;
+            const text = `Join me on ChatsFly and build powerful AI Agents! Use my link: ${referralLink}`;
             const encodedText = encodeURIComponent(text);
             const encodedUrl = encodeURIComponent(referralLink);
 
@@ -107,9 +107,9 @@ export function ReferTab({ data, loading, copied, copyLink, referralLink }: Refe
             if (key === "email") {
               const isMobile = typeof window !== "undefined" && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
               if (isMobile) {
-                href = `mailto:?subject=${encodeURIComponent("Join DRIPLARE AI")}&body=${encodedText}`;
+                href = `mailto:?subject=${encodeURIComponent("Join ChatsFly")}&body=${encodedText}`;
               } else {
-                href = `https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent("Join DRIPLARE AI")}&body=${encodedText}`;
+                href = `https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent("Join ChatsFly")}&body=${encodedText}`;
               }
             }
 

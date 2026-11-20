@@ -67,7 +67,7 @@
     "healthDesc": "আপনার বিজনেস ক্রেডেনশিয়াল, গ্রাহকের ফোন নম্বর এবং চ্যাট রেকর্ড নিরাপদে সংরক্ষিত আছে।",
     "healthActive": "সমস্ত সুরক্ষা ফিচার সক্রিয়",
     "privacyTitle": "আপনার প্রাইভেসি ও ডেটার মালিকানা",
-    "privacyDesc": "আমরা আপনার সমস্ত ডেটা rest এবং transit অবস্থায় এনক্রিপ্ট করি। আপনার ডেটা সম্পূর্ণভাবে আপনারই। DRIPLARE AI কখনো আপনার কাস্টমার ডেটা কারো কাছে বিক্রি বা শেয়ার করে না।",
+    "privacyDesc": "আমরা আপনার সমস্ত ডেটা rest এবং transit অবস্থায় এনক্রিপ্ট করি। আপনার ডেটা সম্পূর্ণভাবে আপনারই। ChatsFly কখনো আপনার কাস্টমার ডেটা কারো কাছে বিক্রি বা শেয়ার করে না।",
     "sessionsCard": {
       "title": "লগইন সিকিউরিটি ও সক্রিয় ডিভাইস",
       "subtitle": "কানেক্টেড ডিভাইস ট্র্যাক করুন এবং অ্যাকাউন্ট সুরক্ষিত রাখুন",
@@ -229,7 +229,7 @@
   },
   "referrals": {
     "title": "Referrals & Rewards",
-    "subtitle": "বন্ধুদের সাথে DRIPLARE AI শেয়ার করুন এবং বোনাস ক্রেডিট অর্জন করুন।",
+    "subtitle": "বন্ধুদের সাথে ChatsFly শেয়ার করুন এবং বোনাস ক্রেডিট অর্জন করুন।",
     "stats": {
       "total": "Total Referrals",
       "totalDesc": "যেসব বন্ধু যুক্ত হয়েছে",
@@ -260,14 +260,14 @@
     },
     "affiliate": {
       "comingSoon": "Coming Soon",
-      "title": "DRIPLARE Affiliate Program এর মাধ্যমে আয় করুন",
-      "desc": "শীঘ্রই আপনি DRIPLARE AI-তে নিয়ে আসা প্রতিটি পেইড কাস্টমারের জন্য আসল কমিশন উপার্জন করতে সক্ষম হবেন। আমাদের প্রফেশনাল অ্যাফিলিয়েট ড্যাশবোর্ড এবং উচ্চতর রিওয়ার্ড টায়ার এর জন্য সাথেই থাকুন।",
+      "title": "ChatsFly Affiliate Program এর মাধ্যমে আয় করুন",
+      "desc": "শীঘ্রই আপনি ChatsFly-তে নিয়ে আসা প্রতিটি পেইড কাস্টমারের জন্য আসল কমিশন উপার্জন করতে সক্ষম হবেন। আমাদের প্রফেশনাল অ্যাফিলিয়েট ড্যাশবোর্ড এবং উচ্চতর রিওয়ার্ড টায়ার এর জন্য সাথেই থাকুন।",
       "btn": "Get Notified"
     }
   },
   "team": {
     "title": "টিম সদস্যবৃন্দ (Team Members)",
-    "description": "ইমেইল দিয়ে যেকোনো ব্যক্তিকে Invite করুন—তার Driplare account না থাকলেও। যোগ দেওয়ার পর তাকে customer conversation assign করতে পারবেন।",
+    "description": "ইমেইল দিয়ে যেকোনো ব্যক্তিকে Invite করুন—তার ChatsFly account না থাকলেও। যোগ দেওয়ার পর তাকে customer conversation assign করতে পারবেন।",
     "inviteBtn": "টিম মেম্বার যোগ করুন",
     "table": {
       "member": "সদস্য",
@@ -297,7 +297,7 @@
     },
     "inviteModal": {
       "title": "নতুন টিম মেম্বার যুক্ত করুন",
-      "description": "যেকোনো ইমেইলে Invite পাঠান। সেই ইমেইল দিয়ে account তৈরি বা লগইন করে এই workspace-এ যোগ দেওয়া যাবে—আগে থেকেই Driplare account থাকলেও।",
+      "description": "যেকোনো ইমেইলে Invite পাঠান। সেই ইমেইল দিয়ে account তৈরি বা লগইন করে এই workspace-এ যোগ দেওয়া যাবে—আগে থেকেই ChatsFly account থাকলেও।",
       "nameLabel": "পুরো নাম",
       "namePlaceholder": "উদা: তানভীর আহমেদ",
       "emailLabel": "ইমেইল ঠিকানা",
@@ -371,7 +371,7 @@
     "title": "Workspace Settings",
     "subtitle": "আপনার Business branding, category এবং workspace সেটিংস পরিচালনা করুন।",
     "cardTitle": "Business Information",
-    "cardSubtitle": "আপনার Business এর তথ্য এবং Driplare AI-তে আপনার ব্র্যান্ডের প্রদর্শন আপডেট করুন।",
+    "cardSubtitle": "আপনার Business এর তথ্য এবং ChatsFly-তে আপনার ব্র্যান্ডের প্রদর্শন আপডেট করুন।",
     "logoLabel": "Brand Logo",
     "logoHint": "Square PNG বা JPG ছবি সবচেয়ে ভালো দেখায়। স্বয়ংক্রিয়ভাবে অপ্টিমাইজ করা হবে।",
     "uploadLogo": "Change Logo",

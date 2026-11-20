@@ -1,6 +1,6 @@
-# 🤖 DRIPLARE AI — Your All-in-One AI Customer Support Agent
+# 🤖 CHATSFLY — Your All-in-One AI Customer Support Agent
 
-DRIPLARE AI is a powerful SaaS platform designed to automate customer interactions across multiple channels (Facebook, WhatsApp, and Web) using state-of-the-art LLMs and RAG (Retrieval-Augmented Generation).
+ChatsFly is a powerful SaaS platform designed to automate customer interactions across multiple channels (Facebook, WhatsApp, and Web) using state-of-the-art LLMs and RAG (Retrieval-Augmented Generation).
 
 ![DRIPLARE AI Dashboard](https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/www/public/og.png) <!-- Replace with real screenshot if available -->
 

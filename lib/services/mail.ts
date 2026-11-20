@@ -210,11 +210,11 @@ export const MailTemplates = {
     invitationUrl: string;
   }) =>
     layout({
-      title: "You are invited to join a Driplare AI team",
+      title: "You are invited to join a ChatsFly team",
       body: `
         <p>Hello ${escapeHtml(args.inviteeName || "there")},</p>
         <p><strong>${escapeHtml(args.inviterName)}</strong> invited you to join <strong>${escapeHtml(args.workspaceName)}</strong> as a ${escapeHtml(args.role)}.</p>
-        <p>You can accept this invitation by signing in or creating a Driplare AI account with this email address.</p>
+        <p>You can accept this invitation by signing in or creating a ChatsFly account with this email address.</p>
         ${button("Accept Invitation", args.invitationUrl)}
       `,
       footnote: "If you were not expecting this invitation, you can ignore this email.",

@@ -26,7 +26,7 @@ export const BRAND_NAME = "DRIPLARE AI";
 export const BRAND_TAGLINE = "driplare.com";
 export const BRAND_EMAIL = "support@driplare.com";
 export const CEO_NAME = "Sajid Sorker";
-export const CEO_TITLE = "Founder & CEO, Driplare AI";
+export const CEO_TITLE = "Founder & CEO, ChatsFly";
 
 // ─────────────────────────────────────────────────────────────
 // Dynamic jsPDF import helper (works server-side)

@@ -321,7 +321,7 @@ export const MessageBubble = ({ message, chatbotId, onReply, formatShortDate }: 
               <>
                 <Sparkles className="w-2.5 h-2.5 text-violet-400" />
                 <span className="text-[9.5px] text-violet-400 font-medium tracking-wide">
-                  Replied by Driplare AI
+                  Replied by ChatsFly AI
                 </span>
               </>
             )}

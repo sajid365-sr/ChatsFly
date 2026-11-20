@@ -95,7 +95,7 @@ export const InstagramModal = ({
               {managedPageCount === 0 ? (
                 <p className="text-xs text-amber-600 dark:text-amber-400">
                   No Facebook Pages were returned for this login. Sign in with the Facebook profile that manages your
-                  business Page (e.g. DRIPLARE Page).
+                  business Page (e.g. ChatsFly Page).
                 </p>
               ) : null}
               {pagesWithoutInstagram.length > 0 ? (

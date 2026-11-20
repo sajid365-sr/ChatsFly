@@ -50,9 +50,9 @@ describe("WIDGET_COPY", () => {
     expect(WIDGET_COPY.bn.subtitle).toContain("AI assistant");
   });
 
-  it("names Driplare in both languages rather than translating the brand", () => {
-    expect(WIDGET_COPY.en.poweredBy).toContain("Driplare");
-    expect(WIDGET_COPY.bn.poweredBy).toContain("Driplare");
+  it("names ChatsFly in both languages rather than translating the brand", () => {
+    expect(WIDGET_COPY.en.poweredBy).toContain("ChatsFly");
+    expect(WIDGET_COPY.bn.poweredBy).toContain("ChatsFly");
   });
 
   it("is assignable to the declared shape", () => {

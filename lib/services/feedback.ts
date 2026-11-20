@@ -607,7 +607,7 @@ async function notifyAdminsOfFeedback(args: {
     const { sendMail, MailTemplates } = await import("@/lib/services/mail");
     await sendMail({
       to: adminEmail,
-      subject: `[Driplare] Feedback — ${args.subject}`,
+      subject: `[ChatsFly] Feedback — ${args.subject}`,
       html: MailTemplates.feedbackReceived({
         merchantName: args.merchantName,
         merchantEmail: args.merchantEmail,
