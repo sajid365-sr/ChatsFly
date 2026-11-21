@@ -82,9 +82,19 @@ export function AdminSidebar({ collapsed = false }: AdminSidebarProps) {
   const pathname = usePathname();
   const { t } = useTranslation("admin");
 
+  const normalizedPathname = pathname
+    ? (pathname.startsWith("/admin") ? pathname : (pathname === "/" ? "/admin" : `/admin${pathname}`))
+    : "";
+
+  const isCleanAdmin = !pathname?.startsWith("/admin");
+  const getItemHref = (href: string) => {
+    if (!isCleanAdmin) return href;
+    return href.replace(/^\/admin/, "") || "/";
+  };
+
   const isActive = (href: string) => {
-    if (href === "/admin") return pathname === "/admin";
-    return pathname?.startsWith(href) ?? false;
+    if (href === "/admin") return normalizedPathname === "/admin";
+    return normalizedPathname.startsWith(href);
   };
 
   return (
@@ -133,7 +143,7 @@ export function AdminSidebar({ collapsed = false }: AdminSidebarProps) {
                 return (
                   <li key={item.href}>
                     <Link
-                      href={item.href}
+                      href={getItemHref(item.href)}
                       title={collapsed ? t(item.labelKey, item.fallback) : undefined}
                       className={cn(
                         "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all",
@@ -166,6 +176,17 @@ export function AdminSidebar({ collapsed = false }: AdminSidebarProps) {
       <div className="border-t border-primary/10 p-3">
         <Link
           href="/dashboard/overview"
+          onClick={(e) => {
+            if (typeof window !== "undefined") {
+              const host = window.location.host;
+              if (host.startsWith("cfhq.") || host.includes("cfhq")) {
+                e.preventDefault();
+                const parts = host.split(".");
+                const rootHost = parts.length > 2 ? parts.slice(1).join(".") : host;
+                window.location.href = `${window.location.protocol}//app.${rootHost}/overview`;
+              }
+            }
+          }}
           className={cn(
             "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground",
             collapsed && "justify-center px-2"

@@ -86,26 +86,26 @@ export default clerkMiddleware(async (auth, request) => {
   const isLegacyAdminSubdomain = (host === `admin.${appDomain}` || host.startsWith('admin.')) && !isDevDomain
   const isAdminSubdomain = isCfhqSubdomain || isLegacyAdminSubdomain
 
-  // Legacy admin.chatsfly.com → permanent redirect to cfhq.chatsfly.com
+  // Legacy admin.chatsfly.com → permanent redirect to cfhq.chatsfly.com (clean URL)
   if (isLegacyAdminSubdomain) {
-    return NextResponse.redirect(new URL(pathname + request.nextUrl.search, `https://cfhq.${appDomain}`), 301)
+    const cleanPath = pathname.replace(/^\/admin/, '') || '/'
+    return NextResponse.redirect(new URL(cleanPath + request.nextUrl.search, `https://cfhq.${appDomain}`), 301)
   }
 
   // On cfhq (admin) subdomain:
-  // Root path → /admin
-  if (isCfhqSubdomain && (pathname === '/' || pathname === '')) {
-    return NextResponse.redirect(new URL('/admin', request.url))
+  // 1. Any request with /admin prefix → strip /admin for clean URL (e.g. /admin/contacts → /contacts, /admin → /)
+  if (isCfhqSubdomain && pathname.startsWith('/admin')) {
+    const cleanPath = pathname.replace(/^\/admin/, '') || '/'
+    return NextResponse.redirect(new URL(cleanPath + request.nextUrl.search, request.url))
   }
-  // Non-admin, non-auth, non-api routes on cfhq → redirect back to main domain
-  if (
-    isCfhqSubdomain &&
-    !pathname.startsWith('/admin') &&
-    !pathname.startsWith('/api/admin') &&
-    !pathname.startsWith('/sign-in') &&
-    !pathname.startsWith('/sign-up') &&
-    !pathname.startsWith('/api/')
-  ) {
-    return NextResponse.redirect(new URL('/', `https://${appDomain}`))
+  // 2. If someone navigates to /dashboard on cfhq → redirect to merchant app subdomain
+  if (isCfhqSubdomain && pathname.startsWith('/dashboard')) {
+    const cleanPath = pathname.replace(/^\/dashboard/, '') || '/overview'
+    return NextResponse.redirect(new URL(cleanPath + request.nextUrl.search, `https://app.${appDomain}`))
+  }
+  // 3. Public landing marketing routes on cfhq → redirect to main domain
+  if (isCfhqSubdomain && (pathname === '/tutorial' || pathname === '/get-started')) {
+    return NextResponse.redirect(new URL(pathname + request.nextUrl.search, `https://${appDomain}`))
   }
 
   // On app subdomain:
@@ -132,12 +132,17 @@ export default clerkMiddleware(async (auth, request) => {
     const cleanPath = pathname.replace(/^\/dashboard/, '') || '/overview'
     return NextResponse.redirect(new URL(cleanPath + request.nextUrl.search, `https://app.${appDomain}`))
   }
-  // /admin → cfhq subdomain
+  // /admin → cfhq subdomain (clean URL)
   if (isMainDomain && pathname.startsWith('/admin')) {
-    return NextResponse.redirect(new URL(pathname + request.nextUrl.search, `https://cfhq.${appDomain}`))
+    const cleanPath = pathname.replace(/^\/admin/, '') || '/'
+    return NextResponse.redirect(new URL(cleanPath + request.nextUrl.search, `https://cfhq.${appDomain}`))
   }
 
-  if (!isPublicRoute(request)) {
+  // Auth protection:
+  // On cfhq subdomain, all routes require auth (except sign-in/sign-up).
+  // On other domains, only non-public routes require auth.
+  const isCfhqAuthRoute = isCfhqSubdomain && (pathname.startsWith('/sign-in') || pathname.startsWith('/sign-up'))
+  if (!isCfhqAuthRoute && (isCfhqSubdomain || !isPublicRoute(request))) {
     await auth.protect()
   }
 
@@ -151,8 +156,10 @@ export default clerkMiddleware(async (auth, request) => {
       const explicitRole = getExplicitClerkRole(claims)
 
       if (explicitRole && explicitRole !== 'admin' && explicitRole !== 'super_admin') {
-        const redirectPath = isAppSubdomain ? '/overview' : '/dashboard/overview'
-        return NextResponse.redirect(new URL(`${redirectPath}?error=admin_unauthorized`, request.url))
+        const redirectUrl = isCfhqSubdomain
+          ? `https://app.${appDomain}/overview?error=admin_unauthorized`
+          : (isAppSubdomain ? '/overview?error=admin_unauthorized' : '/dashboard/overview?error=admin_unauthorized')
+        return NextResponse.redirect(new URL(redirectUrl, request.url))
       }
     }
   }
@@ -175,6 +182,27 @@ export default clerkMiddleware(async (auth, request) => {
       })
     }
     return res
+  }
+
+  // Rewrite clean admin routes on cfhq subdomain
+  // e.g. cfhq.chatsfly.com/ → internally serves /admin
+  // e.g. cfhq.chatsfly.com/contacts → internally serves /admin/contacts
+  // e.g. cfhq.chatsfly.com/blog or /blogs → internally serves /admin/blog
+  if (
+    isCfhqSubdomain &&
+    !pathname.startsWith('/api') &&
+    !pathname.startsWith('/sign-in') &&
+    !pathname.startsWith('/sign-up') &&
+    !pathname.startsWith('/assets') &&
+    !pathname.startsWith('/Assets')
+  ) {
+    let internalPath = pathname === '/' || pathname === '' ? '/admin' : `/admin${pathname}`
+    if (internalPath === '/admin/blogs' || internalPath.startsWith('/admin/blogs/')) {
+      internalPath = internalPath.replace('/admin/blogs', '/admin/blog')
+    }
+    const rewriteUrl = new URL(internalPath, request.url)
+    rewriteUrl.search = request.nextUrl.search
+    return applyRegionCookie(NextResponse.rewrite(rewriteUrl))
   }
 
   // Rewrite clean dashboard routes on app subdomain

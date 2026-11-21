@@ -24,7 +24,8 @@
     "groupPlatform": "Platform"
   },
   "header": {
-    "breadcrumb": "Admin"
+    "breadcrumb": "Admin",
+    "clientSide": "Client Side"
   },
   "dashboard": {
     "title": "Admin Dashboard",
