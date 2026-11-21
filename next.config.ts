@@ -31,6 +31,36 @@ const nextConfig: NextConfig = {
     turbopackFileSystemCacheForDev: false,
   },
 
+  // Security headers — force HTTPS via HSTS and lock down content policies.
+  // Strict-Transport-Security tells browsers to always use HTTPS for 1 year,
+  // even if the user manually types http://, eliminating the "Not secure"
+  // badge on cached-http profiles.
+  async headers() {
+    const isProduction = process.env.NODE_ENV === "production";
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          // HSTS: 1 year, include subdomains, allow preload registration
+          ...(isProduction
+            ? [
+                {
+                  key: "Strict-Transport-Security",
+                  value: "max-age=31536000; includeSubDomains; preload",
+                },
+              ]
+            : []),
+          // Prevent MIME-type sniffing
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          // Block clickjacking
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          // Disable referrer for cross-origin requests
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        ],
+      },
+    ];
+  },
+
   // Allow images from Cloudinary and other external sources
   images: {
     remotePatterns: [
