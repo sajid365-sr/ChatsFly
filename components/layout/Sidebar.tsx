@@ -85,6 +85,8 @@ export default function Sidebar({
 }: SidebarProps) {
   const { t, i18n } = useTranslation();
   const pathname = usePathname();
+  // Support clean URLs on app.chatsfly.com (e.g. /overview alongside /dashboard/overview)
+  const normalizedPathname = pathname?.startsWith("/dashboard") ? pathname : `/dashboard${pathname || ""}`;
   const searchParams = useSearchParams();
   const router = useRouter();
   const { activeWorkspace } = useWorkspace();
@@ -131,17 +133,17 @@ export default function Sidebar({
   // child routes — landing on a deep page must never leave the group closed
   // with no visible hint of where you are.
   const isEcomActive =
-    pathname?.startsWith("/dashboard/products") ||
-    pathname?.startsWith("/dashboard/orders") ||
-    pathname?.startsWith("/dashboard/couriers") ||
-    pathname?.startsWith("/dashboard/discounts") ||
-    pathname?.startsWith("/dashboard/records");
+    normalizedPathname.startsWith("/dashboard/products") ||
+    normalizedPathname.startsWith("/dashboard/orders") ||
+    normalizedPathname.startsWith("/dashboard/couriers") ||
+    normalizedPathname.startsWith("/dashboard/discounts") ||
+    normalizedPathname.startsWith("/dashboard/records");
 
-  const isAutomationsActive = pathname?.startsWith("/dashboard/automations");
+  const isAutomationsActive = normalizedPathname.startsWith("/dashboard/automations");
   const isCrmActive =
-    pathname?.startsWith("/dashboard/contacts") ||
-    pathname?.startsWith("/dashboard/deals") ||
-    pathname?.startsWith("/dashboard/tasks");
+    normalizedPathname.startsWith("/dashboard/contacts") ||
+    normalizedPathname.startsWith("/dashboard/deals") ||
+    normalizedPathname.startsWith("/dashboard/tasks");
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- Keep active groups expanded after route navigation.
@@ -366,8 +368,8 @@ export default function Sidebar({
         ? searchParams?.get("manage") === target.searchParams.get("manage")
           : !isRecordsRoute || !searchParams?.get("schema");
     const active = it.exact
-      ? pathname === target.pathname && schemaMatch
-      : pathname === target.pathname && schemaMatch || (target.pathname !== "/dashboard/overview" && pathname?.startsWith(target.pathname) && !isRecordsRoute);
+      ? normalizedPathname === target.pathname && schemaMatch
+      : normalizedPathname === target.pathname && schemaMatch || (target.pathname !== "/dashboard/overview" && normalizedPathname.startsWith(target.pathname) && !isRecordsRoute);
     const Icon = it.icon;
     return (
       <motion.div key={it.to} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.02 }}>

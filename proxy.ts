@@ -56,6 +56,7 @@ const isPublicRoute = createRouteMatcher([
   '/widget/(.*)',
   '/api/widget/(.*)',
   '/dashboard/payment/success(.*)',  // Payment success page is public
+  '/payment/success(.*)',            // Clean URL payment success page
   '/api/contact(.*)',                // Public contact / demo form submissions
   '/api/test(.*)'
 ])
@@ -72,36 +73,66 @@ export default clerkMiddleware(async (auth, request) => {
   // ----------------------------------------------------------------
   // Subdomain routing
   // chatsfly.com        → public landing page
-  // app.chatsfly.com    → merchant dashboard (/dashboard)
-  // admin.chatsfly.com  → admin panel (/admin)
+  // app.chatsfly.com    → merchant dashboard (clean URLs: /overview, /inbox, etc.)
+  // cfhq.chatsfly.com   → admin panel (root / or /admin)
+  // admin.chatsfly.com  → 301 redirects to cfhq.chatsfly.com
   // ----------------------------------------------------------------
   const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN ?? 'chatsfly.com'
-  const isMainDomain = host === appDomain || host === `www.${appDomain}`
-  const isAppSubdomain = host === `app.${appDomain}`
-  const isAdminSubdomain = host === `admin.${appDomain}`
+  const isMainDomain = host === appDomain || host === `www.${appDomain}` || host === `dev.${appDomain}` || host === `www.dev.${appDomain}`
+  const isAppSubdomain = host === `app.${appDomain}` || host.startsWith('app.')
+  const isCfhqSubdomain = host === `cfhq.${appDomain}` || host.startsWith('cfhq.')
+  const isLegacyAdminSubdomain = host === `admin.${appDomain}` || host.startsWith('admin.')
+  const isAdminSubdomain = isCfhqSubdomain || isLegacyAdminSubdomain
 
-  // On admin subdomain: non-admin routes → back to main domain
+  // Legacy admin.chatsfly.com → permanent redirect to cfhq.chatsfly.com
+  if (isLegacyAdminSubdomain) {
+    return NextResponse.redirect(new URL(pathname + request.nextUrl.search, `https://cfhq.${appDomain}`), 301)
+  }
+
+  // On cfhq (admin) subdomain:
+  // Root path → /admin
+  if (isCfhqSubdomain && (pathname === '/' || pathname === '')) {
+    return NextResponse.redirect(new URL('/admin', request.url))
+  }
+  // Non-admin, non-auth, non-api routes on cfhq → redirect back to main domain
   if (
-    isAdminSubdomain &&
+    isCfhqSubdomain &&
     !pathname.startsWith('/admin') &&
     !pathname.startsWith('/api/admin') &&
     !pathname.startsWith('/sign-in') &&
+    !pathname.startsWith('/sign-up') &&
     !pathname.startsWith('/api/')
   ) {
     return NextResponse.redirect(new URL('/', `https://${appDomain}`))
   }
 
-  // On app subdomain: root path → go to dashboard overview
-  if (isAppSubdomain && pathname === '/') {
-    return NextResponse.redirect(new URL('/dashboard/overview', request.url))
+  // On app subdomain:
+  // Root path → /overview (clean URL)
+  if (isAppSubdomain && (pathname === '/' || pathname === '')) {
+    return NextResponse.redirect(new URL('/overview', request.url))
+  }
+  // Public marketing pages on app subdomain → send to main domain
+  if (
+    isAppSubdomain &&
+    (pathname === '/pricing' || pathname === '/tutorial' || pathname.startsWith('/blog') || pathname === '/get-started')
+  ) {
+    return NextResponse.redirect(new URL(pathname + request.nextUrl.search, `https://${appDomain}`))
+  }
+  // Any request with explicit /dashboard prefix on app subdomain → strip /dashboard for clean URL
+  if (isAppSubdomain && pathname.startsWith('/dashboard')) {
+    const cleanPath = pathname.replace(/^\/dashboard/, '') || '/overview'
+    return NextResponse.redirect(new URL(cleanPath + request.nextUrl.search, request.url))
   }
 
-  // On main domain: /dashboard → app subdomain, /admin → admin subdomain
+  // On main domain:
+  // /dashboard → app subdomain (clean URL)
   if (isMainDomain && pathname.startsWith('/dashboard')) {
-    return NextResponse.redirect(new URL(pathname + request.nextUrl.search, `https://app.${appDomain}`))
+    const cleanPath = pathname.replace(/^\/dashboard/, '') || '/overview'
+    return NextResponse.redirect(new URL(cleanPath + request.nextUrl.search, `https://app.${appDomain}`))
   }
+  // /admin → cfhq subdomain
   if (isMainDomain && pathname.startsWith('/admin')) {
-    return NextResponse.redirect(new URL(pathname + request.nextUrl.search, `https://admin.${appDomain}`))
+    return NextResponse.redirect(new URL(pathname + request.nextUrl.search, `https://cfhq.${appDomain}`))
   }
 
   if (!isPublicRoute(request)) {
@@ -110,7 +141,7 @@ export default clerkMiddleware(async (auth, request) => {
 
   // Block non-admins when Clerk metadata explicitly denies admin access.
   // Prisma User.role is verified server-side in admin layout via requireAdmin().
-  if (isAdminRoute(request)) {
+  if (isAdminRoute(request) || isCfhqSubdomain) {
     const authState = await auth()
     const claims = authState.sessionClaims as Record<string, unknown> | null | undefined
 
@@ -118,7 +149,7 @@ export default clerkMiddleware(async (auth, request) => {
       const explicitRole = getExplicitClerkRole(claims)
 
       if (explicitRole && explicitRole !== 'admin' && explicitRole !== 'super_admin') {
-        return NextResponse.redirect(new URL('/dashboard/overview?error=admin_unauthorized', request.url))
+        return NextResponse.redirect(new URL('/overview?error=admin_unauthorized', request.url))
       }
     }
   }
@@ -126,20 +157,41 @@ export default clerkMiddleware(async (auth, request) => {
   // --- Region detection ---
   const existingRegion = request.cookies.get(REGION_COOKIE)?.value
 
-  if (!existingRegion) {
-    const country = detectCountryFromHeaders(request.headers)
-    // Bangladesh → bd, everything else → global
-    // On local dev (no geo headers) → default to bd
-    const region = country === null || country === 'BD' ? 'bd' : 'global'
+  // Attach region cookie if not present
+  const applyRegionCookie = (res: NextResponse) => {
+    if (!existingRegion) {
+      const country = detectCountryFromHeaders(request.headers)
+      // Bangladesh → bd, everything else → global
+      // On local dev (no geo headers) → default to bd
+      const region = country === null || country === 'BD' ? 'bd' : 'global'
+      res.cookies.set(REGION_COOKIE, region, {
+        httpOnly: false,
+        maxAge: 60 * 60 * 24 * 90,
+        sameSite: 'lax',
+        path: '/',
+      })
+    }
+    return res
+  }
 
-    const response = NextResponse.next()
-    response.cookies.set(REGION_COOKIE, region, {
-      httpOnly: false, // client-side JS needs to read this
-      maxAge: 60 * 60 * 24 * 90, // 90 days
-      sameSite: 'lax',
-      path: '/',
-    })
-    return response
+  // Rewrite clean dashboard routes on app subdomain
+  // e.g. app.chatsfly.com/overview → internally serves /dashboard/overview
+  if (
+    isAppSubdomain &&
+    !pathname.startsWith('/api') &&
+    !pathname.startsWith('/sign-in') &&
+    !pathname.startsWith('/sign-up') &&
+    !pathname.startsWith('/widget') &&
+    !pathname.startsWith('/assets') &&
+    !pathname.startsWith('/Assets')
+  ) {
+    const rewriteUrl = new URL(`/dashboard${pathname}`, request.url)
+    rewriteUrl.search = request.nextUrl.search
+    return applyRegionCookie(NextResponse.rewrite(rewriteUrl))
+  }
+
+  if (!existingRegion) {
+    return applyRegionCookie(NextResponse.next())
   }
 })
 
