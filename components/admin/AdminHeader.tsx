@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { UserButton } from "@clerk/nextjs";
-import { Menu, Shield } from "lucide-react";
+import { Globe, Menu, Shield } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 import { BrandLogo } from "@/components/layout/BrandLogo";
@@ -13,6 +14,9 @@ import { AdminSidebar } from "@/components/admin/AdminSidebar";
 
 export function AdminHeader() {
   const { t } = useTranslation("admin");
+  const pathname = usePathname();
+  const isCleanAdmin = !pathname?.startsWith("/admin");
+  const logoHref = isCleanAdmin ? "/" : "/admin";
 
   return (
     <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-primary/15 bg-background/80 px-4 backdrop-blur-xl md:px-6">
@@ -39,7 +43,7 @@ export function AdminHeader() {
           </SheetContent>
         </Sheet>
 
-        <Link href="/admin" className="shrink-0">
+        <Link href={logoHref} className="shrink-0">
           <BrandLogo className="h-8 w-auto opacity-90 transition-opacity hover:opacity-100 md:h-9" />
         </Link>
 
@@ -62,7 +66,31 @@ export function AdminHeader() {
               avatarBox: "h-9 w-9 ring-2 ring-primary/20",
             },
           }}
-        />
+        >
+          <UserButton.MenuItems>
+            <UserButton.Action
+              label={t("header.clientSide", "Client Side")}
+              labelIcon={<Globe className="w-4 h-4" />}
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  const host = window.location.host;
+                  const isLocal = host.includes("localhost") || host.includes("127.0.0.1");
+                  if (isLocal) {
+                    window.location.href = "/";
+                  } else {
+                    const parts = host.split(".");
+                    if (parts.length > 2 && (parts[0] === "app" || parts[0] === "admin" || parts[0] === "cfhq")) {
+                      const rootHost = parts.slice(1).join(".");
+                      window.location.href = `${window.location.protocol}//${rootHost}/`;
+                    } else {
+                      window.location.href = "/";
+                    }
+                  }
+                }
+              }}
+            />
+          </UserButton.MenuItems>
+        </UserButton>
       </div>
     </header>
   );

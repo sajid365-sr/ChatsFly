@@ -223,7 +223,23 @@ export function DashboardHeader({
               <UserButton.Action
                 label={t("nav.clientSide", "Client Side")}
                 labelIcon={<Globe className="w-4 h-4" />}
-                onClick={() => router.push("/")}
+                onClick={() => {
+                  if (typeof window !== "undefined") {
+                    const host = window.location.host;
+                    const isLocal = host.includes("localhost") || host.includes("127.0.0.1");
+                    if (isLocal) {
+                      window.location.href = "/";
+                    } else {
+                      const parts = host.split(".");
+                      if (parts.length > 2 && (parts[0] === "app" || parts[0] === "admin" || parts[0] === "cfhq")) {
+                        const rootHost = parts.slice(1).join(".");
+                        window.location.href = `${window.location.protocol}//${rootHost}/`;
+                      } else {
+                        window.location.href = "/";
+                      }
+                    }
+                  }
+                }}
               />
             </UserButton.MenuItems>
           </UserButton>
