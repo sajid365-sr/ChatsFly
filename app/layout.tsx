@@ -19,9 +19,8 @@ export const metadata: Metadata = {
   title: "ChatsFly — Omnichannel AI Customer Support Platform",
   description:
     "ChatsFly automates customer support across Facebook, WhatsApp, and Web with state-of-the-art AI.",
-  icons: {
-    icon: "/favicon.ico",
-  },
+  // Note: favicon is injected dynamically via <link rel="icon"> below
+  // so the branding admin can override it without a redeploy.
 };
 
 export default async function RootLayout({
@@ -33,11 +32,14 @@ export default async function RootLayout({
   const regionCookie = cookieStore.get("chatsfly_region")?.value;
   const initialRegion = (regionCookie === "global" ? "global" : "bd") as "bd" | "global";
 
-  // দাম এবং প্ল্যাটফর্ম ব্র্যান্ডিং একযোগে লোড করা হয়
+  // দাম এবং প্ল্যাটফর্ম ব্র্যান্ডিং একযোগে লোড করা হয়
   const [catalogue, branding] = await Promise.all([
     getPricingCatalogue().then(toPublicCatalogue),
     getPlatformBranding(),
   ]);
+
+  // Use custom favicon from branding if set, otherwise fall back to default
+  const faviconHref = branding.faviconUrl ?? "/favicon.ico";
 
   return (
     <html
@@ -46,6 +48,8 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {/* Dynamic favicon: overridden by branding admin when a custom one is uploaded */}
+        <link rel="icon" href={faviconHref} />
         <style
           id="dynamic-platform-branding-styles"
           dangerouslySetInnerHTML={{ __html: generateBrandingCss(branding) }}
