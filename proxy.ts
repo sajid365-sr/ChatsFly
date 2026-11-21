@@ -76,12 +76,14 @@ export default clerkMiddleware(async (auth, request) => {
   // app.chatsfly.com    → merchant dashboard (clean URLs: /overview, /inbox, etc.)
   // cfhq.chatsfly.com   → admin panel (root / or /admin)
   // admin.chatsfly.com  → 301 redirects to cfhq.chatsfly.com
+  // dev.chatsfly.com    → all-in-one staging/dev environment (/dashboard, /admin)
   // ----------------------------------------------------------------
   const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN ?? 'chatsfly.com'
-  const isMainDomain = host === appDomain || host === `www.${appDomain}` || host === `dev.${appDomain}` || host === `www.dev.${appDomain}`
-  const isAppSubdomain = host === `app.${appDomain}` || host.startsWith('app.')
-  const isCfhqSubdomain = host === `cfhq.${appDomain}` || host.startsWith('cfhq.')
-  const isLegacyAdminSubdomain = host === `admin.${appDomain}` || host.startsWith('admin.')
+  const isDevDomain = host === `dev.${appDomain}` || host === `www.dev.${appDomain}` || host.startsWith('dev.')
+  const isMainDomain = (host === appDomain || host === `www.${appDomain}`) && !isDevDomain
+  const isAppSubdomain = (host === `app.${appDomain}` || host.startsWith('app.')) && !isDevDomain
+  const isCfhqSubdomain = (host === `cfhq.${appDomain}` || host.startsWith('cfhq.')) && !isDevDomain
+  const isLegacyAdminSubdomain = (host === `admin.${appDomain}` || host.startsWith('admin.')) && !isDevDomain
   const isAdminSubdomain = isCfhqSubdomain || isLegacyAdminSubdomain
 
   // Legacy admin.chatsfly.com → permanent redirect to cfhq.chatsfly.com
@@ -149,7 +151,8 @@ export default clerkMiddleware(async (auth, request) => {
       const explicitRole = getExplicitClerkRole(claims)
 
       if (explicitRole && explicitRole !== 'admin' && explicitRole !== 'super_admin') {
-        return NextResponse.redirect(new URL('/overview?error=admin_unauthorized', request.url))
+        const redirectPath = isAppSubdomain ? '/overview' : '/dashboard/overview'
+        return NextResponse.redirect(new URL(`${redirectPath}?error=admin_unauthorized`, request.url))
       }
     }
   }
