@@ -53,6 +53,20 @@ export function BrandingProvider({
     styleTag.innerHTML = generateBrandingCss(branding);
   }, [branding]);
 
+  // Dynamically update <link rel="icon"> when faviconUrl changes
+  useEffect(() => {
+    if (!branding.faviconUrl) return;
+    const existingLink = document.querySelector<HTMLLinkElement>("link[rel~='icon']");
+    if (existingLink) {
+      existingLink.href = branding.faviconUrl;
+    } else {
+      const link = document.createElement("link");
+      link.rel = "icon";
+      link.href = branding.faviconUrl;
+      document.head.appendChild(link);
+    }
+  }, [branding.faviconUrl]);
+
   const updateBranding = (newBranding: PlatformBranding) => {
     setBranding(newBranding);
   };

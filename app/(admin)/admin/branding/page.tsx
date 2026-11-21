@@ -17,6 +17,7 @@ import {
   Moon,
   Type,
   ImageIcon,
+  Globe,
 } from "lucide-react";
 import {
   DEFAULT_BRANDING,
@@ -114,6 +115,32 @@ export default function BrandingAdminPage() {
         [mode]: DEFAULT_BRANDING[section][mode],
       },
     }));
+  };
+
+  const handleFaviconUpload = (file?: File) => {
+    if (!file) return;
+    // Accept ICO, PNG, SVG for favicon
+    const allowed = ["image/x-icon", "image/png", "image/svg+xml", "image/vnd.microsoft.icon"];
+    if (!allowed.includes(file.type) && !file.name.endsWith(".ico")) {
+      toast.error("Please upload a valid favicon file (ICO, PNG, or SVG).");
+      return;
+    }
+    if (file.size > 512 * 1024) {
+      toast.error("Favicon must be under 512 KB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      setForm((prev) => ({ ...prev, faviconUrl: dataUrl }));
+      toast.success("Favicon updated — save to apply site-wide.");
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleResetFavicon = () => {
+    setForm((prev) => ({ ...prev, faviconUrl: undefined }));
+    toast.info("Favicon reset to default. Click 'Save Changes' to apply.");
   };
 
   const handleSave = async () => {
@@ -307,6 +334,73 @@ export default function BrandingAdminPage() {
                   siteName={form.siteName}
                   onUpload={(file) => handleLogoUpload("footerLogo", "dark", file)}
                   onReset={() => handleResetLogo("footerLogo", "dark")}
+                />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* 2b. Favicon */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.07 }}
+            className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-5"
+          >
+            <div className="flex items-center gap-2 border-b border-border pb-4">
+              <Globe className="h-5 w-5 text-primary" />
+              <div>
+                <h2 className="text-base font-semibold text-foreground">Favicon</h2>
+                <p className="text-xs text-muted-foreground">
+                  The small icon shown in browser tabs, bookmarks and mobile home screens. ICO, PNG or SVG (max 512 KB).
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-start gap-6">
+              {/* Preview */}
+              <div className="flex-shrink-0">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Preview</p>
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-muted border border-border">
+                  {/* Fake browser tab preview */}
+                  <div className="flex items-center gap-1.5 bg-background rounded-lg px-3 py-1.5 shadow-sm border border-border">
+                    {form.faviconUrl ? (
+                      <img
+                        src={form.faviconUrl}
+                        alt="Favicon preview"
+                        className="h-4 w-4 object-contain rounded-sm"
+                      />
+                    ) : (
+                      <img
+                        src="/favicon.ico"
+                        alt="Default favicon"
+                        className="h-4 w-4 object-contain rounded-sm"
+                      />
+                    )}
+                    <span className="text-xs text-foreground font-medium truncate max-w-[90px]">
+                      {form.siteName}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground">Browser tab</span>
+                </div>
+                {form.faviconUrl && (
+                  <div className="mt-2 text-center">
+                    <span className="inline-flex items-center gap-1 text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                      <Check className="h-3 w-3" />
+                      Custom favicon active
+                    </span>
+                  </div>
+                )}
+                {!form.faviconUrl && (
+                  <p className="text-[10px] text-muted-foreground mt-2 text-center">Using default favicon.ico</p>
+                )}
+              </div>
+
+              {/* Upload Controls */}
+              <div className="flex-1 space-y-3">
+                <FaviconUploadCard
+                  faviconUrl={form.faviconUrl}
+                  onUpload={handleFaviconUpload}
+                  onReset={handleResetFavicon}
                 />
               </div>
             </div>
@@ -573,6 +667,27 @@ export default function BrandingAdminPage() {
                   </div>
                 </div>
               </div>
+
+              {/* Favicon Live Preview */}
+              <div>
+                <span className="text-xs font-semibold uppercase text-muted-foreground block mb-2">
+                  Favicon (Browser Tab)
+                </span>
+                <div className="flex items-center gap-2 p-2 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-border">
+                  <div className="flex items-center gap-1.5 bg-white dark:bg-zinc-800 rounded-md px-2.5 py-1 shadow-sm border border-zinc-200 dark:border-zinc-700 max-w-[150px]">
+                    {form.faviconUrl ? (
+                      <img src={form.faviconUrl} alt="favicon" className="h-3.5 w-3.5 object-contain flex-shrink-0" />
+                    ) : (
+                      <img src="/favicon.ico" alt="favicon" className="h-3.5 w-3.5 object-contain flex-shrink-0" />
+                    )}
+                    <span className="text-[10px] text-foreground truncate">{form.siteName}</span>
+                    <span className="text-[10px] text-muted-foreground ml-0.5">×</span>
+                  </div>
+                  <span className="text-[9px] text-muted-foreground">
+                    {form.faviconUrl ? "Custom" : "Default"}
+                  </span>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -652,6 +767,80 @@ function LogoUploadCard({
         Upload New Logo
       </button>
       <p className="text-[10px] text-muted-foreground text-center">{subtitle}</p>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// FaviconUploadCard
+// ---------------------------------------------------------------------------
+interface FaviconUploadCardProps {
+  faviconUrl?: string;
+  onUpload: (file?: File) => void;
+  onReset: () => void;
+}
+
+function FaviconUploadCard({ faviconUrl, onUpload, onReset }: FaviconUploadCardProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  return (
+    <div className="rounded-xl border border-border bg-background p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+          <Globe className="h-4 w-4 text-primary" />
+          Favicon File
+        </div>
+        {faviconUrl && (
+          <button
+            type="button"
+            onClick={onReset}
+            title="Remove custom favicon (revert to default)"
+            className="text-muted-foreground hover:text-destructive transition-colors"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
+
+      {/* Current favicon display */}
+      {faviconUrl ? (
+        <div className="flex items-center gap-3 p-3 rounded-lg bg-muted border border-border">
+          <img src={faviconUrl} alt="Current favicon" className="h-8 w-8 object-contain rounded" />
+          <div>
+            <p className="text-xs font-medium text-foreground">Custom favicon uploaded</p>
+            <p className="text-[10px] text-muted-foreground">Click upload to replace</p>
+          </div>
+          <Check className="h-4 w-4 text-emerald-500 ml-auto flex-shrink-0" />
+        </div>
+      ) : (
+        <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 border border-dashed border-border">
+          <img src="/favicon.ico" alt="Default favicon" className="h-8 w-8 object-contain rounded opacity-60" />
+          <div>
+            <p className="text-xs font-medium text-muted-foreground">Using default favicon.ico</p>
+            <p className="text-[10px] text-muted-foreground">Upload a custom one below</p>
+          </div>
+        </div>
+      )}
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".ico,image/x-icon,image/vnd.microsoft.icon,image/png,image/svg+xml"
+        className="hidden"
+        onChange={(e) => onUpload(e.target.files?.[0])}
+      />
+
+      <button
+        type="button"
+        onClick={() => fileInputRef.current?.click()}
+        className="w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-medium text-foreground hover:bg-accent transition-colors"
+      >
+        <Upload className="h-3.5 w-3.5" />
+        {faviconUrl ? "Replace Favicon" : "Upload Favicon"}
+      </button>
+      <p className="text-[10px] text-muted-foreground text-center">
+        ICO (recommended), PNG 32×32, or SVG — max 512 KB
+      </p>
     </div>
   );
 }
